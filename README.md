@@ -1,5 +1,5 @@
 
-# I develop things! 🚀
+# I build things! 🚀
 
 8-5er by day, coffee junkie, and free-diver by weekend.  
 I run on espresso-based coffee made with my trusty manual lever machine ☕️.  
