@@ -5,6 +5,8 @@ export const siteMeta = {
   description:
     'Jariel Balberona builds and modernizes production software across product, architecture, and delivery.',
   url: 'https://jarielbalberona.com',
+  ogImage: '/og-default.svg',
+  themeColor: '#1f282b',
   email: 'jarielbalb@gmail.com',
   linkedin: 'https://www.linkedin.com/in/jarielbalberona/',
   github: 'https://github.com/jarielbalberona',

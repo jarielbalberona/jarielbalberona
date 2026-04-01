@@ -10,6 +10,7 @@ interface Props {
   activeNav: string;
   footerLeft?: string;
   footerRight?: string;
+  ogImage?: string;
 }
 
 const {
@@ -18,7 +19,11 @@ const {
   activeNav,
   footerLeft = siteMeta.name,
   footerRight = 'Low-maintenance, high-signal engineering home',
+  ogImage = siteMeta.ogImage,
 } = Astro.props;
+
+const canonicalUrl = new URL(Astro.url.pathname, siteMeta.url).toString();
+const ogImageUrl = new URL(ogImage, siteMeta.url).toString();
 ---
 
 <!doctype html>
@@ -28,12 +33,20 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="theme-color" content={siteMeta.themeColor} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content={siteMeta.url + Astro.url.pathname} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:site_name" content={siteMeta.title} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:alt" content={`${siteMeta.name} — production software, modernization, delivery`} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
     <meta name="twitter:card" content="summary_large_image" />
-    <link rel="canonical" href={siteMeta.url + Astro.url.pathname} />
+    <meta name="twitter:image" content={ogImageUrl} />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   </head>
   <body class="min-h-screen">
     <SiteHeader activeNav={activeNav} />
