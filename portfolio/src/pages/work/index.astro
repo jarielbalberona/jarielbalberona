@@ -1,0 +1,66 @@
+---
+import { getCollection } from 'astro:content';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+
+const entries = (await getCollection('work'))
+  .sort((a, b) => a.data.order - b.data.order)
+  .filter((entry) => entry.data.featured);
+---
+
+<SiteLayout
+  title="Work | Jariel Balberona"
+  description="Selected public work from Jariel Balberona, focused on real production systems and practical engineering scope."
+  activeNav="work"
+  footerLeft="Selected work only"
+  footerRight="No filler project grid"
+>
+  <section class="mb-9 border border-line bg-paper-panel/95 p-8 shadow-[0_18px_48px_rgba(31,40,43,0.08)]">
+    <div class="mb-4 inline-flex rounded-full bg-moss px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-accent-strong">
+      Work
+    </div>
+    <h1 class="font-display text-5xl leading-[0.98] tracking-[-0.04em] text-ink sm:text-7xl">
+      Selected proof, not project wallpaper.
+    </h1>
+    <p class="mt-5 max-w-3xl text-lg leading-8 text-ink-soft">
+      Public work here is intentionally curated. The standard is simple: real scope, real constraints, and enough
+      substance to be worth reading.
+    </p>
+  </section>
+
+  <section class="space-y-6">
+    {
+      entries.map((entry) => (
+        <article class="border border-line bg-paper-panel/90 p-6 shadow-[0_18px_48px_rgba(31,40,43,0.08)]">
+          <p class="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-accent">{entry.data.status}</p>
+          <h2 class="font-display text-4xl leading-tight text-ink">{entry.data.title}</h2>
+          <p class="mt-4 max-w-3xl text-base leading-8 text-ink-soft">{entry.data.summary}</p>
+          <div class="mt-5 flex flex-wrap gap-2 text-xs font-medium uppercase tracking-[0.12em] text-ink-soft">
+            <span>{entry.data.timeframe}</span>
+            <span>•</span>
+            <span>{entry.data.stack.join(' / ')}</span>
+          </div>
+          <ul class="mt-6 space-y-3 pl-5 text-sm leading-7 text-ink">
+            {entry.data.highlights.map((item) => <li>{item}</li>)}
+          </ul>
+          <div class="mt-6 flex flex-wrap gap-3">
+            <a href={`/work/${entry.id.replace(/\.md$/, '')}`} class="rounded-full border border-line px-5 py-3 text-sm font-semibold text-ink no-underline hover:bg-ink hover:text-paper-panel">Read project details</a>
+            {entry.data.liveUrl && (
+              <a href={entry.data.liveUrl} class="rounded-full border border-line px-5 py-3 text-sm font-semibold text-ink no-underline hover:bg-ink hover:text-paper-panel">
+                Visit live site
+              </a>
+            )}
+          </div>
+        </article>
+      ))
+    }
+  </section>
+
+  <section class="mt-9 border border-line bg-paper-panel/90 p-6 shadow-[0_18px_48px_rgba(31,40,43,0.08)]">
+    <p class="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-accent">Why only one project right now</p>
+    <h2 class="font-display text-4xl leading-tight text-ink">Depth is more useful than inventory.</h2>
+    <p class="mt-4 max-w-3xl text-sm leading-7 text-ink-soft">
+      The work page starts with one strong public anchor because that is more honest than padding it with weak
+      side-project summaries. More entries can be added later if they are equally defensible.
+    </p>
+  </section>
+</SiteLayout>

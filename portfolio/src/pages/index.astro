@@ -1,0 +1,135 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+
+const featuredStrengths = [
+  {
+    title: 'Modernization',
+    body: 'Untangling React and TypeScript codebases that have become slow, brittle, or expensive to change.',
+  },
+  {
+    title: 'Product systems',
+    body: 'Designing structure that can support real product growth without turning every feature into a rewrite.',
+  },
+  {
+    title: 'Backend and data flow',
+    body: 'Building practical APIs and data paths with Node.js and PostgreSQL-level operational discipline.',
+  },
+  {
+    title: 'Delivery',
+    body: 'Shipping across frontend, backend, and deployment concerns instead of stopping at component boundaries.',
+  },
+];
+
+const signalCards = [
+  {
+    kicker: 'Current work',
+    title: 'Dumadine',
+    body: 'Building a real cafe operating system in early beta, shaped alongside an active local business. The work spans customer ordering, merchant operations, kitchen flow, inventory, and production delivery.',
+  },
+  {
+    kicker: 'Engineering stance',
+    title: 'Modernize first principles, not just surface UI',
+    body: 'The useful work is usually underneath: code structure, boundaries, delivery flow, and the operational cost of the decisions teams keep postponing.',
+  },
+  {
+    kicker: 'AI usage',
+    title: 'Leverage, not theater',
+    body: 'I use AI to speed up planning, drafting, refactoring support, and synthesis. Correctness, tradeoffs, and production responsibility still stay with the engineer.',
+  },
+];
+---
+
+<SiteLayout
+  title="Jariel Balberona | Production Software and Modernization"
+  description="Jariel Balberona builds and modernizes production software across product, architecture, and delivery."
+  activeNav="home"
+>
+  <section class="mb-9">
+    <div class="border border-line bg-paper-panel/95 p-8 shadow-[0_18px_48px_rgba(31,40,43,0.08)]">
+      <div class="mb-4 inline-flex rounded-full bg-moss px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-accent-strong">
+        Senior software engineer
+      </div>
+      <h1 class="max-w-[12ch] font-display text-5xl leading-[0.95] font-semibold tracking-[-0.04em] text-ink sm:text-7xl">
+        I build and modernize production software.
+      </h1>
+      <p class="mt-5 max-w-3xl text-lg leading-8 text-ink-soft">
+        I work across product, architecture, and delivery to turn messy systems into maintainable ones and ship new
+        products without pretending complexity is sophistication.
+      </p>
+      <p class="mt-4 max-w-3xl text-base leading-8 text-ink">
+        Current focus: operating and evolving Dumadine, a multi-tenant cafe operating system, while building a public
+        engineering home that reflects how I actually work now: practical architecture, real delivery, and disciplined
+        AI-assisted execution.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href="/work" class="rounded-full bg-accent-strong px-5 py-3 text-sm font-semibold text-paper-panel no-underline">See selected work</a>
+        <a href="/workflow" class="rounded-full border border-line px-5 py-3 text-sm font-semibold text-ink no-underline hover:bg-ink hover:text-paper-panel">Read my workflow</a>
+      </div>
+      <p class="mt-5 text-sm text-ink-soft">
+        Strongest signal: React and TypeScript modernization, product systems, Node/PostgreSQL backends, delivery under
+        real constraints.
+      </p>
+    </div>
+  </section>
+
+  <section class="mb-9 grid gap-4 md:grid-cols-3">
+    {
+      signalCards.map((card) => (
+        <article class="border border-line bg-paper-panel/90 p-5 shadow-[0_18px_48px_rgba(31,40,43,0.08)]">
+          <p class="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-accent">{card.kicker}</p>
+          <h2 class="font-display text-2xl leading-tight text-ink">{card.title}</h2>
+          <p class="mt-3 text-sm leading-7 text-ink-soft">{card.body}</p>
+        </article>
+      ))
+    }
+  </section>
+
+  <section class="mb-9 border border-line bg-paper-panel/90 p-6 shadow-[0_18px_48px_rgba(31,40,43,0.08)]">
+    <p class="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-accent">Where I am strongest</p>
+    <h2 class="font-display text-4xl leading-tight text-ink">The useful layer is usually below the visual layer.</h2>
+    <div class="mt-6 grid gap-5 md:grid-cols-2">
+      {
+        featuredStrengths.map((item) => (
+          <div>
+            <h3 class="font-display text-2xl text-ink">{item.title}</h3>
+            <p class="mt-2 text-sm leading-7 text-ink-soft">{item.body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="grid gap-5 md:grid-cols-2">
+    <article class="border border-line bg-paper-panel/90 p-6 shadow-[0_18px_48px_rgba(31,40,43,0.08)]">
+      <p class="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-accent">Selected proof</p>
+      <h2 class="font-display text-4xl leading-tight text-ink">One strong public project is better than six weak cards.</h2>
+      <p class="mt-4 text-sm leading-7 text-ink-soft">
+        The public work section starts narrow on purpose. I would rather show one credible system with real scope than
+        pad the page with toy projects and recycled screenshots.
+      </p>
+      <ul class="mt-4 space-y-3 pl-5 text-sm leading-7 text-ink">
+        <li>Multi-tenant product design under real business constraints</li>
+        <li>Frontend, backend, real-time workflows, and deployment concerns in one system</li>
+        <li>Built for actual operational use, not demo-day optics</li>
+      </ul>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a href="/work" class="rounded-full border border-line px-5 py-3 text-sm font-semibold text-ink no-underline hover:bg-ink hover:text-paper-panel">Read the work page</a>
+        <a href="https://dumadine.com/" class="rounded-full border border-line px-5 py-3 text-sm font-semibold text-ink no-underline hover:bg-ink hover:text-paper-panel">Visit Dumadine</a>
+      </div>
+    </article>
+
+    <article class="border border-line bg-paper-panel/90 p-6 shadow-[0_18px_48px_rgba(31,40,43,0.08)]">
+      <p class="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-accent">What belongs here</p>
+      <h2 class="font-display text-4xl leading-tight text-ink">This site is a working professional surface.</h2>
+      <p class="mt-4 text-sm leading-7 text-ink-soft">
+        It is here to show current direction, project proof, and engineering judgment. It is not here to act like a
+        scrapbook, a startup landing page, or an AI mascot.
+      </p>
+      <ul class="mt-5 divide-y divide-line text-sm leading-7 text-ink">
+        <li class="py-3"><strong>Current:</strong> what I am actively building and improving</li>
+        <li class="py-3"><strong>Work:</strong> public proof with scope, constraints, and technical shape</li>
+        <li class="py-3"><strong>Workflow:</strong> how I plan, build, review, and use AI without outsourcing judgment</li>
+      </ul>
+    </article>
+  </section>
+</SiteLayout>

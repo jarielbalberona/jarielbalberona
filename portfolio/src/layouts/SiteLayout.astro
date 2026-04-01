@@ -1,0 +1,45 @@
+---
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import { siteMeta } from '../data/site';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  activeNav: string;
+  footerLeft?: string;
+  footerRight?: string;
+}
+
+const {
+  title,
+  description,
+  activeNav,
+  footerLeft = siteMeta.name,
+  footerRight = 'Low-maintenance, high-signal engineering home',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={siteMeta.url + Astro.url.pathname} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href={siteMeta.url + Astro.url.pathname} />
+  </head>
+  <body class="min-h-screen">
+    <SiteHeader activeNav={activeNav} />
+    <main class="mx-auto w-[min(100%-1.5rem,72rem)] py-10">
+      <slot />
+    </main>
+    <SiteFooter left={footerLeft} right={footerRight} />
+  </body>
+</html>

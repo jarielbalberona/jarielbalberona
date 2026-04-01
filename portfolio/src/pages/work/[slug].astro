@@ -1,0 +1,51 @@
+---
+import { getCollection, render } from 'astro:content';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('work');
+
+  return entries.map((entry) => ({
+    params: { slug: entry.id.replace(/\.md$/, '') },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<SiteLayout
+  title={`${entry.data.title} | Work | Jariel Balberona`}
+  description={entry.data.summary}
+  activeNav="work"
+  footerLeft="Selected work only"
+  footerRight="Public proof with real constraints"
+>
+  <article class="space-y-8">
+    <section class="border border-line bg-paper-panel/95 p-8 shadow-[0_18px_48px_rgba(31,40,43,0.08)]">
+      <div class="mb-4 inline-flex rounded-full bg-moss px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-accent-strong">
+        {entry.data.status}
+      </div>
+      <h1 class="font-display text-5xl leading-[0.98] tracking-[-0.04em] text-ink sm:text-7xl">{entry.data.title}</h1>
+      <p class="mt-5 max-w-3xl text-lg leading-8 text-ink-soft">{entry.data.summary}</p>
+      <div class="mt-5 flex flex-wrap gap-2 text-xs font-medium uppercase tracking-[0.12em] text-ink-soft">
+        <span>{entry.data.timeframe}</span>
+        <span>•</span>
+        <span>{entry.data.stack.join(' / ')}</span>
+      </div>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a href="/work" class="rounded-full border border-line px-5 py-3 text-sm font-semibold text-ink no-underline hover:bg-ink hover:text-paper-panel">Back to work</a>
+        {entry.data.liveUrl && (
+          <a href={entry.data.liveUrl} class="rounded-full border border-line px-5 py-3 text-sm font-semibold text-ink no-underline hover:bg-ink hover:text-paper-panel">
+            Visit live site
+          </a>
+        )}
+      </div>
+    </section>
+
+    <section class="border border-line bg-paper-panel/90 p-8 text-ink shadow-[0_18px_48px_rgba(31,40,43,0.08)] [&_h2]:mt-8 [&_h2]:font-display [&_h2]:text-4xl [&_h2]:leading-tight [&_h2]:text-ink [&_h2:first-child]:mt-0 [&_p]:mt-4 [&_p]:max-w-3xl [&_p]:text-sm [&_p]:leading-7 [&_p]:text-ink-soft [&_ul]:mt-4 [&_ul]:space-y-3 [&_ul]:pl-5 [&_ul]:text-sm [&_ul]:leading-7 [&_ul]:text-ink">
+      <Content />
+    </section>
+  </article>
+</SiteLayout>
