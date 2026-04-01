@@ -2,24 +2,26 @@
 
 Workspace for shaping `jarielbalberona.com` into a serious, low-maintenance, high-signal public engineering home.
 
-This is not a generic portfolio project. The site is intended to present a senior software engineer who builds and modernizes production systems, works across product, architecture, and delivery, and uses AI as disciplined workflow leverage rather than branding theater.
+This is not a generic portfolio project. The site is intended to present a senior software engineer who builds production systems across product, architecture, and delivery, and uses AI as disciplined workflow leverage rather than branding theater.
 
 ## Public Profile Summary
 
-I build production systems.
+I build production systems that stay healthy as they grow.
 
-Senior software engineer focused on system architecture, modern web platforms, and shipping maintainable code. I modernize legacy apps, design modular systems, and build end-to-end products across frontend, backend, and infrastructure.
+Senior software engineer focused on maintainability, scalability, architecture, reliability, and predictable delivery. I build production-ready platforms across frontend, backend, and infrastructure.
 
 What I do best:
 
-- Modernizing React and TypeScript codebases for architecture, tooling, performance, and delivery velocity
-- Designing modular frontend systems with strong DX and maintainability
-- Building APIs and data flows with Node.js and PostgreSQL
-- Shipping across Docker, CI/CD, infrastructure patterns, and practical cloud delivery
+- Designing maintainable React and TypeScript systems with strong state, data, and UI structure
+- Building APIs, workflows, and data flows with Node.js and PostgreSQL
+- Shipping across CI/CD, infrastructure, and practical cloud delivery
+- Keeping systems healthy under growth instead of letting delivery quality decay
 
 Selected public work:
 
-- Dumadine: multi-tenant cafe operating system in early beta, built around real operating workflows rather than demo-only surfaces
+- Dumadine: multi-tenant cafe operating system built around real operating workflows rather than demo-only surfaces
+- Privv: frontend and system architecture work focused on maintainability, scalable structure, and codebase health
+- DataGPT AI: product work focused on reliability, recovery flows, orchestration UI, and analytics UX
 
 Links:
 

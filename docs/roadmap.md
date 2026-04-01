@@ -5,7 +5,7 @@
 - establish workspace documentation and project rules
 - ship the Astro-based site foundation in `portfolio/`
 - publish `Home`, `Now`, `Work`, `Workflow`, and `Contact`
-- align content around production systems, modernization, current work, and disciplined AI workflow
+- align content around maintainability, scalability, architecture, current work, and disciplined AI workflow
 
 ## Phase 2
 

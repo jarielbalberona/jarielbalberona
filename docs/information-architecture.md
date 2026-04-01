@@ -42,7 +42,7 @@ Purpose:
 - show proof through a small number of credible project summaries
 
 Include:
-- 1-2 strong projects
+- 1-3 strong projects
 - role, scope, constraints, and decisions
 
 Exclude:
@@ -58,7 +58,7 @@ Include:
 - planning approach
 - implementation stance
 - review and ownership model
-- modernization principles
+- maintainability and delivery standards
 
 Exclude:
 - AI hype

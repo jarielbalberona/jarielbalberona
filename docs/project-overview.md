@@ -7,7 +7,7 @@ Turn `jarielbalberona.com` into the primary public engineering home for Jariel B
 The site should communicate:
 
 - production software work
-- modernization capability
+- maintainability, scalability, and reliability
 - product, architecture, and delivery range
 - current real work
 - selected proof
@@ -24,7 +24,7 @@ The site should communicate:
 ## Primary Audience
 
 - hiring managers evaluating senior engineering credibility
-- founders or product teams looking for modernization or systems work
+- founders or product teams looking for systems, platform, or product engineering work
 - engineers assessing technical seriousness and current relevance
 
 ## Primary Goal
