@@ -8,7 +8,7 @@ This is not a generic portfolio project. The site is intended to present a senio
 
 I build production systems.
 
-Senior Fullstack Engineer focused on system architecture, modern web platforms, and shipping maintainable code at scale. I modernize legacy apps, design modular systems, and build end-to-end products across frontend, backend, and infrastructure.
+Senior software engineer focused on system architecture, modern web platforms, and shipping maintainable code. I modernize legacy apps, design modular systems, and build end-to-end products across frontend, backend, and infrastructure.
 
 What I do best:
 
@@ -19,10 +19,11 @@ What I do best:
 
 Selected public work:
 
-- Dumadine: multi-tenant cafe operating system in early beta, built to run real workflows end-to-end
+- Dumadine: multi-tenant cafe operating system in early beta, built around real operating workflows rather than demo-only surfaces
 
 Links:
 
+- Site: [jarielbalberona.com](https://jarielbalberona.com)
 - LinkedIn: [jarielbalberona](https://www.linkedin.com/in/jarielbalberona/)
 - Email: [jarielbalb@gmail.com](mailto:jarielbalb@gmail.com)
 - Live product: [dumadine.com](https://dumadine.com/)
