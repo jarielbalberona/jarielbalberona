@@ -1,7 +1,6 @@
 export const nowMeta = {
   updatedLabel: 'Updated April 2026',
-  intro:
-    'This page exists to keep the public story current. If it stops reflecting the work, it should be updated or removed.',
+  intro: 'This page is the current state of the work. If it goes stale, it should be fixed or removed.',
 };
 
 export const currentFocus = [
@@ -9,27 +8,27 @@ export const currentFocus = [
     kicker: 'Primary focus',
     title: 'Dumadine',
     body:
-      'I am building Dumadine as a real operating system for cafes: ordering, merchant operations, kitchen flow, inventory, and the operational seams that usually get expensive when teams ignore them.',
+      'I am building Dumadine as a cafe operating system that covers ordering, merchant operations, kitchen flow, inventory, and the operational seams that get expensive when they are ignored.',
   },
   {
     kicker: 'Public surface',
-    title: 'Rebuilding jarielbalberona.com',
+    title: 'Tightening jarielbalberona.com',
     body:
-      'The old public site undersold the work and drifted into generic personal-brand territory. The rebuild is narrower on purpose: current work, selected proof, workflow, and direct contact.',
+      'The old public site undersold the work and drifted into generic portfolio territory. The rebuild stays narrow on purpose: current work, selected proof, workflow, and direct contact.',
   },
   {
     kicker: 'Current engineering interest',
     title: 'System health under growth',
     body:
-      'I care about boundaries, delivery flow, reliability, and maintainability because those are the things that decide whether a product can keep growing without slowing itself down.',
+      'I care about boundaries, delivery flow, reliability, and maintainability because those are the things that decide whether a product can keep growing without turning brittle.',
   },
 ];
 
 export const rightNow = [
-  'Shaping product decisions against live operational workflows, not made-up requirements',
+  'Shaping product decisions against live operational workflows instead of made-up requirements',
   'Tightening architecture, observability, and delivery structure so the platform can keep evolving cleanly',
-  'Using AI where it reduces planning, drafting, and implementation drag without handing over judgment',
-  'Keeping the public material aligned with current work instead of a stale résumé version of myself',
+  'Using AI for planning, synthesis, and implementation support without handing over judgment',
+  'Keeping the public material aligned with current work instead of a stale résumé version of me',
 ];
 
 export const notOptimizingFor = [
@@ -46,7 +45,7 @@ export const priorities = [
   },
   {
     label: 'Scalable system shape',
-    body: 'Improve boundaries so the platform can grow without letting every feature leak into everything else.',
+    body: 'Keep boundaries clear so the platform can grow without letting every feature leak into everything else.',
   },
   {
     label: 'Public signal',
