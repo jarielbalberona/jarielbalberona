@@ -1,6 +1,6 @@
 ---
 title: Privv
-summary: Product and frontend architecture work focused on maintainability, scalable state and data structure, token-driven UI systems, and overall codebase health.
+summary: Product and frontend architecture work focused on maintainability, scalable state and data structure, token-driven UI systems, and codebase health.
 status: Selected work
 timeframe: Product platform work
 featured: true
@@ -18,7 +18,7 @@ highlights:
 
 ## What it is
 
-Privv represents the kind of frontend and product-system work where architecture quality matters more than flashy surface work.
+Privv represents frontend and product-system work where architecture quality matters more than surface polish.
 
 The useful problems were maintainability, scalable structure, and keeping the codebase healthy enough for product work to keep moving.
 
@@ -26,7 +26,7 @@ The useful problems were maintainability, scalable structure, and keeping the co
 
 A lot of frontend systems degrade because teams keep shipping features without improving the structure underneath them.
 
-This work matters because it focuses on the parts that actually decide whether a product can keep evolving: state shape, data flow, UI consistency, and the operating cost of change.
+This work matters because it focuses on the parts that decide whether a product can keep evolving: state shape, data flow, UI consistency, and the cost of change.
 
 ## Technical shape
 

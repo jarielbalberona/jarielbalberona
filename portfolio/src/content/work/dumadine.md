@@ -1,6 +1,6 @@
 ---
 title: Dumadine
-summary: Multi-tenant cafe operating system in early beta, shaped around real operating workflows, real-time coordination, and the delivery concerns that show up once software meets daily operations.
+summary: Multi-tenant cafe operating system in early beta, shaped around real operating workflows, real-time coordination, and the delivery issues that show up once software meets daily operations.
 status: Featured project
 timeframe: Current work
 featured: true
@@ -39,7 +39,7 @@ The system spans:
 
 This is the kind of product that exposes whether the engineering can survive contact with operations.
 
-Ordering is easy to demo. The harder work is the ugly middle layer: kitchen flow, stock behavior, cash handling, edge cases, observability, and the seams that start costing money when they are ignored.
+Ordering is easy to demo. The harder work is the middle layer: kitchen flow, stock behavior, cash handling, edge cases, observability, and the seams that start costing money when they are ignored.
 
 ## Working model
 

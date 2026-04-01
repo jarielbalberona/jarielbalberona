@@ -1,6 +1,6 @@
 ---
 title: DataGPT AI
-summary: Product engineering work centered on reliability, recovery flows, orchestration and workflow UI, and analytics UX for systems that need to stay understandable under load.
+summary: Product engineering work centered on reliability, recovery flows, orchestration UI, and analytics UX for systems that need to stay understandable under load.
 status: Selected work
 timeframe: Product workflow work
 featured: true
@@ -18,7 +18,7 @@ highlights:
 
 ## What it is
 
-DataGPT AI is useful public proof for workflow-heavy product engineering where reliability and operator understanding matter as much as the visible interface.
+DataGPT AI is public proof for workflow-heavy product engineering where reliability and operator understanding matter as much as the visible interface.
 
 The work sits in the layer where systems become difficult: orchestration, failure handling, recovery, and analytics surfaces that need to explain what is happening.
 
@@ -26,7 +26,7 @@ The work sits in the layer where systems become difficult: orchestration, failur
 
 Workflow products become brittle when failure states are treated as exceptions instead of part of the real product.
 
-This work matters because it treats reliability and recovery as core product concerns, not backend details that the UI can ignore.
+This work matters because it treats reliability and recovery as core product concerns, not backend details the UI can ignore.
 
 ## Technical shape
 
