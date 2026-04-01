@@ -31,6 +31,8 @@ This app exists to present:
 
 ## Render Static Site
 
+The repo-level Render blueprint lives at [`/render.yaml`](/Volumes/Files/softwareengineering/my-projects/jarielbalberona/render.yaml).
+
 Expected Render settings:
 
 - Root Directory: `portfolio`
