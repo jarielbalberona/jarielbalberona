@@ -28,3 +28,13 @@ This app exists to present:
 - selected proof
 - pragmatic engineering workflow
 - disciplined AI-assisted engineering workflow
+
+## Render Static Site
+
+Expected Render settings:
+
+- Root Directory: `portfolio`
+- Build Command: `npm ci && npm run build`
+- Publish Directory: `dist`
+
+This app is static by default, so no server adapter is required for MVP.

@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: jarielbalberona
+    runtime: static
+    rootDir: portfolio
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist

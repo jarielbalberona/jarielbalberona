@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Avenir Next", "Segoe UI", "Helvetica Neue", sans-serif;
+  --font-display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  --font-mono: "SFMono-Regular", "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+
+  --color-paper: #f4efe4;
+  --color-paper-strong: #f9f4ec;
+  --color-paper-panel: #fffaf2;
+  --color-ink: #1f282b;
+  --color-ink-soft: #506065;
+  --color-line: #d8ccb8;
+  --color-accent: #7d4325;
+  --color-accent-strong: #572d17;
+  --color-moss: #d9e2d4;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-paper text-ink font-sans antialiased;
+    background-image:
+      radial-gradient(circle at top left, rgba(217, 226, 212, 0.8), transparent 28%),
+      linear-gradient(180deg, #f8f4ec 0%, #f4efe4 100%);
+  }
+
+  a {
+    @apply transition-colors;
+  }
+
+  ::selection {
+    @apply bg-moss text-ink;
+  }
+}
