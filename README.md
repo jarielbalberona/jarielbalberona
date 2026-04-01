@@ -1,77 +1,52 @@
-# jarielbalberona
+# I build production systems.
 
-Workspace for shaping `jarielbalberona.com` into a serious, low-maintenance, high-signal public engineering home.
+Senior software engineer with 10 years of experience spanning frontend, backend, and infrastructure. I build systems that perform reliably in production and remain maintainable as they scale.
 
-This is not a generic portfolio project. The site is intended to present a senior software engineer who builds production systems across product, architecture, and delivery, and uses AI as disciplined workflow leverage rather than branding theater.
+Currently building [Dumadine](https://dumadine.com/), a multi-tenant hospitality operating system.
 
-## Public Profile Summary
+## Engineering Focus
+- **Scalable Architecture:** Enforcing strict system boundaries so codebases can grow without feature leakage or execution drag.
+- **Frontend Systems:** Building React/TypeScript applications with predictable state, clear data flow, and performance under load.
+- **Backend & Infrastructure:** Developing Node.js/PostgreSQL APIs, orchestration layers, and cloud delivery pipelines.
+- **Operational Reality:** Shaping system design against live operational workflows rather than theoretical requirements.
 
-I build production systems that stay healthy as they grow.
+---
 
-Senior software engineer focused on maintainability, scalability, architecture, reliability, and predictable delivery. I build production-ready platforms across frontend, backend, and infrastructure.
+## Links
+[![Portfolio](https://img.shields.io/badge/portfolio-000?style=for-the-badge&logo=ko-fi&logoColor=white)](https://jarielbalberona.com/)
+[![Dumadine](https://img.shields.io/badge/dumadine-000?style=for-the-badge&logo=ko-fi&logoColor=white)](https://dumadine.com/)
+[![LinkedIn](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/jarielbalberona/)
+[![Email](https://img.shields.io/badge/email-555?style=for-the-badge&logo=gmail&logoColor=white)](mailto:jarielbalb@gmail.com)
 
-What I do best:
+---
 
-- Designing maintainable React and TypeScript systems with strong state, data, and UI structure
-- Building APIs, workflows, and data flows with Node.js and PostgreSQL
-- Shipping across CI/CD, infrastructure, and practical cloud delivery
-- Keeping systems healthy under growth instead of letting delivery quality decay
+## Core Stack
+- **Frontend:** TypeScript, React, Next.js, Vite, Tailwind CSS
+- **Backend:** Node.js, Express, PostgreSQL, WebSockets
+- **State & Data:** TanStack Query, Zustand, Drizzle ORM
+- **Infrastructure:** Docker, Terraform, GitHub Actions, AWS
 
-Selected public work:
+---
 
-- Dumadine: multi-tenant cafe operating system built around real operating workflows rather than demo-only surfaces
-- Privv: frontend and system architecture work focused on maintainability, scalable structure, and codebase health
-- DataGPT AI: product work focused on reliability, recovery flows, orchestration UI, and analytics UX
+## Selected Work
 
-Links:
+### [Dumadine](https://dumadine.com/) — Multi-tenant Hospitality OS
+Consolidates hardware-agnostic POS, live KDS, inventory, and automated accounting subledgers into a single architecture. Shaped entirely by live operational constraints rather than theoretical product briefs.
+*TypeScript, React, Node.js, PostgreSQL, Drizzle, WebSockets, AWS*
 
+### [Privv](https://www.privv.ai/) — Capital Project Management
+Hardened frontend architecture for a data-heavy platform managing over $4B in capital projects. Rebuilt state and data architectures to handle complex budgets and AI-driven forecasting without UI drag.
+*React, TypeScript, Design Tokens, Frontend Architecture*
+
+### [DataGPT AI](https://www.linkedin.com/company/datagpt-analytics/) — AI Data Analytics Platform
+Engineered frontend interfaces to make complex, AI-driven data queries legible. Designed orchestration UI to ensure system behavior and data pipeline states remained clear to operators.
+*React, TypeScript, Data Visualization, Analytics UX*
+
+---
+
+## Contact
+Reach out if the work fits. Best suited for serious product and engineering work where architecture, maintainability, and end-to-end delivery actually matter.
+
+- Email: jarielbalb@gmail.com
+- LinkedIn: [jarielbalberona](https://www.linkedin.com/in/jarielbalberona)
 - Site: [jarielbalberona.com](https://jarielbalberona.com)
-- LinkedIn: [jarielbalberona](https://www.linkedin.com/in/jarielbalberona/)
-- Email: [jarielbalb@gmail.com](mailto:jarielbalb@gmail.com)
-- Live product: [dumadine.com](https://dumadine.com/)
-
-## Workspace Structure
-
-- [`AGENTS.md`](/Volumes/Files/softwareengineering/my-projects/jarielbalberona/AGENTS.md): workspace operating manual
-- [`docs/`](/Volumes/Files/softwareengineering/my-projects/jarielbalberona/docs): lean planning records, decisions, and roadmap
-- [`portfolio/`](/Volumes/Files/softwareengineering/my-projects/jarielbalberona/portfolio): canonical public site app
-
-## Current Direction
-
-MVP pages:
-
-- Home
-- Now
-- Work
-- Workflow
-- Contact
-
-Notes/blog is intentionally deferred until there is a realistic publishing cadence and enough material to justify it.
-
-## Technical Stance
-
-`/portfolio` is the public-site implementation authority.
-
-Official stack for `/portfolio`:
-
-- Astro
-- TypeScript
-- Tailwind CSS v4
-- Astro content collections
-- Render Static Site deployment
-
-Explicit exclusions for MVP:
-
-- no `shadcn`
-- no CMS
-- no database
-- no unnecessary client-heavy architecture
-
-The previous plain-static stopgap is no longer the source of truth.
-
-## Working Rules
-
-- Public site implementation lives under `portfolio/`
-- Root-level files should exist only if they help planning, content, or project continuity
-- Direct commits to `main` are allowed unless explicitly told otherwise
-- Preserve anything useful, but remove stale or weak direction when it actively hurts the project

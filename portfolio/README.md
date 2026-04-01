@@ -1,6 +1,8 @@
-# portfolio
+# jarielbalberona.com
 
-Canonical public site app for `jarielbalberona.com`.
+This is the workspace and canonical public site app for `jarielbalberona.com`.
+
+The site is intended to present a senior software engineer who builds production systems across product, architecture, and delivery, and uses AI as disciplined workflow leverage rather than branding theater.
 
 ## Source Of Truth Stack
 
@@ -29,9 +31,15 @@ This app exists to present:
 - pragmatic engineering workflow
 - disciplined AI-assisted engineering workflow
 
+## Workspace Structure
+
+- `../AGENTS.md`: workspace operating manual
+- `../docs/`: lean planning records, decisions, and roadmap
+- `src/`: canonical public site app source code
+
 ## Render Static Site
 
-The repo-level Render blueprint lives at [`/render.yaml`](/Volumes/Files/softwareengineering/my-projects/jarielbalberona/render.yaml).
+The repo-level Render blueprint lives at `/render.yaml` (workspace root).
 
 Expected Render settings:
 
@@ -40,3 +48,9 @@ Expected Render settings:
 - Publish Directory: `dist`
 
 This app is static by default, so no server adapter is required for MVP.
+
+## Working Rules
+
+- Root-level files should exist only if they help planning, content, or project continuity
+- Direct commits to `main` are allowed unless explicitly told otherwise
+- Preserve anything useful, but remove stale or weak direction when it actively hurts the project
