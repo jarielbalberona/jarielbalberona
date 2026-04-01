@@ -34,6 +34,9 @@ const { Content } = await render(entry);
         <span>•</span>
         <span>{entry.data.stack.join(' / ')}</span>
       </div>
+      <ul class="mt-6 space-y-3 pl-5 text-sm leading-7 text-ink">
+        {entry.data.highlights.map((item) => <li>{item}</li>)}
+      </ul>
       <div class="mt-6 flex flex-wrap gap-3">
         <a href="/work" class="rounded-full border border-line px-5 py-3 text-sm font-semibold text-ink no-underline hover:bg-ink hover:text-paper-panel">Back to work</a>
         {entry.data.liveUrl && (

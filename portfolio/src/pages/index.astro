@@ -1,5 +1,10 @@
 ---
+import { getCollection } from 'astro:content';
 import SiteLayout from '../layouts/SiteLayout.astro';
+
+const [featuredWork] = (await getCollection('work'))
+  .sort((a, b) => a.data.order - b.data.order)
+  .filter((entry) => entry.data.featured);
 
 const featuredStrengths = [
   {
@@ -23,8 +28,8 @@ const featuredStrengths = [
 const signalCards = [
   {
     kicker: 'Current work',
-    title: 'Dumadine',
-    body: 'Building a real cafe operating system in early beta, shaped alongside an active local business. The work spans customer ordering, merchant operations, kitchen flow, inventory, and production delivery.',
+    title: featuredWork.data.title,
+    body: featuredWork.data.summary,
   },
   {
     kicker: 'Engineering stance',
@@ -108,13 +113,13 @@ const signalCards = [
         pad the page with toy projects and recycled screenshots.
       </p>
       <ul class="mt-4 space-y-3 pl-5 text-sm leading-7 text-ink">
-        <li>Multi-tenant product design under real business constraints</li>
-        <li>Frontend, backend, real-time workflows, and deployment concerns in one system</li>
-        <li>Built for actual operational use, not demo-day optics</li>
+        {featuredWork.data.highlights.map((item) => <li>{item}</li>)}
       </ul>
       <div class="mt-6 flex flex-wrap gap-3">
-        <a href="/work" class="rounded-full border border-line px-5 py-3 text-sm font-semibold text-ink no-underline hover:bg-ink hover:text-paper-panel">Read the work page</a>
-        <a href="https://dumadine.com/" class="rounded-full border border-line px-5 py-3 text-sm font-semibold text-ink no-underline hover:bg-ink hover:text-paper-panel">Visit Dumadine</a>
+        <a href={`/work/${featuredWork.id.replace(/\.md$/, '')}`} class="rounded-full border border-line px-5 py-3 text-sm font-semibold text-ink no-underline hover:bg-ink hover:text-paper-panel">Read project details</a>
+        {featuredWork.data.liveUrl && (
+          <a href={featuredWork.data.liveUrl} class="rounded-full border border-line px-5 py-3 text-sm font-semibold text-ink no-underline hover:bg-ink hover:text-paper-panel">Visit live site</a>
+        )}
       </div>
     </article>
 
