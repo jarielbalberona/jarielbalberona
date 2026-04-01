@@ -1,6 +1,6 @@
 ---
 title: DataGPT AI
-summary: Product engineering work centered on reliability, recovery flows, orchestration UI, and analytics UX for systems that need to stay understandable under load.
+summary: Product engineering focused on reliability, orchestration UI, and analytics UX for systems that must remain legible under load.
 status: Selected work
 timeframe: Product workflow work
 featured: true
@@ -11,23 +11,19 @@ stack:
   - Workflow UI
   - Analytics UX
 highlights:
-  - Focused on reliability and recovery flows instead of treating edge cases as a later cleanup task.
-  - Shaped orchestration and workflow UI so complex system behavior stayed understandable to operators.
-  - Treated analytics UX as a clarity problem, not just a dashboard volume problem.
+  - Elevated reliability and recovery flows to core product requirements.
+  - Designed orchestration UI to ensure complex system behavior remained clear to operators.
+  - Treated analytics UX as an information clarity problem rather than a dashboard density issue.
 ---
 
 ## What it is
 
-DataGPT AI is public proof for workflow-heavy product engineering where reliability and operator understanding matter as much as the visible interface.
-
-The work sits in the layer where systems become difficult: orchestration, failure handling, recovery, and analytics surfaces that need to explain what is happening.
+DataGPT AI demonstrates workflow-centric product engineering, focusing heavily on orchestration, failure handling, and recovery paths. The priority was ensuring operators understood system behavior under load.
 
 ## Why it matters
 
-Workflow products become brittle when failure states are treated as exceptions instead of part of the real product.
-
-This work matters because it treats reliability and recovery as core product concerns, not backend details the UI can ignore.
+Workflow tools break when failure states are treated as afterthoughts. This project integrated reliability and recovery flows directly into the core product experience rather than leaving them as isolated backend details.
 
 ## Technical shape
 
-The strongest signal here is the combination of workflow thinking and interface discipline: make complex behavior legible, make recovery paths usable, and keep the system understandable for the people operating it.
+The execution balances workflow engineering with interface discipline. The system makes complex states legible, exposes clear recovery paths, and prevents orchestration logic from becoming an operational black box.

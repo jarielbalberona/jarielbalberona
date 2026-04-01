@@ -1,6 +1,6 @@
 ---
 title: Dumadine
-summary: Multi-tenant cafe operating system in early beta, shaped around real operating workflows, real-time coordination, and the delivery issues that show up once software meets daily operations.
+summary: Multi-tenant cafe operating system built around live workflows, real-time coordination, and the friction points of physical operations.
 status: Featured project
 timeframe: Current work
 featured: true
@@ -17,36 +17,30 @@ stack:
   - Terraform
   - AWS
 highlights:
-  - Customer ordering, merchant dashboard, POS flow, kitchen display, menu management, inventory behavior, and delivery concerns live in one system.
-  - The product is shaped with real operating input instead of a made-up product brief.
-  - The engineering problem is keeping the system modular, observable, and reliable while the product is still learning from operations.
+  - Consolidates customer ordering, merchant dashboards, POS, kitchen displays, and inventory into one cohesive architecture.
+  - Shaped entirely by live operational constraints rather than theoretical product briefs.
+  - Built with strict modularity and observability to survive iterative changes in a production environment.
 ---
 
 ## What it is
 
-Dumadine is a multi-tenant cafe operating system in early beta. The public shape is broader than customer ordering because the operating problem is broader than customer ordering.
+Dumadine is a multi-tenant cafe operating system in early beta. The architecture covers the full operational footprint, extending far beyond basic customer ordering.
 
 The system spans:
-
-- QR customer ordering with real-time status updates
-- Merchant dashboard, POS, shifts, and cash-drawer workflows
+- QR ordering with real-time state synchronization
+- Merchant dashboard, POS, shift management, and cash-drawer workflows
 - Kitchen display system with live ticket updates
-- Menu structure for items, modifiers, variants, and templates
-- Inventory support for recipes, stock, suppliers, and sales-linked decrements
-- Loyalty support for points and stamps
+- Complex menu schemas (items, modifiers, variants, templates)
+- Inventory engine tracking recipes, stock limits, and sales-linked decrements
 
 ## Why it matters
 
-This is the kind of product that exposes whether the engineering can survive contact with operations.
-
-Ordering is easy to demo. The harder work is the middle layer: kitchen flow, stock behavior, cash handling, edge cases, observability, and the seams that start costing money when they are ignored.
+This domain exposes whether system design survives contact with physical operations. Demoing an order is trivial; the actual engineering challenge is orchestrating kitchen flow, stock behavior, cash handling, and the operational edge cases that cost money when ignored.
 
 ## Working model
 
-I am shaping the product in close contact with a local cafe environment in the Philippines. That matters because it keeps requirements grounded and removes a lot of fake-product thinking.
+The product is built alongside a live cafe environment in the Philippines. This forces the architecture to handle grounded, real-world constraints rather than theoretical startup requirements.
 
 ## Technical shape
 
-The current stack includes TypeScript, React, Node.js, Express, PostgreSQL, Drizzle, WebSockets, Docker, Terraform, and AWS-level deployment patterns.
-
-The stack is not the signal by itself. The useful part is the engineering shape around it: keeping boundaries clean enough to evolve the product, adding observability where it matters, and maintaining delivery quality while the system is still being refined through real-world use.
+The stack spans TypeScript, Node.js, React, PostgreSQL, WebSockets, Docker, Terraform, and AWS. The signal is not the tooling, but the execution: maintaining strict domain boundaries, embedding deep observability, and delivering reliable updates while the system adapts to live feedback.

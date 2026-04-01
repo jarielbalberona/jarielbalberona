@@ -1,6 +1,6 @@
 ---
 title: Privv
-summary: Product and frontend architecture work focused on maintainability, scalable state and data structure, token-driven UI systems, and codebase health.
+summary: Frontend architecture work establishing scalable state, clear data flow, and token-driven UI systems to maintain codebase health.
 status: Selected work
 timeframe: Product platform work
 featured: true
@@ -11,23 +11,19 @@ stack:
   - Design tokens
   - Frontend architecture
 highlights:
-  - Tightened frontend structure instead of layering more feature code onto weak foundations.
-  - Focused on scalable state and data architecture so growth would not turn routine work into churn.
-  - Used token-driven UI system thinking to keep consistency and codebase health from drifting apart.
+  - Hardened frontend structure to support rapid feature delivery without accumulating debt.
+  - Rebuilt state and data architectures to ensure product growth would not cause execution drag.
+  - Deployed a token-driven UI system to lock in consistency across the interface.
 ---
 
 ## What it is
 
-Privv represents frontend and product-system work where architecture quality matters more than surface polish.
-
-The useful problems were maintainability, scalable structure, and keeping the codebase healthy enough for product work to keep moving.
+Privv is a frontend and product-system build where architecture takes precedence over surface polish. The core objective was establishing a maintainable, scalable foundation that keeps the codebase healthy as new features land.
 
 ## Why it matters
 
-A lot of frontend systems degrade because teams keep shipping features without improving the structure underneath them.
-
-This work matters because it focuses on the parts that decide whether a product can keep evolving: state shape, data flow, UI consistency, and the cost of change.
+Frontend codebases rapidly degrade when delivery outpaces structural improvement. This work prioritized the constraints that dictate long-term velocity: state shape, data flow, interface consistency, and controlling the cost of change.
 
 ## Technical shape
 
-The strongest public proof here is not a stack list. It is the engineering stance: build a frontend system with enough structure that teams can move faster without creating new drag every sprint.
+The technical output is a frontend system structured to allow continuous product development without accumulating crippling technical debt sprint over sprint.

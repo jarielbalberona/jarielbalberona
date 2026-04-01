@@ -15,7 +15,7 @@ const phases = [
   {
     kicker: '3. Build',
     title: 'Prefer structure that survives',
-    body: 'I favor maintainable boundaries, clear ownership, and delivery patterns that can keep moving without turning the codebase into a negotiation.',
+    body: 'I favor maintainable boundaries, clear ownership, and delivery patterns that prevent the codebase from turning into a daily struggle.',
   },
   {
     kicker: '4. Review',
@@ -48,55 +48,53 @@ const engineerOwns = [
   footerLeft="Planning, implementation, review"
   footerRight="AI is useful. Judgment still matters more."
 >
-  <section class="mb-9 border border-line bg-paper-panel/95 p-8 shadow-[0_18px_48px_rgba(31,40,43,0.08)]">
-    <div class="mb-4 inline-flex rounded-full bg-moss px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-accent-strong">
-      Workflow
-    </div>
-    <h1 class="font-display text-5xl leading-[0.98] tracking-[-0.04em] text-ink sm:text-7xl">
+  <section class="mb-20">
+    <p class="mb-5 text-xs font-mono uppercase tracking-widest text-ink-soft">Workflow</p>
+    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-ink leading-tight">
       Use AI where it helps. Keep engineering ownership.
     </h1>
-    <p class="mt-5 max-w-3xl text-lg leading-8 text-ink-soft">
+    <p class="mt-6 max-w-2xl text-lg leading-relaxed text-ink-soft">
       I use AI for planning, synthesis, review support, and implementation acceleration. I do not use it as a
       substitute for architecture, product reasoning, review quality, or production ownership.
     </p>
   </section>
 
-  <section class="mb-9 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+  <section class="mb-20 grid gap-8 md:grid-cols-2 xl:grid-cols-4">
     {
       phases.map((phase) => (
-        <article class="border border-line bg-paper-panel/90 p-5 shadow-[0_18px_48px_rgba(31,40,43,0.08)]">
-          <p class="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-accent">{phase.kicker}</p>
-          <h2 class="font-display text-2xl leading-tight text-ink">{phase.title}</h2>
-          <p class="mt-3 text-sm leading-7 text-ink-soft">{phase.body}</p>
+        <article class="border-t border-line pt-5">
+          <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">{phase.kicker}</p>
+          <h2 class="text-xl font-semibold tracking-tight text-ink">{phase.title}</h2>
+          <p class="mt-3 text-sm leading-relaxed text-ink-soft">{phase.body}</p>
         </article>
       ))
     }
   </section>
 
-  <section class="mb-9 grid gap-5 md:grid-cols-2">
-    <article class="border border-line bg-paper-panel/90 p-6 shadow-[0_18px_48px_rgba(31,40,43,0.08)]">
-      <p class="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-accent">Where AI helps</p>
-      <h2 class="font-display text-4xl leading-tight text-ink">Acceleration, not abdication</h2>
-      <ul class="mt-4 space-y-3 pl-5 text-sm leading-7 text-ink">
+  <section class="mb-24 grid gap-12 md:grid-cols-2">
+    <article class="border-t border-line pt-8">
+      <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">Where AI helps</p>
+      <h2 class="text-2xl font-semibold tracking-tight text-ink">Acceleration, not abdication</h2>
+      <ul class="mt-5 space-y-3 pl-5 text-sm leading-relaxed text-ink list-disc marker:text-line">
         {aiHelps.map((item) => <li>{item}</li>)}
       </ul>
     </article>
-    <article class="border border-line bg-paper-panel/90 p-6 shadow-[0_18px_48px_rgba(31,40,43,0.08)]">
-      <p class="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-accent">What stays with me</p>
-      <h2 class="font-display text-4xl leading-tight text-ink">Engineer-owned responsibilities</h2>
-      <ul class="mt-4 space-y-3 pl-5 text-sm leading-7 text-ink">
+    <article class="border-t border-line pt-8">
+      <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">What stays with me</p>
+      <h2 class="text-2xl font-semibold tracking-tight text-ink">Engineer-owned responsibilities</h2>
+      <ul class="mt-5 space-y-3 pl-5 text-sm leading-relaxed text-ink list-disc marker:text-line">
         {engineerOwns.map((item) => <li>{item}</li>)}
       </ul>
     </article>
   </section>
 
-  <section class="border border-line bg-paper-panel/90 p-6 shadow-[0_18px_48px_rgba(31,40,43,0.08)]">
-    <p class="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-accent">Engineering standard</p>
-    <h2 class="font-display text-4xl leading-tight text-ink">Most teams do not need more tooling. They need cleaner structure.</h2>
-    <p class="mt-4 max-w-3xl text-sm leading-7 text-ink-soft">
-      Most product problems do not come from missing frameworks. They come from weak boundaries, unclear ownership,
-      fragile delivery, and performance or reliability work that keeps getting postponed. Good engineering fixes those
-      conditions before they become the roadmap.
+  <section class="border-t border-line pt-10">
+    <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">Engineering standard</p>
+    <h2 class="text-2xl font-semibold tracking-tight text-ink">Most teams do not need more tooling. They need cleaner structure.</h2>
+    <p class="mt-5 max-w-2xl text-sm leading-relaxed text-ink-soft">
+      Product problems rarely stem from missing frameworks. They come from weak boundaries, unclear ownership,
+      fragile delivery, and performance or reliability work that keeps getting postponed. Good engineering fixes these
+      conditions before they consume the roadmap.
     </p>
   </section>
 </SiteLayout>

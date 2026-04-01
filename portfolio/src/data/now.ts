@@ -1,6 +1,6 @@
 export const nowMeta = {
   updatedLabel: 'Updated April 2026',
-  intro: 'This page is the current state of the work. If it goes stale, it should be fixed or removed.',
+  intro: 'This page tracks active technical work and current priorities.',
 };
 
 export const currentFocus = [
@@ -8,47 +8,47 @@ export const currentFocus = [
     kicker: 'Primary focus',
     title: 'Dumadine',
     body:
-      'I am building Dumadine as a cafe operating system that covers ordering, merchant operations, kitchen flow, inventory, and the operational seams that get expensive when they are ignored.',
+      'Building Dumadine as a full-surface cafe operating system: ordering, merchant workflows, kitchen orchestration, inventory, and the operational edge cases that break fragile software.',
   },
   {
-    kicker: 'Public surface',
-    title: 'Tightening jarielbalberona.com',
+    kicker: 'Technical baseline',
+    title: 'Engineering signal',
     body:
-      'The old public site undersold the work and drifted into generic portfolio territory. The rebuild stays narrow on purpose: current work, selected proof, workflow, and direct contact.',
+      'Establishing a cleaner baseline for public engineering material. No startup hype, no padding—just the actual architecture, the operational tradeoffs, and the delivery structure.',
   },
   {
     kicker: 'Current engineering interest',
-    title: 'System health under growth',
+    title: 'System resilience under growth',
     body:
-      'I care about boundaries, delivery flow, reliability, and maintainability because those are the things that decide whether a product can keep growing without turning brittle.',
+      'Focusing on strict boundaries, delivery flow, and maintainability. These factors dictate whether a product scales smoothly or degrades into a daily struggle.',
   },
 ];
 
 export const rightNow = [
-  'Shaping product decisions against live operational workflows instead of made-up requirements',
-  'Tightening architecture, observability, and delivery structure so the platform can keep evolving cleanly',
-  'Using AI for planning, synthesis, and implementation support without handing over judgment',
-  'Keeping the public material aligned with current work instead of a stale résumé version of me',
+  'Shaping product architecture against live operational workflows instead of theoretical requirements',
+  'Tightening observability and delivery pipelines so the platform evolves safely under load',
+  'Using AI for planning and implementation velocity without outsourcing architectural judgment',
+  'Documenting engineering realities and operational constraints rather than polishing a static portfolio',
 ];
 
 export const notOptimizingFor = [
-  'Publishing content on a schedule I cannot sustain',
-  'Turning the site into a lifestyle page with some engineering attached',
-  'Using AI language as a substitute for technical depth',
-  'Padding the work section with weak or stale projects',
+  'Publishing content on a forced, unsustainable schedule',
+  'Turning the site into a personal brand or lifestyle page',
+  'Using AI terminology as a substitute for technical depth',
+  'Padding the project history with deprecated or trivial work',
 ];
 
 export const priorities = [
   {
-    label: 'Operational product fit',
-    body: 'Keep the product grounded in actual cafe workflows instead of demo-friendly assumptions.',
+    label: 'Operational reality',
+    body: 'Keeping the product grounded in actual physical workflows instead of demo-friendly assumptions.',
   },
   {
-    label: 'Scalable system shape',
-    body: 'Keep boundaries clear so the platform can grow without letting every feature leak into everything else.',
+    label: 'Scalable architecture',
+    body: 'Enforcing clear system boundaries so new features do not leak into existing domains.',
   },
   {
-    label: 'Public signal',
-    body: 'Make the site and repo reflect real engineering work instead of stale or generic public surfaces.',
+    label: 'Technical proof',
+    body: 'Surfacing concrete architecture decisions and delivery patterns rather than inflating a project list.',
   },
 ];

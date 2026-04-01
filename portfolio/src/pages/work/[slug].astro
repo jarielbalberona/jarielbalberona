@@ -22,32 +22,30 @@ const { Content } = await render(entry);
   footerLeft="Selected work only"
   footerRight="Public proof with real constraints"
 >
-  <article class="space-y-8">
-    <section class="border border-line bg-paper-panel/95 p-8 shadow-[0_18px_48px_rgba(31,40,43,0.08)]">
-      <div class="mb-4 inline-flex rounded-full bg-moss px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-accent-strong">
-        {entry.data.status}
-      </div>
-      <h1 class="font-display text-5xl leading-[0.98] tracking-[-0.04em] text-ink sm:text-7xl">{entry.data.title}</h1>
-      <p class="mt-5 max-w-3xl text-lg leading-8 text-ink-soft">{entry.data.summary}</p>
-      <div class="mt-5 flex flex-wrap gap-2 text-xs font-medium uppercase tracking-[0.12em] text-ink-soft">
+  <article>
+    <section class="mb-16">
+      <p class="mb-5 text-xs font-mono uppercase tracking-widest text-ink-soft">{entry.data.status}</p>
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-ink leading-tight">{entry.data.title}</h1>
+      <p class="mt-6 max-w-2xl text-lg leading-relaxed text-ink-soft">{entry.data.summary}</p>
+      <div class="mt-6 flex flex-wrap gap-3 text-xs font-mono uppercase tracking-widest text-ink-soft">
         <span>{entry.data.timeframe}</span>
         <span>•</span>
         <span>{entry.data.stack.join(' / ')}</span>
       </div>
-      <ul class="mt-6 space-y-3 pl-5 text-sm leading-7 text-ink">
+      <ul class="mt-8 space-y-3 pl-5 text-sm leading-relaxed text-ink list-disc marker:text-line max-w-2xl">
         {entry.data.highlights.map((item) => <li>{item}</li>)}
       </ul>
-      <div class="mt-6 flex flex-wrap gap-3">
-        <a href="/work" class="rounded-full border border-line px-5 py-3 text-sm font-semibold text-ink no-underline hover:bg-ink hover:text-paper-panel">Back to work</a>
+      <div class="mt-10 flex flex-wrap gap-4">
+        <a href="/work" class="inline-flex border border-line px-5 py-2.5 text-sm font-medium text-ink no-underline hover:border-ink hover:text-ink transition-colors">Back to work</a>
         {entry.data.liveUrl && (
-          <a href={entry.data.liveUrl} class="rounded-full border border-line px-5 py-3 text-sm font-semibold text-ink no-underline hover:bg-ink hover:text-paper-panel">
+          <a href={entry.data.liveUrl} class="inline-flex border border-line px-5 py-2.5 text-sm font-medium text-ink no-underline hover:border-ink hover:text-ink transition-colors">
             Visit live site
           </a>
         )}
       </div>
     </section>
 
-    <section class="border border-line bg-paper-panel/90 p-8 text-ink shadow-[0_18px_48px_rgba(31,40,43,0.08)] [&_h2]:mt-8 [&_h2]:font-display [&_h2]:text-4xl [&_h2]:leading-tight [&_h2]:text-ink [&_h2:first-child]:mt-0 [&_p]:mt-4 [&_p]:max-w-3xl [&_p]:text-sm [&_p]:leading-7 [&_p]:text-ink-soft [&_ul]:mt-4 [&_ul]:space-y-3 [&_ul]:pl-5 [&_ul]:text-sm [&_ul]:leading-7 [&_ul]:text-ink">
+    <section class="border-t border-line pt-10 text-ink [&_h2]:mt-12 [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:tracking-tight [&_h2]:text-ink [&_h2:first-child]:mt-0 [&_p]:mt-5 [&_p]:max-w-2xl [&_p]:text-base [&_p]:leading-relaxed [&_p]:text-ink-soft [&_ul]:mt-5 [&_ul]:space-y-3 [&_ul]:pl-5 [&_ul]:text-base [&_ul]:leading-relaxed [&_ul]:text-ink-soft [&_ul]:list-disc [&_ul]:marker:text-line">
       <Content />
     </section>
   </article>

@@ -10,54 +10,52 @@ import { currentFocus, notOptimizingFor, nowMeta, priorities, rightNow } from '.
   footerLeft="Current work only"
   footerRight="If this page becomes stale, it needs updating or cutting"
 >
-  <section class="mb-9 border border-line bg-paper-panel/95 p-8 shadow-[0_18px_48px_rgba(31,40,43,0.08)]">
-    <div class="mb-4 inline-flex rounded-full bg-moss px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-accent-strong">
-      Now
-    </div>
-    <h1 class="font-display text-5xl leading-[0.98] tracking-[-0.04em] text-ink sm:text-7xl">
+  <section class="mb-20">
+    <p class="mb-5 text-xs font-mono uppercase tracking-widest text-ink-soft">Now</p>
+    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-ink leading-tight">
       What I am actively building and tightening.
     </h1>
-    <p class="mt-5 max-w-3xl text-lg leading-8 text-ink-soft">{nowMeta.intro}</p>
-    <p class="mt-4 text-sm text-ink-soft">{nowMeta.updatedLabel}</p>
+    <p class="mt-6 max-w-2xl text-lg leading-relaxed text-ink-soft">{nowMeta.intro}</p>
+    <p class="mt-4 text-sm font-mono text-ink-soft">{nowMeta.updatedLabel}</p>
   </section>
 
-  <section class="mb-9 grid gap-4 md:grid-cols-3">
+  <section class="mb-20 grid gap-8 md:grid-cols-3">
     {
       currentFocus.map((item) => (
-        <article class="border border-line bg-paper-panel/90 p-5 shadow-[0_18px_48px_rgba(31,40,43,0.08)]">
-          <p class="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-accent">{item.kicker}</p>
-          <h2 class="font-display text-2xl leading-tight text-ink">{item.title}</h2>
-          <p class="mt-3 text-sm leading-7 text-ink-soft">{item.body}</p>
+        <article class="border-t border-line pt-5">
+          <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">{item.kicker}</p>
+          <h2 class="text-xl font-semibold tracking-tight text-ink">{item.title}</h2>
+          <p class="mt-3 text-sm leading-relaxed text-ink-soft">{item.body}</p>
         </article>
       ))
     }
   </section>
 
-  <section class="mb-9 grid gap-5 md:grid-cols-2">
-    <article class="border border-line bg-paper-panel/90 p-6 shadow-[0_18px_48px_rgba(31,40,43,0.08)]">
-      <p class="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-accent">Right now</p>
-      <h2 class="font-display text-4xl leading-tight text-ink">What I am spending time on</h2>
-      <ul class="mt-4 space-y-3 pl-5 text-sm leading-7 text-ink">
+  <section class="mb-24 grid gap-12 md:grid-cols-2">
+    <article class="border-t border-line pt-8">
+      <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">Right now</p>
+      <h2 class="text-2xl font-semibold tracking-tight text-ink">What I am spending time on</h2>
+      <ul class="mt-5 space-y-3 pl-5 text-sm leading-relaxed text-ink list-disc marker:text-line">
         {rightNow.map((item) => <li>{item}</li>)}
       </ul>
     </article>
-    <article class="border border-line bg-paper-panel/90 p-6 shadow-[0_18px_48px_rgba(31,40,43,0.08)]">
-      <p class="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-accent">Intentionally not doing</p>
-      <h2 class="font-display text-4xl leading-tight text-ink">What I am not spending energy on</h2>
-      <ul class="mt-4 space-y-3 pl-5 text-sm leading-7 text-ink">
+    <article class="border-t border-line pt-8">
+      <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">Intentionally not doing</p>
+      <h2 class="text-2xl font-semibold tracking-tight text-ink">What I am not spending energy on</h2>
+      <ul class="mt-5 space-y-3 pl-5 text-sm leading-relaxed text-ink list-disc marker:text-line">
         {notOptimizingFor.map((item) => <li>{item}</li>)}
       </ul>
     </article>
   </section>
 
-  <section class="border border-line bg-paper-panel/90 p-6 shadow-[0_18px_48px_rgba(31,40,43,0.08)]">
-    <p class="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-accent">Immediate priorities</p>
-    <h2 class="font-display text-4xl leading-tight text-ink">Current emphasis</h2>
-    <ul class="mt-5 divide-y divide-line text-sm leading-7 text-ink">
+  <section class="border-t border-line pt-10">
+    <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">Immediate priorities</p>
+    <h2 class="text-2xl font-semibold tracking-tight text-ink">Current emphasis</h2>
+    <ul class="mt-8 divide-y divide-line text-sm leading-relaxed text-ink">
       {
         priorities.map((item) => (
-          <li class="py-3">
-            <strong>{item.label}:</strong> {item.body}
+          <li class="py-4">
+            <strong class="font-medium text-ink">{item.label}:</strong> <span class="text-ink-soft">{item.body}</span>
           </li>
         ))
       }
