@@ -11,18 +11,18 @@ The root workspace rules still apply. This file narrows them for the public site
 This app should stay:
 
 - small
-- static
 - maintainable
 - content-led
 - free of generic portfolio patterns
 
 ## Implementation Rules
 
-- Prefer plain static HTML and shared CSS unless a stronger implementation need appears.
-- Do not add JavaScript unless it solves a real problem.
-- Do not introduce framework tooling just to appear modern.
-- Keep pages readable as standalone documents.
-- Reuse shared structure where practical, but do not build abstraction for its own sake.
+- The approved stack is Astro, TypeScript, Tailwind CSS v4, and Astro content collections.
+- Render Static Site is the deployment target.
+- Do not introduce competing stack ambiguity.
+- Do not add client-side JavaScript unless it solves a real problem.
+- Use Astro pages, layouts, and content collections to keep the site structured and maintainable.
+- Use abstraction where it removes duplication cleanly. Do not build component systems for vanity.
 
 ## Design Rules
 
@@ -39,6 +39,7 @@ This app should stay:
 - Do not add placeholder testimonials, fake metrics, or filler project cards.
 - The `Work` page should favor depth over quantity.
 - The `Workflow` page should explain engineering judgment, not tool fandom.
+- Keep the implementation authority in `/portfolio`, not in root-level docs or stray static files.
 
 ## Page Rules
 

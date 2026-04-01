@@ -8,7 +8,7 @@ This is not a generic portfolio project. The site is intended to present a senio
 
 - [`AGENTS.md`](/Volumes/Files/softwareengineering/my-projects/jarielbalberona/AGENTS.md): workspace operating manual
 - [`docs/`](/Volumes/Files/softwareengineering/my-projects/jarielbalberona/docs): lean planning records, decisions, and roadmap
-- [`portfolio/`](/Volumes/Files/softwareengineering/my-projects/jarielbalberona/portfolio): static public site app
+- [`portfolio/`](/Volumes/Files/softwareengineering/my-projects/jarielbalberona/portfolio): canonical public site app
 
 ## Current Direction
 
@@ -24,15 +24,24 @@ Notes/blog is intentionally deferred until there is a realistic publishing caden
 
 ## Technical Stance
 
-The current implementation uses a small static site in `portfolio/`.
+`/portfolio` is the public-site implementation authority.
 
-Reason:
+Official stack for `/portfolio`:
 
-- the workspace had no usable site app
-- there is no local Node or package-manager toolchain installed
-- the project benefits more from shipping a clean, maintainable foundation than from introducing framework overhead
+- Astro
+- TypeScript
+- Tailwind CSS v4
+- Astro content collections
+- Render Static Site deployment
 
-This can move to Astro later if there is a good reason. It should not move just to look modern.
+Explicit exclusions for MVP:
+
+- no `shadcn`
+- no CMS
+- no database
+- no unnecessary client-heavy architecture
+
+The previous plain-static stopgap is no longer the source of truth.
 
 ## Working Rules
 

@@ -3,7 +3,7 @@
 ## MVP
 
 - establish workspace documentation and project rules
-- ship a static site foundation in `portfolio/`
+- ship the Astro-based site foundation in `portfolio/`
 - publish `Home`, `Now`, `Work`, `Workflow`, and `Contact`
 - align content around production systems, modernization, current work, and disciplined AI workflow
 
@@ -16,6 +16,5 @@
 
 ## Later
 
-- migrate to Astro only if content scale or layout reuse justifies it
 - add notes or writing as a maintained public surface
 - add richer project artifacts if there is material worth publishing

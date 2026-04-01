@@ -1,17 +1,30 @@
 # portfolio
 
-Static public site app for `jarielbalberona.com`.
+Canonical public site app for `jarielbalberona.com`.
 
-## Structure
+## Source Of Truth Stack
 
-- `index.html`: Home
-- `now/`: current work and priorities
-- `work/`: selected project proof
-- `workflow/`: engineering approach and AI-assisted workflow
-- `contact/`: contact and fit
-- `assets/styles.css`: shared styling
+- Astro
+- TypeScript
+- Tailwind CSS v4
+- Astro content collections
+- Render Static Site deployment
 
-## Notes
+## MVP Rules
 
-- This is intentionally static for the MVP foundation.
-- If a future migration to Astro happens, it should happen for a real reason such as content scale or reusable layout pressure.
+- no `shadcn`
+- no CMS
+- no database
+- no unnecessary client-heavy architecture
+- no generic portfolio filler
+
+## Purpose
+
+This app exists to present:
+
+- production software work
+- modernization capability
+- current real work
+- selected proof
+- pragmatic engineering workflow
+- disciplined AI-assisted engineering workflow
