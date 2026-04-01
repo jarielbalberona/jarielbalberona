@@ -3,13 +3,12 @@ import { getCollection } from 'astro:content';
 import SiteLayout from '../../layouts/SiteLayout.astro';
 
 const entries = (await getCollection('work'))
-  .sort((a, b) => a.data.order - b.data.order)
-  .filter((entry) => entry.data.featured);
+  .sort((a, b) => a.data.order - b.data.order);
 ---
 
 <SiteLayout
   title="Work | Jariel Balberona"
-  description="Selected public work from Jariel Balberona, focused on real production systems and practical engineering scope."
+  description="Selected product and platform work from Jariel Balberona, focused on maintainability, scalability, reliability, and practical engineering scope."
   activeNav="work"
   footerLeft="Selected work only"
   footerRight="No filler project grid"
@@ -56,11 +55,11 @@ const entries = (await getCollection('work'))
   </section>
 
   <section class="mt-9 border border-line bg-paper-panel/90 p-6 shadow-[0_18px_48px_rgba(31,40,43,0.08)]">
-    <p class="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-accent">Why only one project right now</p>
-    <h2 class="font-display text-4xl leading-tight text-ink">Depth is more useful than inventory.</h2>
+    <p class="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-accent">Why this stays curated</p>
+    <h2 class="font-display text-4xl leading-tight text-ink">Signal matters more than volume.</h2>
     <p class="mt-4 max-w-3xl text-sm leading-7 text-ink-soft">
-      The work page starts with one strong public anchor because that is more honest than padding it with weak
-      side-project summaries. A second entry only belongs here if it carries the same weight.
+      This page is for work that says something useful about architecture, delivery, and codebase health. If an entry
+      does not add real proof, it does not belong here.
     </p>
   </section>
 </SiteLayout>

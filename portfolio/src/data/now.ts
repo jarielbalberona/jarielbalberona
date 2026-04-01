@@ -1,7 +1,7 @@
 export const nowMeta = {
   updatedLabel: 'Updated April 2026',
   intro:
-    'This page keeps the public story current. If it goes stale, it should be updated or cut.',
+    'This page exists to keep the public story current. If it stops reflecting the work, it should be updated or removed.',
 };
 
 export const currentFocus = [
@@ -9,7 +9,7 @@ export const currentFocus = [
     kicker: 'Primary focus',
     title: 'Dumadine',
     body:
-      'I am building Dumadine as a real operating system for cafes: ordering, merchant operations, kitchen flow, inventory, and the operational seams that usually get ignored until they get expensive.',
+      'I am building Dumadine as a real operating system for cafes: ordering, merchant operations, kitchen flow, inventory, and the operational seams that usually get expensive when teams ignore them.',
   },
   {
     kicker: 'Public surface',
@@ -19,16 +19,16 @@ export const currentFocus = [
   },
   {
     kicker: 'Current engineering interest',
-    title: 'Modernization that reduces operating drag',
+    title: 'System health under growth',
     body:
-      'I care more about system boundaries, delivery flow, and maintainability than surface cleanup. Teams accumulate drag quietly. Eventually that drag becomes the roadmap.',
+      'I care about boundaries, delivery flow, reliability, and maintainability because those are the things that decide whether a product can keep growing without slowing itself down.',
   },
 ];
 
 export const rightNow = [
   'Shaping product decisions against live operational workflows, not made-up requirements',
-  'Tightening architecture and delivery structure so the system can keep evolving cleanly',
-  'Using AI where it reduces planning, drafting, and implementation drag without outsourcing judgment',
+  'Tightening architecture, observability, and delivery structure so the platform can keep evolving cleanly',
+  'Using AI where it reduces planning, drafting, and implementation drag without handing over judgment',
   'Keeping the public material aligned with current work instead of a stale résumé version of myself',
 ];
 
@@ -45,7 +45,7 @@ export const priorities = [
     body: 'Keep the product grounded in actual cafe workflows instead of demo-friendly assumptions.',
   },
   {
-    label: 'System clarity',
+    label: 'Scalable system shape',
     body: 'Improve boundaries so the platform can grow without letting every feature leak into everything else.',
   },
   {

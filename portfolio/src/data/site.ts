@@ -1,9 +1,9 @@
 export const siteMeta = {
   name: 'Jariel Balberona',
   title: 'Jariel Balberona',
-  shortTitle: 'Production software, modernization, delivery',
+  shortTitle: 'Product engineering, architecture, delivery',
   description:
-    'Jariel Balberona builds and modernizes production software across product, architecture, and delivery.',
+    'Jariel Balberona builds production systems across frontend, backend, and infrastructure with a focus on maintainability, scalability, and reliable delivery.',
   url: 'https://jarielbalberona.com',
   ogImage: '/og-default.svg',
   themeColor: '#1f282b',

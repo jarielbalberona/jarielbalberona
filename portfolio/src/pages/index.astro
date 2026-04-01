@@ -8,20 +8,20 @@ const [featuredWork] = (await getCollection('work'))
 
 const featuredStrengths = [
   {
-    title: 'Modernization',
-    body: 'Untangling React and TypeScript codebases that have become slow, brittle, or expensive to change.',
+    title: 'Maintainable architecture',
+    body: 'Designing frontend and backend boundaries that stay understandable, testable, and changeable as the product grows.',
   },
   {
-    title: 'Product systems',
-    body: 'Designing structure that can support real product growth without turning every feature into a rewrite.',
+    title: 'Scalable frontend systems',
+    body: 'Building React and TypeScript systems with strong state, data, and UI structure instead of letting feature work turn into entropy.',
   },
   {
-    title: 'Backend and data flow',
-    body: 'Building practical APIs and data paths with Node.js and PostgreSQL-level operational discipline.',
+    title: 'Backend reliability',
+    body: 'Building APIs, data flows, and operational workflows with reliability, performance, and recovery in mind.',
   },
   {
-    title: 'Delivery',
-    body: 'Shipping across frontend, backend, and deployment concerns instead of stopping at component boundaries.',
+    title: 'End-to-end delivery',
+    body: 'Shipping across frontend, backend, infrastructure, and CI/CD so delivery quality does not stop at the component layer.',
   },
 ];
 
@@ -33,8 +33,8 @@ const signalCards = [
   },
   {
     kicker: 'Engineering stance',
-    title: 'Fix the drag, not just the surface',
-    body: 'The useful work is usually underneath: code structure, boundaries, delivery flow, and the operating cost of the decisions teams keep postponing.',
+    title: 'System health is product work',
+    body: 'Maintainability, reliability, and delivery structure are not cleanup tasks. They decide how fast a product can keep moving after the first release.',
   },
   {
     kicker: 'AI usage',
@@ -45,8 +45,8 @@ const signalCards = [
 ---
 
 <SiteLayout
-  title="Jariel Balberona | Production Software and Modernization"
-  description="Jariel Balberona builds and modernizes production software across product, architecture, and delivery."
+  title="Jariel Balberona | Product Engineering, Architecture, Delivery"
+  description="Jariel Balberona builds production systems across frontend, backend, and infrastructure with a focus on maintainability, scalability, reliability, and delivery."
   activeNav="home"
 >
   <section class="mb-9">
@@ -55,24 +55,24 @@ const signalCards = [
         Senior software engineer
       </div>
       <h1 class="max-w-[12ch] font-display text-5xl leading-[0.95] font-semibold tracking-[-0.04em] text-ink sm:text-7xl">
-        I build and modernize production software.
+        I build production systems that stay healthy as they grow.
       </h1>
       <p class="mt-5 max-w-3xl text-lg leading-8 text-ink-soft">
-        I work across product, architecture, and delivery to make messy systems easier to change and new products
-        easier to ship.
+        Senior fullstack and product engineer working across frontend, backend, and infrastructure. I focus on
+        maintainability, scalability, reliability, and predictable delivery.
       </p>
       <p class="mt-4 max-w-3xl text-base leading-8 text-ink">
-        Current focus: Dumadine, a multi-tenant cafe operating system, and the public engineering surface around it.
-        The through-line is the same in both: practical architecture, current work, and delivery without decorative
-        nonsense.
+        Current focus: Dumadine, a multi-tenant cafe operating system, and a tighter public engineering surface around
+        the actual work. The standard is the same in both: practical system design, operational clarity, and no fake
+        polish.
       </p>
       <div class="mt-8 flex flex-wrap gap-3">
         <a href="/work" class="rounded-full bg-accent-strong px-5 py-3 text-sm font-semibold text-paper-panel no-underline">See selected work</a>
         <a href="/workflow" class="rounded-full border border-line px-5 py-3 text-sm font-semibold text-ink no-underline hover:bg-ink hover:text-paper-panel">Read my workflow</a>
       </div>
       <p class="mt-5 text-sm text-ink-soft">
-        Strongest signal: React and TypeScript modernization, product systems, Node/PostgreSQL backends, and delivery
-        under real constraints.
+        Strongest signal: React and TypeScript systems, Node.js APIs, PostgreSQL-backed products, infrastructure-aware
+        delivery, and codebases built to keep moving.
       </p>
     </div>
   </section>
@@ -91,7 +91,7 @@ const signalCards = [
 
   <section class="mb-9 border border-line bg-paper-panel/90 p-6 shadow-[0_18px_48px_rgba(31,40,43,0.08)]">
     <p class="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-accent">Where I am strongest</p>
-    <h2 class="font-display text-4xl leading-tight text-ink">The useful layer is usually below the visual layer.</h2>
+    <h2 class="font-display text-4xl leading-tight text-ink">The hard part is keeping systems changeable under growth.</h2>
     <div class="mt-6 grid gap-5 md:grid-cols-2">
       {
         featuredStrengths.map((item) => (
@@ -107,10 +107,10 @@ const signalCards = [
   <section class="grid gap-5 md:grid-cols-2">
     <article class="border border-line bg-paper-panel/90 p-6 shadow-[0_18px_48px_rgba(31,40,43,0.08)]">
       <p class="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-accent">Selected proof</p>
-      <h2 class="font-display text-4xl leading-tight text-ink">One strong public project is better than six weak cards.</h2>
+      <h2 class="font-display text-4xl leading-tight text-ink">Selected work should survive technical scrutiny.</h2>
       <p class="mt-4 text-sm leading-7 text-ink-soft">
-        The public work section starts narrow on purpose. One credible system with real scope is more useful than a
-        grid of weak summaries.
+        The work section stays curated on purpose. Scope, constraints, architecture, and operational tradeoffs matter
+        more than an inflated project count.
       </p>
       <ul class="mt-4 space-y-3 pl-5 text-sm leading-7 text-ink">
         {featuredWork.data.highlights.map((item) => <li>{item}</li>)}
