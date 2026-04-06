@@ -5,6 +5,7 @@ status: Selected work
 timeframe: Cross-functional engineering work
 featured: true
 order: 4
+liveUrl: https://experience.digital/
 stack:
   - Next.js
   - React
