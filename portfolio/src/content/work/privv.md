@@ -1,6 +1,6 @@
 ---
-title: Privv
-summary: Frontend architecture work for a capital project platform, centered on scalable state, complex data views, and a UI system that could support sustained product growth.
+title: PRIVV
+summary: Frontend architecture work for a capital project platform with complex financial workflows, dense planning interfaces, and real scaling pressure.
 status: Selected work
 timeframe: Product platform work
 featured: true
@@ -12,21 +12,23 @@ stack:
   - Design tokens
   - Frontend architecture
 highlights:
-  - Hardened frontend structure for a platform supporting more than $4B in capital project workflows.
-  - Reworked state and data flow for budgets, schedules, and forecasting views with heavier interaction demands.
-  - Built a token-driven UI foundation to keep a growing product surface visually and structurally consistent.
+  - Improved frontend structure for a platform supporting more than $4B in capital project workflows.
+  - Reworked state and data flow across budgets, schedules, and forecasting views with high interaction complexity.
+  - Built a token-driven UI foundation that improved consistency, reuse, and long-term maintainability.
 ---
 
 ## What it is
 
-Privv is a capital project platform used to manage budgeting, scheduling, procurement, invoicing, and forecasting across large construction and infrastructure programs.
+PRIVV is a capital project platform for budgeting, scheduling, procurement, invoicing, and forecasting across large construction and infrastructure programs.
 
-My focus was frontend architecture and product-system build. The job was not just shipping screens. It was creating a structure that could support dense financial views, large tables, and AI-assisted forecasting flows without turning the UI into a slow, fragile tangle.
+My work focused on making the frontend hold up under growing product complexity. That meant building structure for dense financial views, large interactive tables, and forecasting workflows without letting the UI collapse into state and component sprawl.
 
 ## Why it matters
 
-Platforms handling major capital budgets cannot tolerate brittle UI state or sloppy interaction design. When enterprise feature scope expands faster than frontend structure improves, product velocity drops and confidence in the system drops with it. This work focused on state shape, predictable data flow, and interface consistency because those are the constraints that determine whether the product can keep scaling.
+In products like this, frontend quality directly affects delivery speed and system trust. Weak state structure and inconsistent UI patterns do not stay isolated. They spread, slow down development, and make already-complex workflows harder to use and maintain.
 
 ## Technical shape
 
-The technical output was a frontend system designed for continued product expansion without constant rework in core state and UI layers. That foundation mattered because the platform had to support demanding financial and planning workflows across university, healthcare, and municipal construction environments.
+The core work was strengthening the frontend foundation so the product could expand without repeated churn in its state and UI layers.
+
+That foundation had to support demanding planning and financial workflows across university, healthcare, and municipal construction environments, where complexity was already high and the tolerance for fragile software was low.

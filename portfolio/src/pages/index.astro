@@ -9,19 +9,19 @@ const [featuredWork] = (await getCollection('work'))
 const featuredStrengths = [
   {
     title: 'Maintainable architecture',
-    body: 'Designing system boundaries that stay understandable, testable, and changeable as features, teams, and operational load increase.',
+    body: 'Designing boundaries that stay understandable, testable, and changeable as the product grows.',
   },
   {
     title: 'Scalable frontend systems',
-    body: 'Building React and TypeScript applications with disciplined state, data, and UI structure so feature work does not turn into churn.',
+    body: 'Building React and TypeScript applications with disciplined structure across state, data flow, and UI so feature work does not decay into churn.',
   },
   {
     title: 'Backend reliability',
-    body: 'Building APIs, data flows, and operational workflows with reliability, failure recovery, and observability built in from the start.',
+    body: 'Building APIs and workflows with strong operational behavior, failure awareness, and recovery paths from the start.',
   },
   {
     title: 'End-to-end delivery',
-    body: 'Shipping across frontend, backend, infrastructure, and CI/CD so the system holds together beyond the component layer.',
+    body: 'Working across application code, infrastructure, CI/CD, and operational tooling so systems hold together beyond isolated feature work.',
   },
 ];
 
@@ -33,13 +33,13 @@ const signalCards = [
   },
   {
     kicker: 'Engineering stance',
-    title: 'System health drives product velocity',
-    body: 'Maintainability, reliability, and delivery discipline are not cleanup work. They determine how fast a product can keep shipping without degrading.',
+    title: 'System health drives delivery speed',
+    body: 'Most teams do not slow down because they lack ideas. They slow down because the system becomes harder to change.',
   },
   {
     kicker: 'AI usage',
-    title: 'Used as leverage',
-    body: 'I use AI for drafting, synthesis, review support, and refactoring acceleration. Architecture, tradeoffs, and production responsibility stay with me.',
+    title: 'Used to reduce drag, not replace ownership',
+    body: 'I use AI to accelerate exploration, drafting, refactoring, and review support. Architecture, tradeoffs, correctness, and production accountability stay with me.',
   },
 ];
 ---
@@ -50,22 +50,22 @@ const signalCards = [
   activeNav="home"
 >
   <section class="mb-20">
-    <p class="mb-5 text-xs font-mono uppercase tracking-widest text-ink-soft">Senior software engineer</p>
+    <p class="mb-5 text-xs font-mono uppercase tracking-widest text-ink-soft">Senior software engineer focused on scalable product systems</p>
     <h1 class="max-w-[14ch] text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-ink leading-tight">
-      I build production systems that keep working as complexity grows.
+      I build production software that stays workable as systems grow.
     </h1>
     <p class="mt-6 max-w-2xl text-lg leading-relaxed text-ink-soft">
-      I work across frontend, backend, data, and delivery systems with a bias toward clear architecture, reliable operation, and codebases that stay changeable over time.
+      I work across frontend, backend, data, and delivery with a focus on maintainability, reliability, and clear system structure. The goal is not just to ship features. It is to keep products moving without the codebase collapsing under its own weight.
     </p>
     <p class="mt-4 max-w-2xl text-base leading-relaxed text-ink">
-      Current focus is Dumadine, a multi-tenant hospitality system covering ordering, kitchen flow, inventory, and accounting workflows shaped against live operations instead of demo assumptions.
+      Current focus is Dumadine, a multi-tenant hospitality platform covering ordering, kitchen operations, inventory, and accounting workflows shaped around real operational use, not demo-friendly assumptions.
     </p>
     <div class="mt-8 flex flex-wrap gap-4">
       <a href="/work" class="inline-flex bg-ink px-5 py-2.5 text-sm font-medium text-paper no-underline hover:bg-ink-soft transition-colors">See selected work</a>
       <a href="/workflow" class="inline-flex border border-line px-5 py-2.5 text-sm font-medium text-ink no-underline hover:border-ink hover:text-ink transition-colors">Read my workflow</a>
     </div>
     <p class="mt-8 max-w-2xl text-sm leading-relaxed text-ink-soft">
-      Strongest signal: React and TypeScript applications, Node.js APIs, PostgreSQL-backed products, and delivery systems structured to keep moving under ongoing product pressure.
+      Strongest areas: React and TypeScript applications, Node.js APIs, PostgreSQL-backed systems, and delivery foundations that hold up under ongoing product pressure.
     </p>
   </section>
 
@@ -83,7 +83,7 @@ const signalCards = [
 
   <section class="mb-20 border-t border-line pt-10">
     <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">Where I am strongest</p>
-    <h2 class="max-w-2xl text-3xl font-semibold tracking-tight text-ink leading-tight">The hard part is not shipping once. It is keeping the system workable after the first push.</h2>
+    <h2 class="max-w-2xl text-3xl font-semibold tracking-tight text-ink leading-tight">Shipping once is easy. Keeping the system usable after that is the real work.</h2>
     <div class="mt-10 grid gap-8 md:grid-cols-2 md:gap-12">
       {
         featuredStrengths.map((item) => (
@@ -99,9 +99,9 @@ const signalCards = [
   <section class="grid gap-12 md:grid-cols-2">
     <article class="border-t border-line pt-8">
       <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">Selected proof</p>
-      <h2 class="text-2xl font-semibold tracking-tight text-ink">Selected work with enough shape to evaluate.</h2>
+      <h2 class="text-2xl font-semibold tracking-tight text-ink">A smaller set of work with enough substance to evaluate.</h2>
       <p class="mt-4 text-sm leading-relaxed text-ink-soft">
-        I would rather show a smaller set of work with clear scope, constraints, and technical decisions than a long list of thin project summaries.
+        I would rather show fewer projects with real constraints, technical decisions, and operational shape than a long list of shallow summaries.
       </p>
       <ul class="mt-5 space-y-3 pl-5 text-sm leading-relaxed text-ink list-disc marker:text-line">
         {featuredWork.data.highlights.map((item) => <li>{item}</li>)}
@@ -116,14 +116,14 @@ const signalCards = [
 
     <article class="border-t border-line pt-8">
       <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">What you will find here</p>
-      <h2 class="text-2xl font-semibold tracking-tight text-ink">Current work, selected proof, and engineering approach.</h2>
+      <h2 class="text-2xl font-semibold tracking-tight text-ink">Current work, selected projects, and how I approach engineering.</h2>
       <p class="mt-4 text-sm leading-relaxed text-ink-soft">
-        The point of this site is simple: show what I am building, how I think about systems, and where the engineering work has real operational shape.
+        This site is meant to show what I am building, how I think, and what kind of engineering work I do best.
       </p>
       <ul class="mt-6 divide-y divide-line text-sm leading-relaxed text-ink">
-        <li class="py-3"><strong class="font-medium text-ink">Now:</strong> what I am actively building and tightening</li>
-        <li class="py-3"><strong class="font-medium text-ink">Work:</strong> projects with enough detail to judge scope and execution</li>
-        <li class="py-3"><strong class="font-medium text-ink">Workflow:</strong> how I plan, build, review, and use AI as support rather than a substitute</li>
+        <li class="py-3"><strong class="font-medium text-ink">Now:</strong> what I am actively building and improving</li>
+        <li class="py-3"><strong class="font-medium text-ink">Work:</strong> selected projects with enough detail to judge scope and execution</li>
+        <li class="py-3"><strong class="font-medium text-ink">Workflow:</strong> how I structure delivery and use AI without giving up engineering ownership</li>
       </ul>
     </article>
   </section>

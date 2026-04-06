@@ -1,6 +1,6 @@
 ---
 title: Dumadine
-summary: Multi-tenant hospitality system unifying ordering, kitchen operations, inventory, and accounting around the realities of live venue workflows.
+summary: Multi-tenant hospitality system built for live venue operations across ordering, kitchen flow, inventory, and accounting.
 status: Featured project
 timeframe: Current work
 featured: true
@@ -15,30 +15,40 @@ stack:
   - WebSockets
   - AWS
 highlights:
-  - Consolidates browser-based POS, QR ordering, kitchen operations, inventory, and accounting workflows into one system.
-  - Supports different venue models across cafes, hotels, and workspaces without forking the core product shape.
-  - Built around modular domains, real-time state flow, and observability required for ongoing production changes.
+  - Unifies POS, QR ordering, kitchen operations, inventory, and accounting in one browser-based product.
+  - Supports different venue models across cafes, hotels, and workspaces without splitting the platform into separate forks.
+  - Built around modular domains, real-time workflows, and production observability needed for ongoing operational change.
 ---
 
 ## What it is
 
-Dumadine is a multi-tenant hospitality system built to replace the fragmented operating stack many venues still depend on. Instead of separate tools for POS, kitchen flow, stock tracking, accounting, and ordering, the goal is a single browser-based system that keeps those workflows connected.
+Dumadine is a multi-tenant hospitality system designed to replace the fragmented software stack many venues still rely on. Instead of stitching together separate tools for POS, kitchen coordination, stock tracking, accounting, and ordering, the goal is one system that keeps those workflows connected and operationally consistent.
 
-The system spans:
-- **POS and QR ordering:** Browser-based ordering and payment flows without locking the product to proprietary hardware.
-- **Dynamic venue modeling:** Shared core architecture that can shift between cafes, hotels, and workspace-style operations.
-- **Kitchen display system:** Real-time orchestration for live service instead of delayed back-office reporting.
-- **Inventory and costing:** Recipe-aware stock tracking with automated deductions tied to actual sales.
+The product spans:
+- **POS and QR ordering:** Browser-based ordering and payment flows without tying the system to proprietary hardware.
+- **Dynamic venue modeling:** A shared core architecture that can adapt across cafes, hotels, and workspace-style operations.
+- **Kitchen display system:** Real-time coordination built for live service, not delayed back-office visibility.
+- **Inventory and costing:** Recipe-aware stock tracking with deductions tied directly to sales activity.
 - **Accounting subledger:** Journal generation and cost tracking that connect operational activity to finance workflows.
 
 ## Why it matters
 
-Hospitality software breaks where operations get messy. Taking an order is the easy part. The real engineering work is handling service rushes, stock changes, kitchen timing, network instability, and downstream accounting without forcing staff into brittle manual workarounds.
+Hospitality systems do not usually fail on basic ordering. They fail when operations get messy.
 
-## Working model
+The real engineering problem is handling service rushes, stock movement, kitchen timing, unreliable connectivity, and downstream financial impact without pushing staff into brittle manual workarounds. That is where product quality stops being a UI problem and becomes a systems problem.
 
-The product is shaped against a live cafe environment in the Philippines. That forces the architecture to deal with service-hour pressure, inconsistent connectivity, device variability, and the mismatch between clean product flows and actual floor operations.
+## Operating context
+
+The product is shaped against a live cafe environment in the Philippines. That matters because it forces the system to deal with actual service-hour pressure, inconsistent connectivity, shared devices, and the gap between ideal product flows and how venues really operate.
+
+This is not a demo-shaped system. It is being pushed against operational reality.
 
 ## Technical shape
 
-The stack spans TypeScript, React, Node.js, PostgreSQL, WebSockets, and AWS. The harder part is keeping ordering, inventory, accounting, and venue-management concerns separated enough to evolve independently while still behaving like one product in production.
+The stack spans TypeScript, React, Node.js, PostgreSQL, WebSockets, and AWS. The harder problem is not the stack itself. It is preserving clear boundaries across ordering, inventory, accounting, and venue management while keeping the product operationally consistent in real time.
+
+That means designing for:
+- modular domain ownership instead of feature sprawl
+- real-time coordination without state chaos
+- changeability without cross-domain leakage
+- observability and failure handling that hold up in production
