@@ -9,19 +9,19 @@ const [featuredWork] = (await getCollection('work'))
 const featuredStrengths = [
   {
     title: 'Maintainable architecture',
-    body: 'Designing frontend and backend boundaries that stay understandable, testable, and changeable as the product grows.',
+    body: 'Designing system boundaries that stay understandable, testable, and changeable as features, teams, and operational load increase.',
   },
   {
     title: 'Scalable frontend systems',
-    body: 'Building React and TypeScript systems with strong state, data, and UI structure instead of letting feature work turn into entropy.',
+    body: 'Building React and TypeScript applications with disciplined state, data, and UI structure so feature work does not turn into churn.',
   },
   {
     title: 'Backend reliability',
-    body: 'Building APIs, data flows, and operational workflows with reliability, performance, and recovery in mind.',
+    body: 'Building APIs, data flows, and operational workflows with reliability, failure recovery, and observability built in from the start.',
   },
   {
     title: 'End-to-end delivery',
-    body: 'Shipping across frontend, backend, infrastructure, and CI/CD so delivery quality does not stop at the component layer.',
+    body: 'Shipping across frontend, backend, infrastructure, and CI/CD so the system holds together beyond the component layer.',
   },
 ];
 
@@ -33,13 +33,13 @@ const signalCards = [
   },
   {
     kicker: 'Engineering stance',
-    title: 'System health is product work',
-    body: 'Maintainability, reliability, and delivery structure are not cleanup tasks. They decide how fast a product can keep moving after the first release.',
+    title: 'System health drives product velocity',
+    body: 'Maintainability, reliability, and delivery discipline are not cleanup work. They determine how fast a product can keep shipping without degrading.',
   },
   {
     kicker: 'AI usage',
-    title: 'Leverage, not theater',
-    body: 'I use AI for planning, synthesis, review support, and refactoring acceleration. System design, tradeoffs, and production responsibility stay with me.',
+    title: 'Used as leverage',
+    body: 'I use AI for drafting, synthesis, review support, and refactoring acceleration. Architecture, tradeoffs, and production responsibility stay with me.',
   },
 ];
 ---
@@ -52,21 +52,20 @@ const signalCards = [
   <section class="mb-20">
     <p class="mb-5 text-xs font-mono uppercase tracking-widest text-ink-soft">Senior software engineer</p>
     <h1 class="max-w-[14ch] text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-ink leading-tight">
-      I build production systems that stay maintainable under growth.
+      I build production systems that keep working as complexity grows.
     </h1>
     <p class="mt-6 max-w-2xl text-lg leading-relaxed text-ink-soft">
-      Senior engineer with 10 years of experience spanning frontend, backend, and infrastructure. I build systems that perform reliably in production and remain maintainable as they scale.
+      I work across frontend, backend, data, and delivery systems with a bias toward clear architecture, reliable operation, and codebases that stay changeable over time.
     </p>
     <p class="mt-4 max-w-2xl text-base leading-relaxed text-ink">
-      Currently building Dumadine, a multi-tenant cafe operating system. The standard is consistent across my work: clear architecture, operational reality, and predictable delivery without the startup theater.
+      Current focus is Dumadine, a multi-tenant hospitality system covering ordering, kitchen flow, inventory, and accounting workflows shaped against live operations instead of demo assumptions.
     </p>
     <div class="mt-8 flex flex-wrap gap-4">
       <a href="/work" class="inline-flex bg-ink px-5 py-2.5 text-sm font-medium text-paper no-underline hover:bg-ink-soft transition-colors">See selected work</a>
       <a href="/workflow" class="inline-flex border border-line px-5 py-2.5 text-sm font-medium text-ink no-underline hover:border-ink hover:text-ink transition-colors">Read my workflow</a>
     </div>
     <p class="mt-8 max-w-2xl text-sm leading-relaxed text-ink-soft">
-      Strongest signal: React and TypeScript systems, Node.js APIs, PostgreSQL-backed products, infrastructure-aware
-      delivery, and codebases built to keep moving as they grow.
+      Strongest signal: React and TypeScript applications, Node.js APIs, PostgreSQL-backed products, and delivery systems structured to keep moving under ongoing product pressure.
     </p>
   </section>
 
@@ -84,7 +83,7 @@ const signalCards = [
 
   <section class="mb-20 border-t border-line pt-10">
     <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">Where I am strongest</p>
-    <h2 class="max-w-2xl text-3xl font-semibold tracking-tight text-ink leading-tight">The actual challenge is keeping systems changeable under growth.</h2>
+    <h2 class="max-w-2xl text-3xl font-semibold tracking-tight text-ink leading-tight">The hard part is not shipping once. It is keeping the system workable after the first push.</h2>
     <div class="mt-10 grid gap-8 md:grid-cols-2 md:gap-12">
       {
         featuredStrengths.map((item) => (
@@ -100,9 +99,9 @@ const signalCards = [
   <section class="grid gap-12 md:grid-cols-2">
     <article class="border-t border-line pt-8">
       <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">Selected proof</p>
-      <h2 class="text-2xl font-semibold tracking-tight text-ink">Selected work should survive technical scrutiny.</h2>
+      <h2 class="text-2xl font-semibold tracking-tight text-ink">Selected work with enough shape to evaluate.</h2>
       <p class="mt-4 text-sm leading-relaxed text-ink-soft">
-        This section stays curated deliberately. Scope, constraints, architecture, and operational tradeoffs matter more than an inflated project list.
+        I would rather show a smaller set of work with clear scope, constraints, and technical decisions than a long list of thin project summaries.
       </p>
       <ul class="mt-5 space-y-3 pl-5 text-sm leading-relaxed text-ink list-disc marker:text-line">
         {featuredWork.data.highlights.map((item) => <li>{item}</li>)}
@@ -116,16 +115,15 @@ const signalCards = [
     </article>
 
     <article class="border-t border-line pt-8">
-      <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">What belongs here</p>
-      <h2 class="text-2xl font-semibold tracking-tight text-ink">This site is a professional surface, not a brand exercise.</h2>
+      <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">What you will find here</p>
+      <h2 class="text-2xl font-semibold tracking-tight text-ink">Current work, selected proof, and engineering approach.</h2>
       <p class="mt-4 text-sm leading-relaxed text-ink-soft">
-        It is here to show current direction, project proof, and engineering judgment. It is not here to act like a
-        scrapbook, a funnel, or an AI mascot.
+        The point of this site is simple: show what I am building, how I think about systems, and where the engineering work has real operational shape.
       </p>
       <ul class="mt-6 divide-y divide-line text-sm leading-relaxed text-ink">
-        <li class="py-3"><strong class="font-medium text-ink">Current:</strong> what I am actively building and improving</li>
-        <li class="py-3"><strong class="font-medium text-ink">Work:</strong> public proof with scope, constraints, and technical shape</li>
-        <li class="py-3"><strong class="font-medium text-ink">Workflow:</strong> how I plan, build, review, and use AI without outsourcing judgment</li>
+        <li class="py-3"><strong class="font-medium text-ink">Now:</strong> what I am actively building and tightening</li>
+        <li class="py-3"><strong class="font-medium text-ink">Work:</strong> projects with enough detail to judge scope and execution</li>
+        <li class="py-3"><strong class="font-medium text-ink">Workflow:</strong> how I plan, build, review, and use AI as support rather than a substitute</li>
       </ul>
     </article>
   </section>

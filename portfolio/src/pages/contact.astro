@@ -3,17 +3,17 @@ import SiteLayout from '../layouts/SiteLayout.astro';
 import { siteMeta } from '../data/site';
 
 const goodFit = [
-  'React and TypeScript systems that need stronger structure, maintainability, or performance',
-  'Product and platform architecture that needs to scale without turning into churn',
-  'Shipping end-to-end features across frontend, backend, and infrastructure',
-  'Senior IC or hands-on product engineering roles where execution quality matters',
+  'React and TypeScript systems that need clearer structure, stronger state flow, or better performance',
+  'Product and platform work where architecture quality affects delivery speed',
+  'Hands-on engineering across frontend, backend, data, and shipping workflows',
+  'Senior IC or product engineering roles that need judgment, not just output volume',
 ];
 
 const badFit = [
-  'Generic “full-service digital solutions” positioning',
-  'Building content funnels masquerading as product work',
-  'Trying to impress with stack logos, vanity metrics, or trend language',
-  'Outsourcing architectural responsibility to AI and calling it leverage',
+  'Generic agency-style positioning with no technical depth',
+  'Work that treats software as marketing surface more than product system',
+  'Teams chasing trend language instead of fixing structural problems',
+  'Environments that want AI to replace engineering ownership',
 ];
 ---
 
@@ -27,11 +27,10 @@ const badFit = [
   <section class="mb-20">
     <p class="mb-5 text-xs font-mono uppercase tracking-widest text-ink-soft">Contact</p>
     <h1 class="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-ink leading-tight">
-      Reach out if the work fits.
+      Reach out if the problem is real and the work needs depth.
     </h1>
     <p class="mt-6 max-w-2xl text-lg leading-relaxed text-ink-soft">
-      Best fit: serious product and engineering work where architecture, maintainability, scalability, reliability,
-      and end-to-end delivery actually matter.
+      Best fit is product and engineering work where architecture, maintainability, delivery quality, and operational reliability materially affect the outcome.
     </p>
   </section>
 
@@ -41,28 +40,28 @@ const badFit = [
       <h2 class="text-base font-semibold tracking-tight text-ink">
         <a class="no-underline hover:text-ink-soft transition-colors" href={`mailto:${siteMeta.email}`}>{siteMeta.email}</a>
       </h2>
-      <p class="mt-3 text-sm leading-relaxed text-ink-soft">Best for direct conversations about work, consulting, or collaboration.</p>
+      <p class="mt-3 text-sm leading-relaxed text-ink-soft">Best for direct conversations about product, engineering, or consulting work.</p>
     </article>
     <article class="border-t border-line pt-5">
       <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">LinkedIn</p>
       <h2 class="text-base font-semibold tracking-tight text-ink">
         <a class="no-underline hover:text-ink-soft transition-colors" href={siteMeta.linkedin}>jarielbalberona</a>
       </h2>
-      <p class="mt-3 text-sm leading-relaxed text-ink-soft">Use this for broader professional context.</p>
+      <p class="mt-3 text-sm leading-relaxed text-ink-soft">Broader professional background and work history.</p>
     </article>
     <article class="border-t border-line pt-5">
       <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">GitHub</p>
       <h2 class="text-base font-semibold tracking-tight text-ink truncate">
         <a class="no-underline hover:text-ink-soft transition-colors" href={siteMeta.github} title="github.com/jarielbalberona">github.com/jarielbalberona</a>
       </h2>
-      <p class="mt-3 text-sm leading-relaxed text-ink-soft">Use this to inspect the public repo surface and engineering material.</p>
+      <p class="mt-3 text-sm leading-relaxed text-ink-soft">Public code, experiments, and repository history.</p>
     </article>
     <article class="border-t border-line pt-5">
       <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">CV</p>
       <h2 class="text-base font-semibold tracking-tight text-ink break-words">
         <a class="no-underline hover:text-ink-soft transition-colors" href={siteMeta.cvUrl} target="_blank" rel="noreferrer">View CV</a>
       </h2>
-      <p class="mt-3 text-sm leading-relaxed text-ink-soft">Short version of the background, stack, and work history.</p>
+      <p class="mt-3 text-sm leading-relaxed text-ink-soft">Condensed background, experience, and work history.</p>
     </article>
   </section>
 
@@ -76,7 +75,7 @@ const badFit = [
     </article>
     <article class="border-t border-line pt-8">
       <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">Bad fit</p>
-      <h2 class="text-2xl font-semibold tracking-tight text-ink">Things I am not trying to signal</h2>
+      <h2 class="text-2xl font-semibold tracking-tight text-ink">Work I am unlikely to be useful for</h2>
       <ul class="mt-5 space-y-3 pl-5 text-sm leading-relaxed text-ink list-disc marker:text-line">
         {badFit.map((item) => <li>{item}</li>)}
       </ul>

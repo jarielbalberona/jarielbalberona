@@ -1,6 +1,6 @@
 export const nowMeta = {
   updatedLabel: 'Updated April 2026',
-  intro: 'This page tracks active technical work and current priorities.',
+  intro: 'This page tracks the work, constraints, and technical priorities shaping my current direction.',
 };
 
 export const currentFocus = [
@@ -8,47 +8,47 @@ export const currentFocus = [
     kicker: 'Primary focus',
     title: 'Dumadine',
     body:
-      'Building Dumadine as a full-surface cafe operating system: ordering, merchant workflows, kitchen orchestration, inventory, and the operational edge cases that break fragile software.',
+      'Building Dumadine as a multi-tenant hospitality system covering ordering, merchant workflows, kitchen orchestration, inventory, and accounting flows that have to survive live service conditions.',
   },
   {
-    kicker: 'Technical baseline',
-    title: 'Engineering signal',
+    kicker: 'Current system work',
+    title: 'Operational reliability',
     body:
-      'Establishing a cleaner baseline for public engineering material. No startup hype, no padding—just the actual architecture, the operational tradeoffs, and the delivery structure.',
+      'Tightening delivery, observability, and failure handling so product changes can ship without turning service hours into debugging sessions.',
   },
   {
     kicker: 'Current engineering interest',
-    title: 'System resilience under growth',
+    title: 'Changeable systems',
     body:
-      'Focusing on strict boundaries, delivery flow, and maintainability. These factors dictate whether a product scales smoothly or degrades into a daily struggle.',
+      'Focusing on boundaries, data flow, and module ownership that let the product grow without collapsing into coupled feature work.',
   },
 ];
 
 export const rightNow = [
-  'Shaping product architecture against live operational workflows instead of theoretical requirements',
-  'Tightening observability and delivery pipelines so the platform evolves safely under load',
-  'Using AI for planning and implementation velocity without outsourcing architectural judgment',
-  'Documenting engineering realities and operational constraints rather than polishing a static portfolio',
+  'Shaping product architecture against live venue workflows instead of abstract requirements',
+  'Hardening real-time ordering, kitchen, and inventory flows around operational edge cases',
+  'Improving observability and delivery paths so production changes are easier to trust',
+  'Using AI to accelerate drafting, refactoring, and review preparation without handing off engineering judgment',
 ];
 
 export const notOptimizingFor = [
-  'Publishing content on a forced, unsustainable schedule',
-  'Turning the site into a personal brand or lifestyle page',
-  'Using AI terminology as a substitute for technical depth',
-  'Padding the project history with deprecated or trivial work',
+  'Publishing performative content on a fixed schedule',
+  'Expanding the public work list with thin or dated project summaries',
+  'Using AI language as a replacement for technical specificity',
+  'Adding process or tooling complexity that does not improve delivery',
 ];
 
 export const priorities = [
   {
     label: 'Operational reality',
-    body: 'Keeping the product grounded in actual physical workflows instead of demo-friendly assumptions.',
+    body: 'Keeping the product grounded in actual venue behavior instead of demo-friendly assumptions.',
   },
   {
-    label: 'Scalable architecture',
-    body: 'Enforcing clear system boundaries so new features do not leak into existing domains.',
+    label: 'Reliable change',
+    body: 'Enforcing clear system boundaries so new work does not leak across ordering, inventory, and accounting domains.',
   },
   {
-    label: 'Technical proof',
-    body: 'Surfacing concrete architecture decisions and delivery patterns rather than inflating a project list.',
+    label: 'Delivery discipline',
+    body: 'Improving the path from implementation to production so changes stay easier to review, ship, and recover from.',
   },
 ];
