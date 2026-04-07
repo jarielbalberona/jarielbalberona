@@ -10,7 +10,7 @@ The site is intended to present a senior software engineer who builds production
 - TypeScript
 - Tailwind CSS v4
 - Astro content collections
-- Render Static Site deployment
+- Railway static deployment
 
 ## MVP Rules
 
@@ -37,17 +37,26 @@ This app exists to present:
 - `../docs/`: lean planning records, decisions, and roadmap
 - `src/`: canonical public site app source code
 
-## Render Static Site
+## Railway Static Deployment
 
-The repo-level Render blueprint lives at `/render.yaml` (workspace root).
+Railway deploys this Astro site as a static site through Railpack.
 
-Expected Render settings:
+Expected Railway settings:
 
-- Root Directory: `portfolio`
-- Build Command: `npm ci && npm run build`
-- Publish Directory: `dist`
+- Root Directory: `/portfolio`
+- Config File Path: `/portfolio/railway.toml`
+
+Railway's config-as-code defaults to `railway.toml` or `railway.json`, not `railway.yaml`. Do not add a YAML file here unless Railway adds support for it later.
 
 This app is static by default, so no server adapter is required for MVP.
+
+## Analytics
+
+Google Analytics is optional and disabled unless a GA4 Measurement ID is provided.
+
+Set this environment variable in Railway when analytics should be active:
+
+- `PUBLIC_GA_MEASUREMENT_ID`: GA4 Measurement ID, for example `G-XXXXXXXXXX`
 
 ## Working Rules
 
