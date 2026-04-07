@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import ToolingStack from '../components/ToolingStack.astro';
 import SiteLayout from '../layouts/SiteLayout.astro';
 
 const [featuredWork] = (await getCollection('work'))
@@ -95,6 +96,8 @@ const signalCards = [
       }
     </div>
   </section>
+
+  <ToolingStack />
 
   <section class="grid gap-12 md:grid-cols-2">
     <article class="border-t border-line pt-8">

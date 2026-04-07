@@ -1,0 +1,46 @@
+---
+import { toolingGroups } from '../data/tooling';
+
+const deviconBaseUrl = 'https://cdn.jsdelivr.net/npm/devicon@2.17.0/icons';
+
+const iconUrl = (name: string, variant: string) => `${deviconBaseUrl}/${name}/${name}-${variant}.svg`;
+---
+
+<section class="mb-20 border-t border-line pt-10">
+  <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">Working stack</p>
+  <h2 class="max-w-2xl text-3xl font-semibold tracking-tight text-ink leading-tight">
+    Tools are useful. Judgment is what keeps them from becoming a pile of disconnected choices.
+  </h2>
+  <p class="mt-5 max-w-2xl text-sm leading-relaxed text-ink-soft">
+    This is the current working surface, not a ceiling. I can pick up new tools quickly when the requirements justify them, but I do not treat tool count as proof of engineering quality.
+  </p>
+
+  <div class="mt-10 grid gap-8 md:grid-cols-2">
+    {
+      toolingGroups.map((group) => (
+        <article class="border-t border-line pt-5">
+          <h3 class="text-xl font-semibold tracking-tight text-ink">{group.title}</h3>
+          <ul class="mt-5 flex flex-wrap gap-2">
+            {group.items.map((item) => (
+              <li class="inline-flex max-w-full items-center gap-2 border border-line px-3 py-2 text-sm leading-tight text-ink">
+                {item.icon && (
+                  <img
+                    src={iconUrl(item.icon.name, item.icon.variant)}
+                    alt=""
+                    class="h-4 w-4 shrink-0"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                )}
+                <span class="min-w-0">
+                  <span>{item.label}</span>
+                  {item.note && <span class="ml-1 text-xs leading-tight text-ink-soft">{item.note}</span>}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </article>
+      ))
+    }
+  </div>
+</section>
