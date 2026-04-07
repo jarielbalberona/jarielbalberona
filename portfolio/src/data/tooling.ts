@@ -75,7 +75,18 @@ export const toolingGroups: ToolingGroup[] = [
       { label: 'Cursor' },
       { label: 'OpenClaw' },
       { label: 'OpenRouter' },
-      { label: 'GitHub Copilot' },
+      { label: 'CodeRabbit' },
+    ],
+  },
+  {
+    title: 'Testing and verification',
+    items: [
+      { label: 'Vitest', icon: { name: 'vitest', variant: 'plain' } },
+      { label: 'Playwright', icon: { name: 'playwright', variant: 'plain' } },
+      { label: 'Go test', icon: { name: 'go', variant: 'plain' } },
+      { label: 'API integration tests' },
+      { label: 'Snapshot tests' },
+      { label: 'Regression checks' },
     ],
   },
   {

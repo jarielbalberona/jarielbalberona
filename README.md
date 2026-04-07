@@ -34,7 +34,7 @@ Currently building [Dumadine](https://dumadine.com/), a multi-tenant hospitality
 Consolidates hardware-agnostic POS, live KDS, inventory, and automated accounting subledgers into a single architecture. Shaped entirely by live operational constraints rather than theoretical product briefs.
 *TypeScript, React, Node.js, PostgreSQL, Drizzle, WebSockets, AWS*
 
-### [Privv](https://www.privv.ai/) — Capital Project Management
+### [PRIVV](https://www.privv.ai/) — Capital Project Management
 Hardened frontend architecture for a data-heavy platform managing over $4B in capital projects. Rebuilt state and data architectures to handle complex budgets and AI-driven forecasting without UI drag.
 *React, TypeScript, Design Tokens, Frontend Architecture*
 
