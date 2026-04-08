@@ -14,7 +14,7 @@ Currently building [Dumadine](https://dumadine.com/), a multi-tenant hospitality
 
 ## Links
 [![Portfolio](https://img.shields.io/badge/portfolio-000?style=for-the-badge&logo=ko-fi&logoColor=white)](https://jarielbalberona.dev/)
-[![CV](https://img.shields.io/badge/CV-333?style=for-the-badge&logo=readme&logoColor=white)](https://jarielbalberona.dev/Jariel_Balberona_SWE_2026Q1V1.pdf)
+[![CV](https://img.shields.io/badge/CV-333?style=for-the-badge&logo=readme&logoColor=white)](https://jarielbalberona.dev/jariel-balberona-cv.pdf)
 [![Dumadine](https://img.shields.io/badge/dumadine-000?style=for-the-badge&logo=ko-fi&logoColor=white)](https://dumadine.com/)
 [![LinkedIn](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/jarielbalberona/)
 [![Email](https://img.shields.io/badge/email-555?style=for-the-badge&logo=gmail&logoColor=white)](mailto:jarielbalb@gmail.com)

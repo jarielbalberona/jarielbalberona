@@ -10,7 +10,7 @@ export const siteMeta = {
   email: 'jarielbalb@gmail.com',
   linkedin: 'https://www.linkedin.com/in/jarielbalberona/',
   github: 'https://github.com/jarielbalberona',
-  cvUrl: '/Jariel_Balberona_SWE_2026Q1V1.pdf',
+  cvUrl: '/jariel-balberona-cv.pdf',
 };
 
 export const navItems = [
