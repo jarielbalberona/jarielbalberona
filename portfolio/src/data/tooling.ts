@@ -79,6 +79,18 @@ export const toolingGroups: ToolingGroup[] = [
     ],
   },
   {
+    title: 'Project management and coordination',
+    items: [
+      { label: 'Linear' },
+      { label: 'Notion' },
+      { label: 'Slack', icon: { name: 'slack', variant: 'original' } },
+      { label: 'Discord', icon: { name: 'discordjs', variant: 'plain' } },
+      { label: 'Jira', icon: { name: 'jira', variant: 'plain' } },
+      { label: 'ClickUp' },
+      { label: 'Shortcut' },
+    ],
+  },
+  {
     title: 'Testing and verification',
     items: [
       { label: 'Vitest', icon: { name: 'vitest', variant: 'plain' } },
