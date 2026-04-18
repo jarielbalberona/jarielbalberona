@@ -9,49 +9,55 @@ export interface ToolingGroup {
 
 export const toolingGroups: ToolingGroup[] = [
   {
-    title: 'Systems',
+    title: 'Core application stack',
     items: [
-      { label: 'Backend architecture' },
-      { label: 'APIs' },
-      { label: 'Data flow' },
-      { label: 'Event-driven design' },
+      { label: 'TypeScript' },
+      { label: 'Node.js' },
+      { label: 'React' },
+      { label: 'Astro' },
+      { label: 'Next.js' },
     ],
   },
   {
-    title: 'Infrastructure',
+    title: 'Backend and data',
+    items: [
+      { label: 'PostgreSQL' },
+      { label: 'Drizzle' },
+      { label: 'Prisma' },
+      { label: 'WebSockets' },
+      { label: 'Event-driven flows' },
+    ],
+  },
+  {
+    title: 'Infrastructure and delivery',
     items: [
       { label: 'AWS' },
+      { label: 'Azure' },
       { label: 'Docker' },
       { label: 'Terraform' },
+      { label: 'GitHub Actions' },
       { label: 'CI/CD' },
     ],
   },
   {
-    title: 'Data',
-    items: [
-      { label: 'PostgreSQL' },
-      { label: 'Redis' },
-      { label: 'Reporting pipelines' },
-    ],
-  },
-  {
-    title: 'Automation',
+    title: 'Automation and integrations',
     items: [
       { label: 'n8n' },
       { label: 'Make' },
       { label: 'Zapier' },
       { label: 'Webhooks' },
-      { label: 'Workflow orchestration' },
+      { label: 'Linear' },
+      { label: 'Slack' },
     ],
   },
   {
-    title: 'AI',
+    title: 'Applied AI workflow',
     items: [
-      { label: 'OpenAI API' },
+      { label: 'OpenAI / ChatGPT' },
+      { label: 'Codex' },
+      { label: 'Cursor' },
       { label: 'Structured outputs' },
-      { label: 'Summarization' },
-      { label: 'Classification' },
-      { label: 'Decision support tooling' },
+      { label: 'Summaries, routing, review support' },
     ],
   },
 ];

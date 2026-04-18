@@ -5,10 +5,10 @@ import { toolingGroups } from '../data/tooling';
 <section class="mb-20 border-t border-line pt-10">
   <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">Working stack</p>
   <h2 class="max-w-2xl text-3xl font-semibold tracking-tight text-ink leading-tight">
-    Tools matter only when they reflect real system behavior.
+    The stack is part of the proof, not a footer afterthought.
   </h2>
   <p class="mt-5 max-w-2xl text-sm leading-relaxed text-ink-soft">
-    This is the current working surface across frontend, backend, data, infrastructure, automation, and applied AI.
+    This is the actual working surface across product delivery, backend systems, infrastructure, automation, and applied AI support.
   </p>
 
   <div class="mt-10 grid gap-8 md:grid-cols-2 xl:grid-cols-3">
@@ -16,9 +16,9 @@ import { toolingGroups } from '../data/tooling';
       toolingGroups.map((group) => (
         <article class="border-t border-line pt-5">
           <h3 class="text-xl font-semibold tracking-tight text-ink">{group.title}</h3>
-          <ul class="mt-5 space-y-3 pl-5 text-sm leading-relaxed text-ink list-disc marker:text-line">
+          <ul class="mt-5 flex flex-wrap gap-2 text-sm leading-relaxed text-ink">
             {group.items.map((item) => (
-              <li>{item.label}</li>
+              <li class="border border-line px-2.5 py-1">{item.label}</li>
             ))}
           </ul>
         </article>

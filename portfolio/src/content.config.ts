@@ -12,8 +12,14 @@ const work = defineCollection({
     featured: z.boolean().default(false),
     order: z.number().default(100),
     liveUrl: z.string().url().optional(),
+    role: z.string(),
     stack: z.array(z.string()),
     highlights: z.array(z.string()),
+    context: z.string(),
+    ownership: z.array(z.string()),
+    constraints: z.array(z.string()),
+    changes: z.array(z.string()),
+    impact: z.string(),
   }),
 });
 
