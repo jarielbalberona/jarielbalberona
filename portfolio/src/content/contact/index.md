@@ -26,9 +26,9 @@ Public repositories, experiments, and code history.
 
 ### CV
 
-View CV
+Open CV
 
-Condensed background, experience, and selected work.
+PDF with roles, dates, stack, and selected work.
 
 ## Good fit
 

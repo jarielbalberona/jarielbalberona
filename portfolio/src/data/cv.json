@@ -1,0 +1,235 @@
+{
+  "name": "Jariel Balberona",
+  "headline": "Senior Software Engineer",
+  "location": "Philippines (Remote)",
+  "email": "jarielbalb@gmail.com",
+  "phone": "+63 917 657 0260",
+  "website": "jarielbalberona.dev",
+  "github": "github.com/jarielbalberona",
+  "linkedin": "linkedin.com/in/jarielbalberona",
+  "summary": "Senior software engineer with 9+ years building and modernizing production systems across frontend, backend, and delivery infrastructure. Strong in React and TypeScript applications, Node.js APIs, PostgreSQL-backed products, and cloud delivery across AWS and Azure. I focus on maintainability, clean system boundaries, and reliable shipping under real product pressure.",
+  "skillGroups": [
+    {
+      "title": "Frontend",
+      "items": [
+        "React",
+        "TypeScript",
+        "Next.js",
+        "Vite",
+        "Astro",
+        "Tailwind CSS v4",
+        "shadcn/ui",
+        "TanStack Query",
+        "Zustand",
+        "Redux Toolkit",
+        "Jotai"
+      ]
+    },
+    {
+      "title": "Backend",
+      "items": [
+        "Node.js",
+        "Express",
+        "Go",
+        "REST APIs"
+      ]
+    },
+    {
+      "title": "Data",
+      "items": [
+        "PostgreSQL",
+        "Prisma",
+        "Drizzle ORM",
+        "Redis",
+        "WebSockets"
+      ]
+    },
+    {
+      "title": "Infrastructure / Cloud / DevOps",
+      "items": [
+        "Docker",
+        "Terraform",
+        "GitHub Actions",
+        "AWS",
+        "Azure",
+        "CI/CD"
+      ]
+    },
+    {
+      "title": "Observability / Quality",
+      "items": [
+        "Grafana",
+        "Prometheus",
+        "Loki",
+        "Sentry",
+        "PostHog",
+        "Vitest",
+        "Playwright",
+        "Go test",
+        "API integration tests"
+      ]
+    },
+    {
+      "title": "Automation / AI tooling",
+      "items": [
+        "n8n",
+        "Make",
+        "Zapier",
+        "OpenAI API",
+        "webhooks",
+        "structured outputs",
+        "AI-assisted summaries and routing"
+      ]
+    }
+  ],
+  "experience": [
+    {
+      "company": "PRIVV",
+      "role": "Senior Software Engineer",
+      "employmentType": "Full-time",
+      "dateRange": "May 2025 - Nov 2025",
+      "location": "Remote (California, United States)",
+      "summary": "Worked on the modernization of a legacy React frontend for a construction project management platform.",
+      "tech": [
+        "React",
+        "TypeScript",
+        "Vite",
+        "Tailwind CSS v4",
+        "TanStack Query",
+        "Zustand",
+        "Vitest",
+        "NestJS",
+        "PostgreSQL",
+        "Monorepo"
+      ],
+      "highlights": [
+        "Worked closely with the CTO and design team to align frontend architecture, UI implementation, and delivery priorities across the product.",
+        "Led a major frontend modernization across React 17 to 19, CRA to Vite, and SASS to Tailwind CSS v4 to reduce build friction and improve iteration speed.",
+        "Re-architected the frontend into feature-based modules with reusable hooks and clearer ownership boundaries to improve maintainability and parallel development.",
+        "Reworked state and data patterns from Redux-heavy flows to TanStack Query and Zustand, using cache-first query design, structured invalidation, and optimistic updates where appropriate.",
+        "Strengthened engineering quality through Vitest and stricter modular boundaries to reduce regressions and improve delivery confidence."
+      ]
+    },
+    {
+      "company": "DataGPT AI",
+      "role": "Software Engineer",
+      "employmentType": "Part-time",
+      "dateRange": "Oct 2024 - Mar 2026",
+      "location": "Remote (Arizona, United States)",
+      "summary": "Worked on product engineering for a chat-driven AI analytics platform, with focus on workflow clarity, analytics UX, and product reliability.",
+      "tech": [
+        "React",
+        "TypeScript",
+        "Data visualization",
+        "Workflow UI",
+        "Reliability patterns"
+      ],
+      "highlights": [
+        "Expanded in-chat analytics rendering to support advanced charts such as heatmaps, treemaps, and stacked bar visualizations for exploratory analysis.",
+        "Built Agents V1 orchestration UI, a node-based workflow builder covering data source, prompt, condition, and recipient flows.",
+        "Improved visibility into query and result states so analytics workflows were easier for users to understand and trust."
+      ]
+    },
+    {
+      "company": "Experience Digital",
+      "role": "Senior Software Engineer to DevOps Engineer",
+      "employmentType": "Full-time",
+      "dateRange": "Mar 2022 - Oct 2024",
+      "location": "Remote (New South Wales, Australia)",
+      "summary": "Progressed from software engineering into DevOps and platform work across product modernization, delivery systems, observability, and reporting infrastructure.",
+      "tech": [
+        "Next.js",
+        "React",
+        "TypeScript",
+        "Jotai",
+        "tRPC",
+        "Prisma",
+        "Terraform",
+        "Docker",
+        "AWS",
+        "Azure",
+        "Grafana",
+        "Prometheus",
+        "Loki",
+        "Power BI"
+      ],
+      "highlights": [
+        "Modernized a legacy product through incremental adoption of Next.js, Tailwind, Jotai, tRPC, and Prisma while preserving compatibility with an existing database and ongoing production use.",
+        "Improved React application performance and frontend responsiveness through better state and rendering discipline.",
+        "Built and maintained CI/CD pipelines and infrastructure automation using Terraform and Docker, improving release repeatability and reducing manual operational work.",
+        "Supported production observability with Grafana, Prometheus, and Loki for monitoring, logging, and diagnostics.",
+        "Contributed to Power BI enablement and cloud data-platform support across AWS and Azure in collaboration with the data team."
+      ]
+    },
+    {
+      "company": "Chorefree Living Inc.",
+      "role": "Front-end Lead Software Engineer",
+      "employmentType": "Full-time",
+      "dateRange": "Apr 2021 - Mar 2022",
+      "location": "Remote (Vancouver, Canada)",
+      "summary": "Led frontend engineering for a cleaning booking platform covering appointments, schedules, and customer workflows.",
+      "tech": [
+        "React",
+        "TypeScript",
+        "Apollo GraphQL",
+        "Gatsby",
+        "SASS"
+      ],
+      "highlights": [
+        "Led frontend engineering for a cleaning services booking platform covering appointments, schedules, and customer-facing service workflows.",
+        "Owned frontend structure and UI delivery, improving maintainability and feature scalability as the product grew.",
+        "Optimized data fetching with Apollo Client and added error tracking and analytics instrumentation to improve reliability and product visibility."
+      ]
+    }
+  ],
+  "selectedWork": [
+    {
+      "name": "Dumadine",
+      "label": "Current work",
+      "summary": "Multi-tenant hospitality platform spanning ordering, kitchen operations, inventory, and accounting, shaped around live venue workflows rather than demo-friendly flows.",
+      "tech": [
+        "TypeScript",
+        "React",
+        "Node.js",
+        "Express",
+        "PostgreSQL",
+        "Drizzle ORM",
+        "WebSockets",
+        "Docker",
+        "Terraform",
+        "AWS"
+      ],
+      "highlights": [
+        "Built browser-based customer ordering, POS, merchant operations, and kitchen display workflows with real-time order status and operational coordination.",
+        "Designed inventory and accounting foundations with consistency flows across orders, stock movement, and financial records.",
+        "Structured the system around modular domains and event-driven flows so reporting, automation, and operator tooling can be added without distorting core product behavior."
+      ]
+    }
+  ],
+  "earlierExperience": [
+    {
+      "company": "Arcanys",
+      "role": "Web Software Developer",
+      "dateRange": "Mar 2020 - Apr 2021",
+      "details": "Angular/AngularJS, REST integrations, feature delivery."
+    },
+    {
+      "company": "IdeaRobin",
+      "role": "Fullstack JavaScript Developer",
+      "dateRange": "Mar 2018 - Feb 2020",
+      "details": "React/Vue, Socket.IO real-time apps, Node/Koa, MongoDB, AWS, Jenkins, Docker."
+    },
+    {
+      "company": "IdeaRobin",
+      "role": "Intern",
+      "dateRange": "May 2017 - Mar 2018",
+      "details": "React, jQuery, WordPress integrations, UI support."
+    },
+    {
+      "company": "Upwork and Elance",
+      "role": "Freelance",
+      "dateRange": "2014 - 2017",
+      "details": "Web development, design support, and client services work."
+    }
+  ]
+}

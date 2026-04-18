@@ -17,9 +17,6 @@ Building Dumadine as a multi-tenant hospitality operating system shaped around l
 - Designing automation paths that reduce manual coordination without weakening control
 - Using AI where it improves summaries, explanation, and operational decision support
 
-## Intentionally not doing
+## Direction
 
-- Publishing filler content for visibility
-- Listing weak or outdated project work
-- Hiding behind vague AI wording
-- Adding process or tooling that does not improve delivery
+Most of the work is going into Dumadine’s operating core: better event flow, stronger observability, and operator tooling grounded in live system state.

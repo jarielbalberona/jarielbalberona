@@ -1,8 +1,8 @@
 # Work
 
-# Selected work with real technical substance.
+# Product and platform work across operations, planning, analytics, and modernization.
 
-I only include work that shows meaningful constraints, system design decisions, and the kind of delivery choices that affect long-term product health.
+These projects show the kind of work I do best: messy constraints, structural decisions, and systems that need to stay reliable as they grow.
 
 ## Dumadine
 
@@ -11,13 +11,13 @@ I only include work that shows meaningful constraints, system design decisions, 
 Multi-tenant hospitality operating system built for live venue conditions, event-driven coordination, and future automation and AI-assisted operational support.
 
 **Current work**  
-TypeScript / React / Node.js / PostgreSQL / Drizzle / WebSockets / AWS
+TypeScript / React / Node.js / PostgreSQL / Drizzle ORM / WebSockets / AWS
 
 Highlights:
 
 - Built as an operational system that keeps ordering, kitchen activity, stock movement, and accounting behavior connected in real time
 - Designed around modular domains and event-driven flow so automation and reporting can be added without collapsing boundaries
-- Creates a foundation for AI-generated summaries, operational explanation, and decision support tied to actual system activity
+- Built the system shape needed for reporting, operator summaries, and downstream automation from live product state
 
 ## PRIVV
 
@@ -26,7 +26,7 @@ Highlights:
 Product engineering work for a capital project platform with complex financial workflows, dense planning interfaces, and high trust requirements around system behavior.
 
 **Core focus**  
-React / TypeScript / Design tokens / Frontend architecture
+React / TypeScript / Vite / Tailwind CSS v4 / TanStack Query / Zustand
 
 Highlights:
 
@@ -41,7 +41,7 @@ Highlights:
 Cross-functional engineering work spanning legacy modernization, backend delivery, infrastructure automation, and cloud data platform architecture across application and platform layers.
 
 **Core focus**  
-Next.js / React / TypeScript / CI/CD / AWS / Azure / Power BI / DevOps
+Next.js / React / TypeScript / Docker / Terraform / AWS / Azure / Power BI
 
 Highlights:
 
@@ -64,9 +64,3 @@ Highlights:
 - Built interfaces that made query flow, result state, and AI-assisted analysis easier for users to follow and verify
 - Designed orchestration UI that surfaced pipeline state, failure conditions, and recovery paths clearly
 - Treated explanation and trust in outputs as product requirements instead of decorative analytics UX
-
-## Selection standard
-
-# The standard is signal, not quantity.
-
-Projects appear here when they show real engineering constraints, system design decisions, or execution quality. Everything else stays out.

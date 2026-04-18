@@ -1,14 +1,12 @@
 ---
 import SiteLayout from '../layouts/SiteLayout.astro';
-import { currentFocus, notOptimizingFor, nowMeta, rightNow } from '../data/now';
+import { currentFocus, nowMeta, rightNow } from '../data/now';
 ---
 
 <SiteLayout
   title="Now | Jariel Balberona"
   description="Current work, priorities, and direction for Jariel Balberona."
   activeNav="now"
-  footerLeft="Current work only"
-  footerRight="If this page becomes stale, it needs updating or cutting"
 >
   <section class="mb-20">
     <p class="mb-5 text-xs font-mono uppercase tracking-widest text-ink-soft">Now</p>
@@ -30,18 +28,17 @@ import { currentFocus, notOptimizingFor, nowMeta, rightNow } from '../data/now';
     }
   </section>
 
-  <section class="grid gap-12 md:grid-cols-2">
-    <article class="border-t border-line pt-8">
-      <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">Current priorities</p>
-      <ul class="mt-5 space-y-3 pl-5 text-sm leading-relaxed text-ink list-disc marker:text-line">
-        {rightNow.map((item) => <li>{item}</li>)}
-      </ul>
-    </article>
-    <article class="border-t border-line pt-8">
-      <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">Intentionally not doing</p>
-      <ul class="mt-5 space-y-3 pl-5 text-sm leading-relaxed text-ink list-disc marker:text-line">
-        {notOptimizingFor.map((item) => <li>{item}</li>)}
-      </ul>
-    </article>
+  <section class="border-t border-line pt-8 max-w-3xl">
+    <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">Current priorities</p>
+    <ul class="mt-5 space-y-3 pl-5 text-sm leading-relaxed text-ink list-disc marker:text-line">
+      {rightNow.map((item) => <li>{item}</li>)}
+    </ul>
+  </section>
+
+  <section class="border-t border-line pt-8 mt-12 max-w-3xl">
+    <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">Direction</p>
+    <p class="text-sm leading-relaxed text-ink-soft">
+      Most of my attention is on building a stronger operating core for Dumadine: tighter event flow, clearer observability, and operator tooling that reflects real system state instead of after-the-fact reconstruction.
+    </p>
   </section>
 </SiteLayout>

@@ -26,7 +26,7 @@ I use automation and AI to extend real systems, not decorate them.
 
 That means event-driven workflows, orchestration across APIs and tools, and AI-assisted summaries, classification, and decision support tied to live operational data.
 
-For the deeper approach, see `/ai-automation`.
+See `/ai-automation` for production automation patterns and AI workflow details.
 
 ## Working Stack
 

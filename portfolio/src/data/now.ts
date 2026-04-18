@@ -17,10 +17,3 @@ export const rightNow = [
   'Designing automation paths that reduce manual coordination without weakening control',
   'Using AI where it improves summaries, explanation, and operational decision support',
 ];
-
-export const notOptimizingFor = [
-  'Publishing filler content for visibility',
-  'Listing weak or outdated project work',
-  'Hiding behind vague AI wording',
-  'Adding process or tooling that does not improve delivery',
-];
