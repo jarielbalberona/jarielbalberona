@@ -28,13 +28,13 @@ const phases = [
   {
     kicker: '3. Execute in small, isolated units',
     title: 'One change, one scope, one outcome',
-    body: 'I prefer ticket-driven execution with isolated branches or worktrees, especially when using AI coding agents. Each change should have a clear purpose, minimal blast radius, and an obvious verification path.',
+    body: 'I prefer ticket-driven execution with isolated branches or worktrees. Each change should have a clear purpose, minimal blast radius, and an obvious verification path whether it affects product code, automation flows, or AI-assisted tooling.',
     points: [
       'scoped work instead of vague "cleanup"',
       'isolated implementation instead of overlapping edits',
       'traceable progress instead of hidden churn',
     ],
-    outro: 'AI helps accelerate execution, but the workflow stays structured.',
+    outro: 'Automation and AI can speed up execution, but the workflow stays structured.',
   },
   {
     kicker: '4. Verify aggressively',
@@ -70,6 +70,15 @@ const aiHelps = [
   'reducing startup friction on well-scoped work',
 ];
 
+const automationAndAiSystems = [
+  'event-driven workflows that trigger downstream actions from real system state',
+  'n8n-based orchestration for cross-system automation with explicit inputs and failure paths',
+  'AI summaries that explain operational state instead of dumping raw activity',
+  'classification and routing steps that reduce repetitive coordination work',
+  'decision support layers built on reporting, workflow context, and production data',
+  'guardrails that keep automation and AI visible, testable, and accountable',
+];
+
 const engineerOwns = [
   'Architecture and system boundaries',
   'Implementation judgment',
@@ -83,18 +92,18 @@ const engineerOwns = [
 
 <SiteLayout
   title="Workflow | Jariel Balberona"
-  description="How Jariel Balberona approaches planning, implementation, review, and disciplined AI-assisted engineering work."
+  description="How Jariel Balberona approaches planning, implementation, review, automation systems, and disciplined AI-assisted engineering work."
   activeNav="workflow"
-  footerLeft="Planning, implementation, review"
-  footerRight="AI is useful. Judgment still matters more."
+  footerLeft="Planning, implementation, automation, review"
+  footerRight="Automation is useful. Judgment still matters more."
 >
   <section class="mb-20">
     <p class="mb-5 text-xs font-mono uppercase tracking-widest text-ink-soft">Workflow</p>
     <h1 class="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-ink leading-tight">
-      Use AI to reduce drag. Keep engineering judgment and accountability human.
+      Structured engineering, automation, and AI work without giving up ownership.
     </h1>
     <p class="mt-6 max-w-2xl text-lg leading-relaxed text-ink-soft">
-      I use AI heavily in day-to-day engineering work, but within a disciplined workflow. It helps me move faster through exploration, drafting, refactoring, and implementation support. It does not own architecture, correctness, or production responsibility. I do.
+      I use AI heavily in day-to-day engineering work, and I build systems that use automation and AI in production. Those are different responsibilities. Both need clear boundaries, explicit failure handling, and human accountability.
     </p>
   </section>
 
@@ -139,6 +148,17 @@ const engineerOwns = [
     </article>
   </section>
 
+  <section class="mb-24 border-t border-line pt-10">
+    <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">Automation and AI in shipped systems</p>
+    <h2 class="max-w-2xl text-2xl font-semibold tracking-tight text-ink">The standard is the same: clear inputs, clear outputs, clear accountability.</h2>
+    <p class="mt-5 max-w-2xl text-sm leading-relaxed text-ink-soft">
+      When I add automation or AI to a real system, I treat it as part of the system design. That means explicit triggers, observable execution, controllable side effects, and enough context for operators to understand what happened.
+    </p>
+    <ul class="mt-6 space-y-3 pl-5 text-sm leading-relaxed text-ink list-disc marker:text-line max-w-3xl">
+      {automationAndAiSystems.map((item) => <li>{item}</li>)}
+    </ul>
+  </section>
+
   <section class="border-t border-line pt-10">
     <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">Engineering standard</p>
     <h2 class="text-2xl font-semibold tracking-tight text-ink">The bottleneck is usually not speed. It is weak structure.</h2>
@@ -146,7 +166,7 @@ const engineerOwns = [
       Most teams do not struggle because they lack another tool. They struggle because scope is loose, boundaries are weak, ownership is unclear, and verification is treated as optional until the system starts fighting back.
     </p>
     <p class="mt-5 max-w-2xl text-sm leading-relaxed text-ink-soft">
-      That is why my workflow emphasizes inspection, scoped execution, verification, and maintainable structure.
+      That is why my workflow emphasizes inspection, scoped execution, verification, and maintainable structure whether the work is application code, orchestration logic, or AI-assisted system behavior.
     </p>
     <p class="mt-5 max-w-2xl text-sm leading-relaxed text-ink-soft">
       I use AI to move faster, but never at the cost of engineering quality. Faster output only matters if the system stays reliable, understandable, and worth building on.

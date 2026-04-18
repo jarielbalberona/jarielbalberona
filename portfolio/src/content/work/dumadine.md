@@ -1,6 +1,6 @@
 ---
 title: Dumadine
-summary: Multi-tenant hospitality system built for live venue operations across ordering, kitchen flow, inventory, and accounting.
+summary: Multi-tenant hospitality operating system built for live venue conditions, event-driven workflows, and future automation and AI-assisted operational support.
 status: Featured project
 timeframe: Current work
 featured: true
@@ -15,25 +15,20 @@ stack:
   - WebSockets
   - AWS
 highlights:
-  - Unifies POS, QR ordering, kitchen operations, inventory, and accounting in one browser-based product.
-  - Supports different venue models across cafes, hotels, and workspaces without splitting the platform into separate forks.
-  - Built around modular domains, real-time workflows, and production observability needed for ongoing operational change.
+  - Built as an operational system that keeps ordering, kitchen activity, stock movement, and accounting behavior connected in real time.
+  - Designed around modular domains and event-driven flow so automation and reporting can be added without collapsing boundaries.
+  - Creates a foundation for AI-generated summaries, operational explanation, and decision support tied to actual system activity.
 ---
 
 ## What it is
 
-Dumadine is a multi-tenant hospitality system designed to replace the fragmented software stack many venues still rely on. Instead of stitching together separate tools for POS, kitchen coordination, stock tracking, accounting, and ordering, the goal is one system that keeps those workflows connected and operationally consistent.
+Dumadine is a multi-tenant hospitality operating system designed to replace the fragmented stack many venues still rely on. The point is not just consolidating features. The point is keeping operational activity coherent across ordering, kitchen flow, stock movement, merchant workflows, and accounting.
 
-The product spans:
-- **POS and QR ordering:** Browser-based ordering and payment flows without tying the system to proprietary hardware.
-- **Dynamic venue modeling:** A shared core architecture that can adapt across cafes, hotels, and workspace-style operations.
-- **Kitchen display system:** Real-time coordination built for live service, not delayed back-office visibility.
-- **Inventory and costing:** Recipe-aware stock tracking with deductions tied directly to sales activity.
-- **Accounting subledger:** Journal generation and cost tracking that connect operational activity to finance workflows.
+That means treating the product as a system of connected operational state rather than a pile of adjacent screens.
 
 ## Why it matters
 
-Hospitality systems do not usually fail on basic ordering. They fail when operations get messy.
+Hospitality systems do not usually fail because a menu renders badly. They fail when service gets messy.
 
 The real engineering problem is handling service rushes, stock movement, kitchen timing, unreliable connectivity, and downstream financial impact without pushing staff into brittle manual workarounds. That is where product quality stops being a UI problem and becomes a systems problem.
 
@@ -52,3 +47,11 @@ That means designing for:
 - real-time coordination without state chaos
 - changeability without cross-domain leakage
 - observability and failure handling that hold up in production
+
+This foundation enables the next layer:
+- event-driven automation workflows
+- reporting systems that explain operational behavior
+- AI-generated summaries for operators
+- decision-support tooling based on live system state
+
+This is not AI added on top. The system is designed so automation and AI become natural extensions, not forced features.

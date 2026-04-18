@@ -2,28 +2,28 @@
 
 # Selected work with real technical substance.
 
-I only include work that shows meaningful constraints, engineering judgment, and the kind of delivery decisions that affect long-term product health.
+I only include work that shows meaningful constraints, system design decisions, and the kind of delivery choices that affect long-term product health.
 
 ## Dumadine
 
 **Featured project**
 
-Multi-tenant hospitality platform covering ordering, kitchen operations, inventory, and accounting, built for live venue conditions rather than idealized product flows.
+Multi-tenant hospitality operating system built for live venue conditions, event-driven coordination, and future automation and AI-assisted operational support.
 
 **Current work**  
 TypeScript / React / Node.js / PostgreSQL / Drizzle / WebSockets / AWS
 
 Highlights:
 
-- Unified POS, QR ordering, kitchen operations, inventory, and accounting into one operational product
-- Supported multiple venue types without fragmenting the platform into separate product forks
-- Built around modular domains, real-time workflow coordination, and production observability needed for live operations
+- Built as an operational system that keeps ordering, kitchen activity, stock movement, and accounting behavior connected in real time
+- Designed around modular domains and event-driven flow so automation and reporting can be added without collapsing boundaries
+- Creates a foundation for AI-generated summaries, operational explanation, and decision support tied to actual system activity
 
 ## PRIVV
 
 **Selected work**
 
-Frontend architecture work for a capital project platform with complex financial workflows, dense planning interfaces, and real scaling pressure.
+Product engineering work for a capital project platform with complex financial workflows, dense planning interfaces, and high trust requirements around system behavior.
 
 **Core focus**  
 React / TypeScript / Design tokens / Frontend architecture
@@ -31,14 +31,14 @@ React / TypeScript / Design tokens / Frontend architecture
 Highlights:
 
 - Improved frontend structure for a platform supporting more than $4B in capital project workflows
-- Reworked state and data flow across budgets, schedules, and forecasting interfaces with high interaction complexity
-- Built a token-driven UI foundation that improved consistency, reuse, and long-term maintainability
+- Reworked state and data flow across budgets, schedules, invoicing, and forecasting interfaces with high interaction complexity
+- Strengthened UI structure and interaction behavior so complex financial workflows stayed usable and maintainable under growth
 
 ## Experience Digital
 
 **Selected work**
 
-Cross-functional engineering work spanning legacy modernization, frontend performance, DevOps, and cloud data platform delivery across application and infrastructure layers.
+Cross-functional engineering work spanning legacy modernization, backend delivery, infrastructure automation, and cloud data platform architecture across application and platform layers.
 
 **Core focus**  
 Next.js / React / TypeScript / CI/CD / AWS / Azure / Power BI / DevOps
@@ -46,24 +46,24 @@ Next.js / React / TypeScript / CI/CD / AWS / Azure / Power BI / DevOps
 Highlights:
 
 - Modernized legacy application flows while extending existing database and API foundations
-- Improved React application performance and frontend responsiveness through targeted structural optimization
-- Expanded into DevOps, infrastructure automation, and delivery-system work across CI/CD and observability
-- Contributed to cloud data platform architecture for reporting workflows across Azure and AWS
+- Improved application performance and delivery flow through more disciplined frontend, backend, and platform work
+- Expanded into DevOps, infrastructure automation, and delivery-system work across CI/CD, observability, and cloud infrastructure
+- Contributed to cloud data platform architecture for reporting workflows and data movement across Azure and AWS
 
 ## DataGPT AI
 
 **Selected work**
 
-Product engineering for a data analytics platform where workflow clarity and trust in system behavior mattered as much as raw capability.
+Product engineering for an analytics system where AI-assisted workflows, data flow clarity, and trust in system behavior mattered as much as raw capability.
 
 **Core focus**  
 React / TypeScript / Data visualization / Workflow UX
 
 Highlights:
 
-- Built interfaces that made complex query and result states easier for users to follow
-- Designed orchestration UI that surfaced pipeline state, system behavior, and failure conditions clearly
-- Focused analytics UX on clarity and trust instead of decoration
+- Built interfaces that made query flow, result state, and AI-assisted analysis easier for users to follow and verify
+- Designed orchestration UI that surfaced pipeline state, failure conditions, and recovery paths clearly
+- Treated explanation and trust in outputs as product requirements instead of decorative analytics UX
 
 ## Selection standard
 

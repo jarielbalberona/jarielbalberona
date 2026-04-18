@@ -1,8 +1,8 @@
 # Workflow
 
-## Use AI to reduce drag. Keep engineering judgment and accountability human.
+## Structured engineering, automation, and AI work without giving up ownership.
 
-I use AI heavily in day-to-day engineering work, but within a disciplined workflow. It helps me move faster through exploration, drafting, refactoring, and implementation support. It does not own architecture, correctness, or production responsibility. I do.
+I use AI heavily in day-to-day engineering work, and I build systems that use automation and AI in production. Those are different responsibilities. Both need clear boundaries, explicit failure handling, and human accountability.
 
 ## 1. Understand the system
 
@@ -36,7 +36,7 @@ The goal here is simple:
 
 ### One change, one scope, one outcome
 
-I prefer ticket-driven execution with isolated branches or worktrees, especially when using AI coding agents. Each change should have a clear purpose, minimal blast radius, and an obvious verification path.
+I prefer ticket-driven execution with isolated branches or worktrees. Each change should have a clear purpose, minimal blast radius, and an obvious verification path whether it affects product code, automation flows, or AI-assisted tooling.
 
 This keeps delivery controlled instead of chaotic:
 
@@ -44,7 +44,7 @@ This keeps delivery controlled instead of chaotic:
 - isolated implementation instead of overlapping edits
 - traceable progress instead of hidden churn
 
-AI helps accelerate execution, but the workflow stays structured.
+Automation and AI can speed up execution, but the workflow stays structured.
 
 ## 4. Verify aggressively
 
@@ -89,6 +89,17 @@ I use AI to speed up parts of the workflow that benefit from iteration and synth
 
 Used properly, AI removes drag. Used poorly, it multiplies noise.
 
+## Automation and AI in shipped systems
+
+When I add automation or AI to a real system, I treat it as part of the system design. That means explicit triggers, observable execution, controllable side effects, and enough context for operators to understand what happened.
+
+- event-driven workflows that trigger downstream actions from real system state
+- n8n-based orchestration for cross-system automation with explicit inputs and failure paths
+- AI summaries that explain operational state instead of dumping raw activity
+- classification and routing steps that reduce repetitive coordination work
+- decision support layers built on reporting, workflow context, and production data
+- guardrails that keep automation and AI visible, testable, and accountable
+
 ## What stays with me
 
 ### Ownership does not move
@@ -111,6 +122,6 @@ AI can assist the work. It does not own the outcome.
 
 Most teams do not struggle because they lack another tool. They struggle because scope is loose, boundaries are weak, ownership is unclear, and verification is treated as optional until the system starts fighting back.
 
-That is why my workflow emphasizes inspection, scoped execution, verification, and maintainable structure.
+That is why my workflow emphasizes inspection, scoped execution, verification, and maintainable structure whether the work is application code, orchestration logic, or AI-assisted system behavior.
 
 I use AI to move faster, but never at the cost of engineering quality. Faster output only matters if the system stays reliable, understandable, and worth building on.

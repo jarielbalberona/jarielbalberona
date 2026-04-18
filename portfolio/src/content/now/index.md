@@ -8,14 +8,14 @@ Updated April 2026
 
 **Dumadine**
 
-Building Dumadine as a multi-tenant hospitality system across ordering, kitchen operations, inventory, merchant workflows, and accounting, shaped around live service conditions rather than demo assumptions.
+Building Dumadine as a multi-tenant hospitality operating system shaped around live service conditions, then extending it through event-driven workflows, reporting layers, and AI-assisted operational support.
 
 ## Current priorities
 
-- Hardening ordering, kitchen, and inventory flows against operational edge cases
-- Improving observability, failure handling, and delivery confidence
-- Strengthening system boundaries so growth does not turn into coupling
-- Using AI to reduce drafting and refactoring drag without outsourcing engineering judgment
+- Hardening ordering, kitchen, inventory, and accounting flows against operational edge cases
+- Improving observability, failure handling, and event visibility across system boundaries
+- Designing automation paths that reduce manual coordination without weakening control
+- Using AI where it improves summaries, explanation, and operational decision support
 
 ## Intentionally not doing
 
