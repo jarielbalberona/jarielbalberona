@@ -1,9 +1,5 @@
 ---
 import { toolingGroups } from '../data/tooling';
-
-const deviconBaseUrl = 'https://cdn.jsdelivr.net/npm/devicon@2.17.0/icons';
-
-const iconUrl = (name: string, variant: string) => `${deviconBaseUrl}/${name}/${name}-${variant}.svg`;
 ---
 
 <section class="mb-20 border-t border-line pt-10">
@@ -15,28 +11,14 @@ const iconUrl = (name: string, variant: string) => `${deviconBaseUrl}/${name}/${
     This is the current working surface across frontend, backend, data, infrastructure, automation, and applied AI.
   </p>
 
-  <div class="mt-10 grid gap-8 md:grid-cols-2">
+  <div class="mt-10 grid gap-8 md:grid-cols-2 xl:grid-cols-3">
     {
       toolingGroups.map((group) => (
         <article class="border-t border-line pt-5">
           <h3 class="text-xl font-semibold tracking-tight text-ink">{group.title}</h3>
-          <ul class="mt-5 flex flex-wrap gap-2">
+          <ul class="mt-5 space-y-3 pl-5 text-sm leading-relaxed text-ink list-disc marker:text-line">
             {group.items.map((item) => (
-              <li class="inline-flex max-w-full items-center gap-2 border border-line px-3 py-2 text-sm leading-tight text-ink">
-                {item.icon && (
-                  <img
-                    src={iconUrl(item.icon.name, item.icon.variant)}
-                    alt=""
-                    class="h-4 w-4 shrink-0"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                )}
-                <span class="min-w-0">
-                  <span>{item.label}</span>
-                  {item.note && <span class="ml-1 text-xs leading-tight text-ink-soft">{item.note}</span>}
-                </span>
-              </li>
+              <li>{item.label}</li>
             ))}
           </ul>
         </article>

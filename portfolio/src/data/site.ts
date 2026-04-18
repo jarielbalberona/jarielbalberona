@@ -1,9 +1,9 @@
 export const siteMeta = {
   name: 'Jariel Balberona',
   title: 'Jariel Balberona',
-  shortTitle: 'Product engineering, architecture, delivery',
+  shortTitle: 'Production systems, architecture, and automation',
   description:
-    'Jariel Balberona builds production systems across frontend, backend, and infrastructure with a focus on maintainability, scalability, and reliable delivery.',
+    'Jariel Balberona builds production-grade systems, event-driven workflows, and operational tooling across backend architecture, infrastructure, and automation.',
   url: 'https://jarielbalberona.com',
   ogImage: '/og-default.svg',
   themeColor: '#1f282b',
@@ -15,6 +15,7 @@ export const siteMeta = {
 
 export const navItems = [
   { href: '/', label: 'Home', key: 'home' },
+  { href: '/ai-automation', label: 'AI Automation', key: 'ai-automation' },
   { href: '/now', label: 'Now', key: 'now' },
   { href: '/work', label: 'Work', key: 'work' },
   { href: '/workflow', label: 'Workflow', key: 'workflow' },
