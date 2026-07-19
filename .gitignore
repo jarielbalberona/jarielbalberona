@@ -4,3 +4,5 @@ docs/references/*.pdf
 portfolio/.astro/
 portfolio/dist/
 portfolio/node_modules/
+
+interview/*
