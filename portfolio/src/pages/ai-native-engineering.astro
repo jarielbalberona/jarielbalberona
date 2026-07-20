@@ -1,5 +1,6 @@
 ---
 import SiteLayout from '../layouts/SiteLayout.astro';
+import AuthorityMatrix from '../components/AuthorityMatrix.astro';
 
 const executionLoop = [
   {
@@ -87,6 +88,7 @@ const capabilityLevels = [
     <p class="mt-6 max-w-2xl text-lg leading-relaxed text-ink-soft">
       AI-native engineering is not prompt-driven improvisation. It is a software-delivery system built around repository context, bounded authority, deterministic quality gates, runtime evidence, escalation, and human accountability.
     </p>
+    <a href="/notes/agentic-closed-loop-development" data-analytics-event="article_open" data-analytics-location="ai_native_engineering_intro" class="mt-7 inline-flex bg-ink px-5 py-2.5 text-sm font-medium text-paper no-underline hover:bg-ink-soft">Read the complete operating model</a>
   </section>
 
   <section class="mb-20 border-y border-line py-8">
@@ -122,6 +124,32 @@ const capabilityLevels = [
         </li>
       ))}
     </ol>
+    <figure class="mt-12 max-w-2xl">
+      <img src="/images/notes/agentic-closed-loop-lifecycle.svg" width="720" height="1280" alt="Ten-stage agentic closed-loop development lifecycle from product intent to documented outcome." class="h-auto w-full border border-line bg-paper-strong" />
+      <figcaption class="mt-3 text-sm leading-relaxed text-ink-soft">The diagram condenses the operating model above. Each stage is also described in text, so the sequence does not depend on the image.</figcaption>
+    </figure>
+  </section>
+
+  <section class="mb-20 border-t border-line pt-10" aria-labelledby="authority-heading">
+    <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">Authority model</p>
+    <h2 id="authority-heading" class="max-w-2xl text-3xl font-semibold leading-tight tracking-tight text-ink">Delegate execution without delegating accountability.</h2>
+    <p class="mt-5 max-w-2xl text-sm leading-relaxed text-ink-soft">The methodology defines what an agent may complete, what it must escalate, and which actions remain prohibited. The article explains the model; the matrix makes the operating boundary explicit.</p>
+    <div class="mt-8"><AuthorityMatrix /></div>
+  </section>
+
+  <section class="mb-20 grid gap-8 border-t border-line pt-10 md:grid-cols-2" aria-labelledby="evidence-heading">
+    <div>
+      <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">Methodology</p>
+      <h2 id="evidence-heading" class="text-2xl font-semibold tracking-tight text-ink">How the engineering system works.</h2>
+      <p class="mt-4 text-sm leading-relaxed text-ink-soft">The cornerstone note covers lifecycle, context, verification, bounded autonomy, correction, failure modes, and adoption stages.</p>
+      <a href="/notes/agentic-closed-loop-development" data-analytics-event="article_open" data-analytics-location="ai_native_engineering_evidence" class="mt-5 inline-flex text-sm font-semibold text-ink underline decoration-line underline-offset-4 hover:decoration-ink">Read Agentic Closed-Loop Development</a>
+    </div>
+    <div>
+      <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">Implementation evidence</p>
+      <h2 class="text-2xl font-semibold tracking-tight text-ink">One independently owned system under real constraints.</h2>
+      <p class="mt-4 text-sm leading-relaxed text-ink-soft">Ordr.now provides a concrete example of offline recovery, authorization boundaries, idempotent synchronization, and physical-device verification.</p>
+      <a href="/work/ordr-now#offline-recovery-and-idempotent-synchronization" class="mt-5 inline-flex text-sm font-semibold text-ink underline decoration-line underline-offset-4 hover:decoration-ink">Read the Ordr.now proof</a>
+    </div>
   </section>
 
   <section class="grid gap-10 border-t border-line pt-10 md:grid-cols-2">

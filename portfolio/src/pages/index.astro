@@ -1,10 +1,12 @@
 ---
 import { getCollection } from 'astro:content';
 import SiteLayout from '../layouts/SiteLayout.astro';
+import { formatNoteDate, isPublishedNote, noteUrl, readingTime, sortNotesNewestFirst } from '../lib/notes';
 
 const [ordrNow] = (await getCollection('work'))
   .filter((entry) => entry.id === 'ordr-now')
   .sort((a, b) => a.data.order - b.data.order);
+const [latestNote] = (await getCollection('notes')).filter(isPublishedNote).sort(sortNotesNewestFirst);
 
 const foundations = [
   'TypeScript',
@@ -70,7 +72,7 @@ const foundations = [
       </p>
       <div class="mt-7 flex flex-wrap gap-4">
         <a href="/work/ordr-now" class="inline-flex bg-ink px-5 py-2.5 text-sm font-medium text-paper no-underline hover:bg-ink-soft">Read the Ordr.now case study</a>
-        {ordrNow.data.liveUrl && <a href={ordrNow.data.liveUrl} class="inline-flex border border-line px-5 py-2.5 text-sm font-medium text-ink no-underline hover:border-ink">Visit Ordr.now</a>}
+        {ordrNow.data.liveUrl && <a href={ordrNow.data.liveUrl} data-analytics-event="ordr_now_click" data-analytics-location="home_anchor_case" class="inline-flex border border-line px-5 py-2.5 text-sm font-medium text-ink no-underline hover:border-ink">Visit Ordr.now</a>}
       </div>
     </section>
   )}
@@ -84,6 +86,19 @@ const foundations = [
       {foundations.map((item) => <li class="border border-line px-3 py-1.5">{item}</li>)}
     </ul>
   </section>
+
+  {latestNote && (
+    <section class="mb-20 border-t border-line pt-8" aria-labelledby="latest-note-heading">
+      <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">Latest note</p>
+      <h2 id="latest-note-heading" class="max-w-2xl text-2xl font-semibold leading-tight tracking-tight text-ink">{latestNote.data.title}</h2>
+      <p class="mt-4 max-w-2xl text-sm leading-relaxed text-ink-soft">{latestNote.data.summary}</p>
+      <div class="mt-4 flex flex-wrap gap-3 text-xs text-ink-soft">
+        <time datetime={latestNote.data.publishedDate.toISOString()}>{formatNoteDate(latestNote.data.publishedDate)}</time>
+        <span>{readingTime(latestNote.body ?? '').label}</span>
+      </div>
+      <a href={noteUrl(latestNote)} data-analytics-event="article_open" data-analytics-location="home_latest_note" class="mt-6 inline-flex text-sm font-semibold text-ink underline decoration-line underline-offset-4 hover:decoration-ink">Read the note</a>
+    </section>
+  )}
 
   <section class="grid gap-10 border-t border-line pt-8 md:grid-cols-2">
     <div>

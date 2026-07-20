@@ -35,6 +35,8 @@ Full-stack, DevOps, and cloud-platform engineering across application modernizat
 
 - [Portfolio](https://jarielbalberona.dev/)
 - [AI-Native Engineering](https://jarielbalberona.dev/ai-native-engineering)
+- [Agentic Closed-Loop Development](https://jarielbalberona.dev/notes/agentic-closed-loop-development)
+- [Ordr.now case study](https://jarielbalberona.dev/work/ordr-now)
 - [CV](https://jarielbalberona.dev/jariel-balberona-cv.pdf)
 - [LinkedIn](https://www.linkedin.com/in/jarielbalberona/)
 - [GitHub](https://github.com/jarielbalberona)

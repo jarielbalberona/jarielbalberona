@@ -3,10 +3,10 @@ import SiteLayout from '../layouts/SiteLayout.astro';
 import { siteMeta } from '../data/site';
 
 const contactLinks = [
-  { label: 'Email', value: siteMeta.email, href: `mailto:${siteMeta.email}` },
-  { label: 'LinkedIn', value: 'linkedin.com/in/jarielbalberona', href: siteMeta.linkedin },
-  { label: 'GitHub', value: 'github.com/jarielbalberona', href: siteMeta.github },
-  { label: 'CV', value: 'Open the PDF', href: siteMeta.cvUrl },
+  { label: 'Email', value: siteMeta.email, href: `mailto:${siteMeta.email}`, event: 'contact_email_click', location: 'contact_links' },
+  { label: 'LinkedIn', value: 'linkedin.com/in/jarielbalberona', href: siteMeta.linkedin, event: 'linkedin_click', location: 'contact_links' },
+  { label: 'GitHub', value: 'github.com/jarielbalberona', href: siteMeta.github, event: 'github_click', location: 'contact_links' },
+  { label: 'CV', value: 'Open the PDF', href: siteMeta.cvUrl, event: 'cv_download', location: 'contact_links' },
 ];
 ---
 
@@ -23,14 +23,14 @@ const contactLinks = [
     <p class="mt-6 max-w-2xl text-lg leading-relaxed text-ink-soft">
       Open to staff-level AI-native product engineering and platform engineering roles, as well as selective consulting engagements.
     </p>
-    <a href={`mailto:${siteMeta.email}`} class="mt-8 inline-flex bg-ink px-5 py-2.5 text-sm font-medium text-paper no-underline hover:bg-ink-soft">Start with email</a>
+    <a href={`mailto:${siteMeta.email}`} data-analytics-event="contact_email_click" data-analytics-location="contact_primary" class="mt-8 inline-flex bg-ink px-5 py-2.5 text-sm font-medium text-paper no-underline hover:bg-ink-soft">Start with email</a>
   </section>
 
   <section class="grid gap-8 border-t border-line pt-8 md:grid-cols-2" aria-label="Contact links">
     {contactLinks.map((item) => (
       <article class="border-t border-line pt-4">
         <p class="text-xs font-mono uppercase tracking-widest text-ink-soft">{item.label}</p>
-        <a href={item.href} class="mt-3 inline-block break-all text-base font-semibold text-ink underline decoration-line underline-offset-4 hover:decoration-ink">{item.value}</a>
+        <a href={item.href} data-analytics-event={item.event} data-analytics-location={item.location} class="mt-3 inline-block break-all text-base font-semibold text-ink underline decoration-line underline-offset-4 hover:decoration-ink">{item.value}</a>
       </article>
     ))}
   </section>

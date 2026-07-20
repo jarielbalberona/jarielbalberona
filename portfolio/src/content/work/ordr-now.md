@@ -69,6 +69,46 @@ Ordr.now is also the primary environment in which I apply AI-native engineering 
 
 The authority remains bounded. Financial behavior, identity and tenant scope, destructive operations, ambiguous recovery, and release judgment require deterministic controls or human approval. A successful code generation step is never treated as proof that the product works.
 
+## Offline Recovery and Idempotent Synchronization
+
+### Problem
+
+A mobile point-of-sale system has to continue operating when connectivity or authentication state changes. Queued operations must not cross tenant, venue, or register boundaries. They must not execute twice after reconnect, disappear after restart, drain while authentication is invalid, reopen already closed operational state, or apply inventory twice.
+
+The problem is not merely retaining requests until a network returns. The system has to preserve the authorization and operational meaning of each command while local and server state temporarily diverge.
+
+### System risk
+
+Unsafe replay can duplicate financial or inventory effects, apply work under invalid authorization, create inconsistent shift state, lose commands, or leave a device unable to recover after restart. A queue that drains successfully can still be wrong if it sends an operation into the wrong scope or repeats an effect the server already accepted.
+
+### Engineering constraints
+
+The recovery model therefore combines offline-first operation, durable local state, explicit authorization context, idempotent backend commands, restart persistence, bounded recovery, canonical server state, and physical-device behavior. Each layer has a different responsibility. Local persistence prevents valid queued work from disappearing. Scope and authentication checks prevent unsafe execution. Backend idempotency prevents a replay from duplicating a completed effect. Reconciliation returns the device to canonical server state.
+
+### Execution model
+
+The work was handled through explicit behavioral acceptance criteria, repository-owned context, scoped agent execution, automated tests, API and integration verification, runtime checks, physical Android validation, and a human release decision. Agent assistance accelerated investigation, implementation, and evidence collection, but it did not define the security or release boundary.
+
+The verification categories included:
+
+- wrong-scope commands remain blocked;
+- revoked authentication prevents draining;
+- queued valid work resumes after reauthentication;
+- blocked work remains blocked;
+- offline close does not mutate the server prematurely;
+- reconnect synchronizes the canonical result once;
+- restart does not duplicate the completed effect;
+- inventory replay remains idempotent;
+- physical Android release gates were exercised.
+
+These statements describe verified behavioral categories, not a claim that every device, infrastructure path, or long-running production condition has been exhausted.
+
+### Result
+
+The release process demonstrated that AI-assisted implementation was subordinate to explicit behavioral proof across local persistence, authorization, synchronization, backend effects, and physical-device behavior.
+
+This is one independently owned implementation context for the broader [agentic closed-loop development model](/notes/agentic-closed-loop-development). The methodology is general; the proof above is specific to the responsibilities and evidence that can be publicly attributed to Ordr.now.
+
 ## Why it matters
 
 This work demonstrates the full operating range: product judgment, conventional software architecture, offline-first systems, multi-tenant design, cloud delivery, automated QA, runtime verification, and governed agent execution inside one product I am accountable for.

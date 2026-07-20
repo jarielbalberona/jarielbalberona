@@ -44,7 +44,8 @@ const entries = (await getCollection('work')).sort((a, b) => a.data.order - b.da
         </div>
         <div class="mt-6 flex flex-wrap gap-4">
           <a href={`/work/${entry.id}`} class="inline-flex text-sm font-semibold text-ink underline decoration-line underline-offset-4 hover:decoration-ink">Read details</a>
-          {entry.data.liveUrl && <a href={entry.data.liveUrl} class="inline-flex text-sm font-semibold text-ink-soft underline decoration-line underline-offset-4 hover:text-ink hover:decoration-ink">External site</a>}
+          {entry.id === 'ordr-now' && <a href="/work/ordr-now#offline-recovery-and-idempotent-synchronization" class="inline-flex text-sm font-semibold text-ink-soft underline decoration-line underline-offset-4 hover:text-ink hover:decoration-ink">Offline recovery proof</a>}
+          {entry.data.liveUrl && <a href={entry.data.liveUrl} data-analytics-event={entry.id === 'ordr-now' ? 'ordr_now_click' : undefined} data-analytics-location={entry.id === 'ordr-now' ? 'work_index' : undefined} class="inline-flex text-sm font-semibold text-ink-soft underline decoration-line underline-offset-4 hover:text-ink hover:decoration-ink">External site</a>}
         </div>
       </article>
     ))}

@@ -68,14 +68,14 @@ const { Content } = await render(entry);
       <div class="mt-10 flex flex-wrap gap-4">
         <a href="/work" class="inline-flex border border-line px-5 py-2.5 text-sm font-medium text-ink no-underline hover:border-ink hover:text-ink transition-colors">Back to work</a>
         {entry.data.liveUrl && (
-          <a href={entry.data.liveUrl} class="inline-flex border border-line px-5 py-2.5 text-sm font-medium text-ink no-underline hover:border-ink hover:text-ink transition-colors">
+          <a href={entry.data.liveUrl} data-analytics-event={entry.id === 'ordr-now' ? 'ordr_now_click' : undefined} data-analytics-location={entry.id === 'ordr-now' ? 'ordr_case_study' : undefined} class="inline-flex border border-line px-5 py-2.5 text-sm font-medium text-ink no-underline hover:border-ink hover:text-ink transition-colors">
             Visit live site
           </a>
         )}
       </div>
     </section>
 
-    <section class="border-t border-line pt-10 text-ink [&_h2]:mt-12 [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:tracking-tight [&_h2]:text-ink [&_h2:first-child]:mt-0 [&_p]:mt-5 [&_p]:max-w-2xl [&_p]:text-base [&_p]:leading-relaxed [&_p]:text-ink-soft [&_ul]:mt-5 [&_ul]:space-y-3 [&_ul]:pl-5 [&_ul]:text-base [&_ul]:leading-relaxed [&_ul]:text-ink-soft [&_ul]:list-disc [&_ul]:marker:text-line">
+    <section class="border-t border-line pt-10 text-ink [&_h2]:mt-12 [&_h2]:scroll-mt-8 [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:tracking-tight [&_h2]:text-ink [&_h2:first-child]:mt-0 [&_h3]:mt-8 [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:tracking-tight [&_h3]:text-ink [&_p]:mt-5 [&_p]:max-w-2xl [&_p]:text-base [&_p]:leading-relaxed [&_p]:text-ink-soft [&_ul]:mt-5 [&_ul]:space-y-3 [&_ul]:pl-5 [&_ul]:text-base [&_ul]:leading-relaxed [&_ul]:text-ink-soft [&_ul]:list-disc [&_ul]:marker:text-line [&_a]:font-medium [&_a]:text-ink [&_a]:underline [&_a]:decoration-line [&_a]:underline-offset-4 hover:[&_a]:decoration-ink">
       <Content />
     </section>
   </article>

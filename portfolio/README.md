@@ -9,7 +9,7 @@ The site presents Jariel Balberona as a Staff-Level AI-Native Software Engineer 
 - Astro
 - TypeScript
 - Tailwind CSS v4
-- Astro content collections for Work
+- Astro content collections for Work and Notes
 - Render Static Site deployment
 
 ## Content authority
@@ -17,9 +17,16 @@ The site presents Jariel Balberona as a Staff-Level AI-Native Software Engineer 
 - `src/data/site.ts`: site URL, identity, navigation, and global metadata defaults
 - `src/data/cv.json`: employment chronology, CV roles, and selected experience facts
 - `src/content/work/`: public Work case studies
+- `src/content/notes/`: published engineering notes and unpublished drafts
 - Astro page files: Home, AI-Native Engineering, Now, and Contact
 
 Unused parallel Markdown page copies were removed so public copy does not drift between two sources.
+
+## Notes publishing
+
+Notes use the typed collection in `src/content.config.ts`. A note is public only when its frontmatter sets `draft: false`; drafts do not generate routes and are omitted from the Notes index, related links, RSS, and sitemap. Article slugs come from Markdown filenames.
+
+Use `npm run dev` for local review, then run `npm run check` and `npm run build` before publishing. The complete schema and release checklist are documented in [`../docs/notes-authoring.md`](../docs/notes-authoring.md).
 
 ## CV generation
 
@@ -40,8 +47,10 @@ No server adapter is required.
 
 Google Analytics is optional and disabled unless `PUBLIC_GA_MEASUREMENT_ID` is set in Render.
 
+Conversion event names and trigger locations are documented in [`../docs/analytics-events.md`](../docs/analytics-events.md).
+
 ## Working rules
 
-- Do not add a CMS, database, blog, or client-heavy runtime without a concrete need.
+- Do not add a CMS, database, or client-heavy runtime without a concrete need.
 - Do not publish confidential client identities, repositories, domains, scripts, prompts, environments, screenshots, customer data, or internal operating details.
 - Keep public claims specific, attributable, and defensible.
