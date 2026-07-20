@@ -1,0 +1,36 @@
+---
+const rows = [
+  ['Read code and investigate', 'Autonomous', 'Oversight'],
+  ['Clarify material ambiguity', 'Escalate', 'Decide'],
+  ['Implement approved scope', 'Autonomous', 'Review when needed'],
+  ['Run checks and previews', 'Autonomous', 'Oversight'],
+  ['Retry bounded failures', 'Autonomous within limit', 'Intervene after limit'],
+  ['Change authentication or schema', 'Propose only', 'Approve'],
+  ['Merge protected branches', 'Prepare only', 'Approve'],
+  ['Release production', 'Prepare and verify', 'Approve'],
+  ['Bypass verification', 'Prohibited', 'Prohibited'],
+  ['Expose secrets', 'Prohibited', 'Prohibited'],
+];
+---
+
+<div class="overflow-x-auto border-y border-line" tabindex="0" aria-label="Agent authority matrix, horizontally scrollable on small screens">
+  <table class="w-full min-w-[44rem] border-collapse text-left text-sm">
+    <caption class="sr-only">Agent authority and human responsibility across engineering activities</caption>
+    <thead>
+      <tr class="border-b border-line">
+        <th scope="col" class="px-4 py-3 font-semibold text-ink">Activity</th>
+        <th scope="col" class="px-4 py-3 font-semibold text-ink">Agent authority</th>
+        <th scope="col" class="px-4 py-3 font-semibold text-ink">Human responsibility</th>
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map(([activity, authority, responsibility]) => (
+        <tr class="border-b border-line last:border-b-0">
+          <th scope="row" class="px-4 py-3 font-medium text-ink">{activity}</th>
+          <td class="px-4 py-3 text-ink-soft">{authority}</td>
+          <td class="px-4 py-3 text-ink-soft">{responsibility}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

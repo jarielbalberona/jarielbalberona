@@ -23,4 +23,29 @@ const work = defineCollection({
   }),
 });
 
-export const collections = { work };
+const noteTags = z.enum([
+  'agentic-engineering',
+  'ai-native-engineering',
+  'software-delivery',
+  'verification',
+  'bounded-autonomy',
+  'context-engineering',
+]);
+
+const notes = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/notes' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    publishedDate: z.coerce.date(),
+    updatedDate: z.coerce.date().optional(),
+    draft: z.boolean().default(true),
+    tags: z.array(noteTags).min(1),
+    canonical: z.string().url().optional(),
+    ogImage: z.string(),
+    summary: z.string(),
+    featured: z.boolean().default(false),
+  }),
+});
+
+export const collections = { work, notes };

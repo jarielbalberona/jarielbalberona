@@ -12,6 +12,12 @@ interface Props {
   footerLeft?: string;
   footerRight?: string;
   ogImage?: string;
+  ogImageAlt?: string;
+  ogType?: 'website' | 'article';
+  canonical?: string;
+  publishedDate?: Date;
+  updatedDate?: Date;
+  additionalStructuredData?: Record<string, unknown>[];
 }
 
 const {
@@ -21,9 +27,15 @@ const {
   footerLeft = siteMeta.name,
   footerRight = siteMeta.email,
   ogImage = siteMeta.ogImage,
+  ogImageAlt = `${siteMeta.name}, Staff-Level AI-Native Software Engineer`,
+  ogType = 'website',
+  canonical,
+  publishedDate,
+  updatedDate,
+  additionalStructuredData = [],
 } = Astro.props;
 
-const canonicalUrl = new URL(Astro.url.pathname, siteMeta.url).toString();
+const canonicalUrl = canonical ?? new URL(Astro.url.pathname, siteMeta.url).toString();
 const ogImageUrl = new URL(ogImage, siteMeta.url).toString();
 const structuredData = {
   '@context': 'https://schema.org',
@@ -44,6 +56,7 @@ const structuredData = {
       description: siteMeta.description,
       publisher: { '@id': `${siteMeta.url}/#person` },
     },
+    ...additionalStructuredData,
   ],
 };
 ---
@@ -55,20 +68,24 @@ const structuredData = {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="google-site-verification" content="GzufsVA1_dOCwjO51JI8F804YZ7-cHlSjqsKZqGVpQQ" />
     <meta name="theme-color" content={siteMeta.themeColor} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:site_name" content={siteMeta.title} />
     <meta property="og:image" content={ogImageUrl} />
-    <meta property="og:image:alt" content={`${siteMeta.name}, Staff-Level AI-Native Software Engineer`} />
+    <meta property="og:image:alt" content={ogImageAlt} />
+    {publishedDate && <meta property="article:published_time" content={publishedDate.toISOString()} />}
+    {updatedDate && <meta property="article:modified_time" content={updatedDate.toISOString()} />}
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content={ogImageUrl} />
-    <meta name="twitter:image:alt" content={`${siteMeta.name}, Staff-Level AI-Native Software Engineer`} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
     <link rel="canonical" href={canonicalUrl} />
+    <link rel="alternate" type="application/rss+xml" title="Jariel Balberona Notes" href={`${siteMeta.url}/rss.xml`} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />
     <GoogleAnalytics />

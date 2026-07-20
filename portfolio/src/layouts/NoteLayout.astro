@@ -1,0 +1,117 @@
+---
+import type { MarkdownHeading } from 'astro';
+import type { CollectionEntry } from 'astro:content';
+import { formatNoteDate, noteUrl, readingTime } from '../lib/notes';
+import { siteMeta } from '../data/site';
+import SiteLayout from './SiteLayout.astro';
+
+interface Props {
+  entry: CollectionEntry<'notes'>;
+  headings: MarkdownHeading[];
+  related: CollectionEntry<'notes'>[];
+  previous?: CollectionEntry<'notes'>;
+  next?: CollectionEntry<'notes'>;
+}
+
+const { entry, headings, related, previous, next } = Astro.props;
+const toc = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+const read = readingTime(entry.body ?? '');
+const path = noteUrl(entry);
+const canonical = entry.data.canonical ?? new URL(path, siteMeta.url).toString();
+const ogAlt = `${entry.data.title} — an engineering note by ${siteMeta.name}`;
+const articleId = `${canonical}#article`;
+const articleStructuredData = {
+  '@type': 'Article',
+  '@id': articleId,
+  headline: entry.data.title,
+  description: entry.data.description,
+  datePublished: entry.data.publishedDate.toISOString(),
+  dateModified: (entry.data.updatedDate ?? entry.data.publishedDate).toISOString(),
+  mainEntityOfPage: canonical,
+  image: new URL(entry.data.ogImage, siteMeta.url).toString(),
+  author: { '@id': `${siteMeta.url}/#person` },
+  publisher: { '@id': `${siteMeta.url}/#person` },
+  keywords: entry.data.tags.join(', '),
+};
+const breadcrumbStructuredData = {
+  '@type': 'BreadcrumbList',
+  '@id': `${canonical}#breadcrumb`,
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: `${siteMeta.url}/` },
+    { '@type': 'ListItem', position: 2, name: 'Notes', item: `${siteMeta.url}/notes/` },
+    { '@type': 'ListItem', position: 3, name: entry.data.title, item: canonical },
+  ],
+};
+---
+
+<SiteLayout
+  title={`${entry.data.title} | Jariel Balberona`}
+  description={entry.data.description}
+  activeNav="notes"
+  ogImage={entry.data.ogImage}
+  ogImageAlt={ogAlt}
+  ogType="article"
+  canonical={canonical}
+  publishedDate={entry.data.publishedDate}
+  updatedDate={entry.data.updatedDate}
+  additionalStructuredData={[articleStructuredData, breadcrumbStructuredData]}
+>
+  <article>
+    <header class="mb-12 border-b border-line pb-10">
+      <nav aria-label="Breadcrumb" class="mb-6 text-sm text-ink-soft">
+        <a href="/notes" class="font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-ink">Notes</a>
+        <span aria-hidden="true"> / </span>
+        <span aria-current="page">{entry.data.title}</span>
+      </nav>
+      <p class="mb-4 text-xs font-mono uppercase tracking-widest text-ink-soft">Engineering note</p>
+      <h1 class="max-w-3xl text-3xl font-semibold leading-tight tracking-tight text-ink sm:text-4xl lg:text-5xl">{entry.data.title}</h1>
+      <p class="mt-6 max-w-2xl text-lg leading-relaxed text-ink-soft">{entry.data.description}</p>
+      <div class="mt-6 flex flex-wrap gap-x-4 gap-y-2 text-sm text-ink-soft">
+        <time datetime={entry.data.publishedDate.toISOString()}>{formatNoteDate(entry.data.publishedDate)}</time>
+        {entry.data.updatedDate && <span>Updated {formatNoteDate(entry.data.updatedDate)}</span>}
+        <span>{read.label}</span>
+        <span>{read.words.toLocaleString('en')} words</span>
+      </div>
+      <ul class="mt-5 flex flex-wrap gap-2" aria-label="Article tags">
+        {entry.data.tags.map((tag) => <li class="border border-line px-2.5 py-1 font-mono text-xs text-ink-soft">{tag}</li>)}
+      </ul>
+    </header>
+
+    {toc.length >= 3 && (
+      <nav aria-labelledby="toc-heading" class="mb-12 border-y border-line py-6">
+        <h2 id="toc-heading" class="text-sm font-semibold text-ink">On this page</h2>
+        <ol class="mt-4 grid gap-2 text-sm sm:grid-cols-2">
+          {toc.map((heading) => (
+            <li class:list={[heading.depth === 3 && 'pl-4']}>
+              <a href={`#${heading.slug}`} class="text-ink-soft underline decoration-line underline-offset-4 hover:text-ink hover:decoration-ink">{heading.text}</a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+    )}
+
+    <div class="note-prose max-w-3xl">
+      <slot />
+    </div>
+
+    <footer class="mt-16 border-t border-line pt-10">
+      {related.length > 0 && (
+        <section aria-labelledby="related-heading">
+          <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">Related notes</p>
+          <h2 id="related-heading" class="text-2xl font-semibold tracking-tight text-ink">Continue the subject.</h2>
+          <ul class="mt-5 space-y-4">
+            {related.map((item) => (
+              <li><a href={noteUrl(item)} class="font-semibold text-ink underline decoration-line underline-offset-4 hover:decoration-ink">{item.data.title}</a></li>
+            ))}
+          </ul>
+        </section>
+      )}
+      {(previous || next) && (
+        <nav aria-label="Article sequence" class="mt-10 grid gap-4 border-t border-line pt-8 sm:grid-cols-2">
+          {previous ? <a href={noteUrl(previous)} class="text-sm font-semibold text-ink underline decoration-line underline-offset-4">Previous: {previous.data.title}</a> : <span />}
+          {next && <a href={noteUrl(next)} class="text-sm font-semibold text-ink underline decoration-line underline-offset-4 sm:text-right">Next: {next.data.title}</a>}
+        </nav>
+      )}
+    </footer>
+  </article>
+</SiteLayout>
