@@ -1,5 +1,6 @@
 .DS_Store
 .tools/
+/linear/
 docs/references/*.pdf
 portfolio/.astro/
 portfolio/dist/
