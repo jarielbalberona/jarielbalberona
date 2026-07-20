@@ -21,48 +21,50 @@ Exclude:
 - skill badges
 - generic feature-card filler
 
-### Now
-
-Purpose:
-- show current work and active direction
-
-Include:
-- current project focus
-- what is being learned or refined
-- immediate priorities
-- what is intentionally not being done
-
-Exclude:
-- stale logs
-- vague aspirations
-
 ### Work
 
 Purpose:
 - show proof through a small number of credible project summaries
 
 Include:
-- 1-3 strong projects
+- Ordr.now as the anchor case study
+- concise, bounded historical professional evidence
 - role, scope, constraints, and decisions
 
 Exclude:
 - toy projects
 - everything ever built
+- confidential client detail
 
-### Workflow
+### AI-Native Engineering
 
 Purpose:
-- explain how engineering judgment and AI-assisted leverage fit together
+- explain governed agent execution as an engineering capability
 
 Include:
-- planning approach
-- implementation stance
-- review and ownership model
-- maintainability and delivery standards
+- product intent and repository context
+- scoped implementation and quality gates
+- runtime verification and bounded correction
+- escalation and human approval boundaries
 
 Exclude:
 - AI hype
-- tool worship
+- vendor inventories
+- unrestricted autonomy claims
+
+### Now
+
+Purpose:
+- show current work and active direction
+
+Include:
+- current product and engineering focus
+- opportunity and consulting direction
+
+Exclude:
+- stale logs
+- confidential current clients
+- vague aspirations
 
 ### Contact
 
@@ -72,6 +74,8 @@ Purpose:
 Include:
 - email
 - LinkedIn
+- GitHub
+- CV
 - fit statement for relevant work
 
 Exclude:

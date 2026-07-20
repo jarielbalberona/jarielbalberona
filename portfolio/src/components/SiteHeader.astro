@@ -22,6 +22,7 @@ const { activeNav } = Astro.props;
           return (
             <a
               href={item.href}
+              aria-current={active ? 'page' : undefined}
               class:list={[
                 'text-sm font-medium no-underline transition-colors',
                 active ? 'text-ink' : 'text-ink-soft hover:text-ink',

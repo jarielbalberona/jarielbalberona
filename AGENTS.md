@@ -2,7 +2,7 @@
 
 ## 1. Mission
 
-This workspace exists to shape `jarielbalberona.com` into a serious public engineering home.
+This workspace exists to shape `jarielbalberona.dev` into a serious public engineering home.
 
 The goal is not to build a generic portfolio. The goal is to present a senior engineer who builds and modernizes production systems, works across product, architecture, and delivery, and communicates with specificity and credibility.
 
@@ -26,12 +26,12 @@ This project is not meant to become:
 - An AI hype site
 - A design exercise detached from real engineering work
 
-Likely MVP site structure:
+Current core site structure:
 
 - `Home`
-- `Now`
 - `Work`
-- `Workflow`
+- `AI-Native Engineering`
+- `Now`
 - `Contact`
 
 `Notes` or a blog can come later if it improves the site. It is not mandatory for MVP.

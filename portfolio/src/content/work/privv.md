@@ -1,61 +1,54 @@
 ---
 title: PRIVV
-summary: Product engineering work for a capital project platform with complex financial workflows, dense planning interfaces, and high trust requirements around system behavior.
-status: Selected work
-timeframe: Product platform work
+summary: Frontend and product engineering for a capital-project platform with dense planning and financial workflows.
+status: Professional evidence
+timeframe: Feb 2025 - Mar 2026
 featured: true
 order: 2
 liveUrl: https://www.privv.ai/
-role: Frontend and product engineering on high-trust planning workflows
+role: Senior Software Engineer | Contract
 stack:
   - React
   - TypeScript
   - Vite
-  - Tailwind CSS v4
+  - Tailwind CSS
   - TanStack Query
   - Zustand
 highlights:
-  - Improved frontend structure for a platform supporting more than $4B in capital project workflows.
-  - Reworked state and data flow across budgets, schedules, invoicing, and forecasting workflows with high interaction complexity.
-  - Strengthened UI structure and interaction behavior so complex financial workflows stayed usable and maintainable under growth.
-context: A capital project platform with dense planning, budgeting, forecasting, and invoicing workflows where trust in system behavior matters.
+  - Contributed to frontend modernization across a large, data-heavy React application.
+  - Improved component, state, and server-data boundaries for complex planning interfaces.
+  - Added automated testing and clearer modular ownership to support safer product change.
+context: A mature planning platform needed to evolve while preserving reliability across dense, high-trust user workflows.
 ownership:
-  - Frontend and product engineering across complex financial planning interfaces
-  - UI structure and state handling for dense, high-interaction workflows
-  - Maintainability and usability improvements as workflow complexity increased
+  - Frontend architecture and implementation
+  - Client-side state and server-data flow
+  - Test coverage and maintainability improvements
 constraints:
-  - High-trust financial workflows with low tolerance for confusing behavior
-  - Dense tables, planning views, and forecasting interactions
-  - Growing product complexity that could easily collapse into frontend sprawl
+  - Existing production behavior and legacy application structure
+  - Dense, interdependent planning interfaces
+  - Low tolerance for confusing state or regressions
 changes:
-  - Reworked frontend structure to better support large, interdependent planning surfaces
-  - Improved state and data flow across budgeting, scheduling, invoicing, and forecasting views
-  - Strengthened the product foundation so more complexity could be added without repeated churn
-impact: Made a dense planning product easier to evolve without letting financial workflow complexity turn into permanent frontend drag.
+  - Supported incremental modernization of the frontend toolchain and application structure
+  - Separated feature, state, and data responsibilities more clearly
+  - Strengthened automated verification around changed behavior
+impact: The contribution focused on making continued frontend change easier to reason about and verify under existing product constraints.
 ---
 
 ## Context
 
-PRIVV is a capital project platform for budgeting, scheduling, procurement, invoicing, and forecasting across large construction and infrastructure programs. My work focused on making the product hold up under growing workflow complexity without collapsing into state and component sprawl.
+PRIVV is a capital-project platform with dense planning and financial workflows. My contract work focused on frontend modernization and maintainability inside an established production system.
 
-## What I owned
+## Responsibility
 
-- Frontend and product engineering on planning and financial workflow surfaces
-- Structure for component, state, and interaction behavior under heavy workflow density
-- Maintainability work that kept future product changes from becoming increasingly expensive
+- Frontend architecture and hands-on React and TypeScript implementation
+- Component, client-state, and server-data boundaries
+- Incremental modernization that respected existing product behavior
+- Automated testing around changed frontend behavior
 
-## Technical constraints
+## Engineering contribution
 
-In products like this, trust depends heavily on behavior clarity. Weak state structure and inconsistent workflow handling spread fast, slow down development, and make already-complex planning work harder to use.
+The work improved the structure used to evolve complex interfaces without treating a mature codebase as a greenfield rewrite. The emphasis was clearer ownership, more predictable data flow, and verification that matched the risk of the changes.
 
-## What I changed
+## Production constraint
 
-The core work was strengthening the frontend foundation so the system could expand without repeated churn in its state and UI layers. That foundation had to support demanding planning and financial workflows across university, healthcare, and municipal construction environments where fragile behavior was not acceptable.
-
-- Improved structure around budgeting, scheduling, invoicing, and forecasting views
-- Reduced the risk of repeated UI churn by making the underlying frontend easier to reason about
-- Focused on making the product understandable and usable under real planning complexity
-
-## Why it mattered
-
-The value was keeping complex financial workflows usable while preserving a codebase that could continue to evolve under pressure.
+Dense planning interfaces carry significant interaction state. Changes have to preserve established user workflows while making the application easier to maintain. That requires incremental architecture work rather than broad rewrites or unsupported outcome claims.

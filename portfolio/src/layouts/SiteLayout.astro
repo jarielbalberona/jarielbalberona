@@ -25,6 +25,27 @@ const {
 
 const canonicalUrl = new URL(Astro.url.pathname, siteMeta.url).toString();
 const ogImageUrl = new URL(ogImage, siteMeta.url).toString();
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Person',
+      '@id': `${siteMeta.url}/#person`,
+      name: siteMeta.name,
+      url: siteMeta.url,
+      jobTitle: 'Staff-Level AI-Native Software Engineer',
+      sameAs: [siteMeta.linkedin, siteMeta.github],
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${siteMeta.url}/#website`,
+      url: siteMeta.url,
+      name: siteMeta.title,
+      description: siteMeta.description,
+      publisher: { '@id': `${siteMeta.url}/#person` },
+    },
+  ],
+};
 ---
 
 <!doctype html>
@@ -34,25 +55,28 @@ const ogImageUrl = new URL(ogImage, siteMeta.url).toString();
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="theme-color" content={siteMeta.themeColor} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:site_name" content={siteMeta.title} />
     <meta property="og:image" content={ogImageUrl} />
-    <meta property="og:image:alt" content={`${siteMeta.name} — production systems, architecture, and automation`} />
+    <meta property="og:image:alt" content={`${siteMeta.name}, Staff-Level AI-Native Software Engineer`} />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content={ogImageUrl} />
+    <meta name="twitter:image:alt" content={`${siteMeta.name}, Staff-Level AI-Native Software Engineer`} />
     <link rel="canonical" href={canonicalUrl} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />
     <GoogleAnalytics />
   </head>
   <body class="min-h-screen flex flex-col">
+    <a class="skip-link" href="#main-content">Skip to main content</a>
     <SiteHeader activeNav={activeNav} />
-    <main class="mx-auto w-full max-w-4xl px-6 py-12 md:py-20 flex-grow">
+    <main id="main-content" tabindex="-1" class="mx-auto w-full max-w-4xl px-6 py-12 md:py-20 flex-grow">
       <slot />
     </main>
     <SiteFooter left={footerLeft} right={footerRight} />

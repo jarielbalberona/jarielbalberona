@@ -2,79 +2,36 @@
 import SiteLayout from '../layouts/SiteLayout.astro';
 import { siteMeta } from '../data/site';
 
-const goodFit = [
-  'React and TypeScript systems that need better structure, stronger maintainability, or cleaner data and state flow',
-  'Product and platform work where architecture quality affects delivery speed',
-  'Hands-on work across frontend, backend, data, and shipping workflows',
-  'Senior engineering roles that require judgment and ownership, not just output',
-];
-
-const badFit = [
-  'Low-depth agency-style work',
-  'Teams that treat software as surface-level presentation instead of a product system',
-  'Environments driven more by trend language than technical clarity',
-  'AI-first cultures that use automation to avoid engineering responsibility',
+const contactLinks = [
+  { label: 'Email', value: siteMeta.email, href: `mailto:${siteMeta.email}` },
+  { label: 'LinkedIn', value: 'linkedin.com/in/jarielbalberona', href: siteMeta.linkedin },
+  { label: 'GitHub', value: 'github.com/jarielbalberona', href: siteMeta.github },
+  { label: 'CV', value: 'Open the PDF', href: siteMeta.cvUrl },
 ];
 ---
 
 <SiteLayout
   title="Contact | Jariel Balberona"
-  description="Contact Jariel Balberona for senior software engineering, product architecture, and production system work."
+  description="Discuss a staff-level AI-native engineering role or a clearly scoped technical engagement with Jariel Balberona."
   activeNav="contact"
 >
-  <section class="mb-20">
+  <section class="mb-16">
     <p class="mb-5 text-xs font-mono uppercase tracking-widest text-ink-soft">Contact</p>
-    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-tight text-ink leading-tight">
-      Contact
+    <h1 class="max-w-3xl text-3xl font-semibold leading-tight tracking-tight text-ink sm:text-4xl">
+      Discuss a staff-level engineering role or a clearly scoped technical engagement.
     </h1>
     <p class="mt-6 max-w-2xl text-lg leading-relaxed text-ink-soft">
-      I am best suited to product and engineering work where architecture, maintainability, delivery quality, and operational reliability have a real impact on the outcome.
+      Open to staff-level AI-native product engineering and platform engineering roles, as well as selective consulting engagements.
     </p>
+    <a href={`mailto:${siteMeta.email}`} class="mt-8 inline-flex bg-ink px-5 py-2.5 text-sm font-medium text-paper no-underline hover:bg-ink-soft">Start with email</a>
   </section>
 
-  <section class="mb-20 grid gap-8 md:grid-cols-2 xl:grid-cols-4">
-    <article class="border-t border-line pt-5">
-      <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">Email</p>
-      <h2 class="text-base font-semibold tracking-tight text-ink">
-        <a class="no-underline hover:text-ink-soft transition-colors" href={`mailto:${siteMeta.email}`}>{siteMeta.email}</a>
-      </h2>
-      <p class="mt-3 text-sm leading-relaxed text-ink-soft">Best for direct conversations about engineering, product, consulting, or senior IC opportunities.</p>
-    </article>
-    <article class="border-t border-line pt-5">
-      <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">LinkedIn</p>
-      <h2 class="text-base font-semibold tracking-tight text-ink">
-        <a class="no-underline hover:text-ink-soft transition-colors" href={siteMeta.linkedin}>jarielbalberona</a>
-      </h2>
-      <p class="mt-3 text-sm leading-relaxed text-ink-soft">Professional background and work history.</p>
-    </article>
-    <article class="border-t border-line pt-5">
-      <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">GitHub</p>
-      <h2 class="text-base font-semibold tracking-tight text-ink truncate">
-        <a class="no-underline hover:text-ink-soft transition-colors" href={siteMeta.github} title="github.com/jarielbalberona">github.com/jarielbalberona</a>
-      </h2>
-      <p class="mt-3 text-sm leading-relaxed text-ink-soft">Public repositories, experiments, and code history.</p>
-    </article>
-    <article class="border-t border-line pt-5">
-      <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">CV</p>
-      <h2 class="text-base font-semibold tracking-tight text-ink break-words">
-        <a class="no-underline hover:text-ink-soft transition-colors" href={siteMeta.cvUrl} target="_blank" rel="noreferrer">Open CV</a>
-      </h2>
-      <p class="mt-3 text-sm leading-relaxed text-ink-soft">PDF with roles, dates, stack, and selected work.</p>
-    </article>
-  </section>
-
-  <section class="grid gap-12 md:grid-cols-2">
-    <article class="border-t border-line pt-8">
-      <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">Good fit</p>
-      <ul class="mt-5 space-y-3 pl-5 text-sm leading-relaxed text-ink list-disc marker:text-line">
-        {goodFit.map((item) => <li>{item}</li>)}
-      </ul>
-    </article>
-    <article class="border-t border-line pt-8">
-      <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">Bad fit</p>
-      <ul class="mt-5 space-y-3 pl-5 text-sm leading-relaxed text-ink list-disc marker:text-line">
-        {badFit.map((item) => <li>{item}</li>)}
-      </ul>
-    </article>
+  <section class="grid gap-8 border-t border-line pt-8 md:grid-cols-2" aria-label="Contact links">
+    {contactLinks.map((item) => (
+      <article class="border-t border-line pt-4">
+        <p class="text-xs font-mono uppercase tracking-widest text-ink-soft">{item.label}</p>
+        <a href={item.href} class="mt-3 inline-block break-all text-base font-semibold text-ink underline decoration-line underline-offset-4 hover:decoration-ink">{item.value}</a>
+      </article>
+    ))}
   </section>
 </SiteLayout>

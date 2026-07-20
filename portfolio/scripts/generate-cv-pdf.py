@@ -8,7 +8,7 @@ from reportlab.lib.enums import TA_RIGHT
 from reportlab.lib.pagesizes import LETTER
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import inch
-from reportlab.platypus import KeepTogether, PageBreak, Paragraph, SimpleDocTemplate, Spacer
+from reportlab.platypus import KeepTogether, Paragraph, SimpleDocTemplate, Spacer
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -45,8 +45,8 @@ def build_styles():
             name="Meta",
             parent=styles["Normal"],
             fontName="Helvetica",
-            fontSize=9,
-            leading=12,
+            fontSize=8.5,
+            leading=11,
             textColor=colors.HexColor("#555555"),
         )
     )
@@ -74,8 +74,8 @@ def build_styles():
             name="Body",
             parent=styles["Normal"],
             fontName="Helvetica",
-            fontSize=9,
-            leading=12,
+            fontSize=8.5,
+            leading=11,
             textColor=colors.HexColor("#222222"),
         )
     )
@@ -83,8 +83,8 @@ def build_styles():
         ParagraphStyle(
             name="Small",
             parent=styles["Body"],
-            fontSize=8.5,
-            leading=11,
+            fontSize=8,
+            leading=10,
         )
     )
     styles.add(
@@ -116,7 +116,7 @@ def add_page_number(canvas, doc):
     canvas.saveState()
     canvas.setFont("Helvetica", 8)
     canvas.setFillColor(colors.HexColor("#666666"))
-    canvas.drawRightString(doc.pagesize[0] - doc.rightMargin, 0.5 * inch, f"Page {doc.page}")
+    canvas.drawRightString(doc.pagesize[0] - doc.rightMargin, 0.5 * inch, str(doc.page))
     canvas.restoreState()
 
 
@@ -147,7 +147,8 @@ def work_block(entry, styles):
 
 def earlier_block(entry, styles):
     return Paragraph(
-        f"<b>{line(entry['company'])}</b> — {line(entry['role'])} ({line(entry['dateRange'])})<br/>{line(entry['details'])}",
+        f"<b>{line(entry['company'])}</b> | {line(entry['role'])} | {line(entry['employmentType'])}<br/>"
+        f"{line(entry['dateRange'])} | {line(entry['location'])}<br/>{line(entry['details'])}",
         styles["Body"],
     )
 
@@ -202,7 +203,6 @@ def main():
     for entry in data["experience"]:
         story.append(entry_block(entry, styles))
 
-    story.append(PageBreak())
     story.append(section_header("Selected Work", styles))
     for entry in data["selectedWork"]:
         story.append(work_block(entry, styles))

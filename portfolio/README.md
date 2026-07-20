@@ -1,65 +1,47 @@
-# jarielbalberona.com
+# jarielbalberona.dev
 
-This is the workspace and canonical public site app for `jarielbalberona.com`.
+This directory is the canonical public site app for `jarielbalberona.dev`.
 
-The site is intended to present a senior software engineer who builds production systems across product, architecture, and delivery, and uses AI as disciplined workflow leverage rather than branding theater.
+The site presents Jariel Balberona as a Staff-Level AI-Native Software Engineer with evidence grounded in production product, platform, architecture, and delivery work.
 
-## Source Of Truth Stack
+## Source-of-truth stack
 
 - Astro
 - TypeScript
 - Tailwind CSS v4
-- Astro content collections
-- Railway static deployment
+- Astro content collections for Work
+- Render Static Site deployment
 
-## MVP Rules
+## Content authority
 
-- no `shadcn`
-- no CMS
-- no database
-- no unnecessary client-heavy architecture
-- no generic portfolio filler
+- `src/data/site.ts`: site URL, identity, navigation, and global metadata defaults
+- `src/data/cv.json`: employment chronology, CV roles, and selected experience facts
+- `src/content/work/`: public Work case studies
+- Astro page files: Home, AI-Native Engineering, Now, and Contact
 
-## Purpose
+Unused parallel Markdown page copies were removed so public copy does not drift between two sources.
 
-This app exists to present:
+## CV generation
 
-- production software work
-- modernization capability
-- current real work
-- selected proof
-- pragmatic engineering workflow
-- disciplined AI-assisted engineering workflow
+`npm run build:cv` regenerates `public/jariel-balberona-cv.pdf` from `src/data/cv.json` in an isolated `uv` environment. Do not patch the PDF independently of the structured source.
 
-## Workspace Structure
+## Render deployment
 
-- `../AGENTS.md`: workspace operating manual
-- `../docs/`: lean planning records, decisions, and roadmap
-- `src/`: canonical public site app source code
+Render deploys the app as a static site using the repository-level `render.yaml`.
 
-## Railway Static Deployment
+- Root directory: `portfolio`
+- Build command: `npm ci && npm run build`
+- Publish directory: `dist`
+- Redirects: managed in `../render.yaml`
 
-Railway deploys this Astro site as a static site through Railpack.
-
-Expected Railway settings:
-
-- Root Directory: `/portfolio`
-- Config File Path: `/portfolio/railway.toml`
-
-Railway's config-as-code defaults to `railway.toml` or `railway.json`, not `railway.yaml`. Do not add a YAML file here unless Railway adds support for it later.
-
-This app is static by default, so no server adapter is required for MVP.
+No server adapter is required.
 
 ## Analytics
 
-Google Analytics is optional and disabled unless a GA4 Measurement ID is provided.
+Google Analytics is optional and disabled unless `PUBLIC_GA_MEASUREMENT_ID` is set in Render.
 
-Set this environment variable in Railway when analytics should be active:
+## Working rules
 
-- `PUBLIC_GA_MEASUREMENT_ID`: GA4 Measurement ID, for example `G-XXXXXXXXXX`
-
-## Working Rules
-
-- Root-level files should exist only if they help planning, content, or project continuity
-- Direct commits to `main` are allowed unless explicitly told otherwise
-- Preserve anything useful, but remove stale or weak direction when it actively hurts the project
+- Do not add a CMS, database, blog, or client-heavy runtime without a concrete need.
+- Do not publish confidential client identities, repositories, domains, scripts, prompts, environments, screenshots, customer data, or internal operating details.
+- Keep public claims specific, attributable, and defensible.

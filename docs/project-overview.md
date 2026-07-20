@@ -2,16 +2,17 @@
 
 ## Objective
 
-Turn `jarielbalberona.com` into the primary public engineering home for Jariel Balberona.
+Maintain `jarielbalberona.dev` as the primary public engineering home for Jariel Balberona.
 
 The site should communicate:
 
+- staff-level AI-native product and platform engineering
 - production software work
 - maintainability, scalability, and reliability
 - product, architecture, and delivery range
 - current real work
 - selected proof
-- disciplined AI-assisted engineering workflow
+- governed agentic engineering systems and accountable delivery
 
 ## What This Site Is Not
 
@@ -23,9 +24,10 @@ The site should communicate:
 
 ## Primary Audience
 
-- hiring managers evaluating senior engineering credibility
-- founders or product teams looking for systems, platform, or product engineering work
-- engineers assessing technical seriousness and current relevance
+- engineering leaders evaluating senior/staff-level capability
+- technical recruiters
+- startup founders and selective consulting prospects
+- technical peers
 
 ## Primary Goal
 

@@ -1,75 +1,55 @@
 ---
 title: Experience Digital
-summary: Cross-functional engineering work spanning legacy modernization, backend delivery, infrastructure automation, and cloud data platform architecture across application and platform layers.
-status: Selected work
-timeframe: Cross-functional engineering work
+summary: Full-stack, DevOps, and cloud-platform engineering across product modernization and delivery systems.
+status: Professional evidence
+timeframe: Mar 2022 - Oct 2024
 featured: true
 order: 4
 liveUrl: https://experience.digital/
-role: Cross-functional software, platform, and delivery engineering
+role: Senior Software Engineer to DevOps Engineer | Full-time
 stack:
-  - Next.js
   - React
+  - Next.js
   - TypeScript
-  - tRPC
-  - Prisma
   - Docker
   - Terraform
   - AWS
   - Azure
-  - Grafana
-  - Prometheus
-  - Loki
-  - Power BI
 highlights:
-  - Modernized legacy product surfaces while keeping compatibility with existing systems and database constraints.
-  - Improved application performance and delivery flow through more disciplined frontend, backend, and platform work.
-  - Moved into DevOps and platform work across CI/CD, infrastructure automation, observability, and delivery workflows.
-  - Contributed to cloud data architecture and reporting systems across Azure and AWS.
-context: Cross-functional engineering across legacy modernization, backend delivery, DevOps, and cloud data platform work.
+  - Worked across application modernization, frontend performance, backend delivery, and platform engineering.
+  - Built and maintained deployment automation and cloud infrastructure using established infrastructure-as-code practices.
+  - Supported observability and data-platform work across AWS and Azure.
+context: A cross-functional role that expanded from product engineering into delivery infrastructure, observability, and cloud-platform work.
 ownership:
-  - Product engineering across legacy and modern web application surfaces
-  - Delivery and platform work across CI/CD, infrastructure automation, and observability
-  - Contribution to cloud data and reporting architecture across AWS and Azure
+  - Product implementation across legacy and modern application surfaces
+  - CI/CD and infrastructure automation
+  - Production monitoring and cloud-platform support
 constraints:
-  - Legacy systems and database realities that could not be ignored
-  - Delivery and infrastructure work that directly affected release speed and reliability
-  - Moving across product, platform, and data concerns without losing clarity
+  - Existing applications and databases that had to remain operational
+  - Cross-cloud delivery and reporting requirements
+  - Product and infrastructure changes with shared release consequences
 changes:
-  - Modernized application surfaces while preserving compatibility with existing constraints
-  - Improved performance and delivery flow through better frontend, backend, and platform discipline
-  - Expanded into infrastructure and cloud data work that supported reporting and operational visibility
-impact: Proved end-to-end range across product code, delivery systems, observability, and cloud data work without losing engineering clarity.
+  - Modernized application code incrementally
+  - Improved delivery repeatability through CI/CD and infrastructure automation
+  - Supported monitoring, diagnostics, and cloud data workflows
+impact: The role established hands-on range across product code, delivery systems, observability, and cloud infrastructure.
 ---
 
 ## Context
 
-Experience Digital was broad engineering work across product delivery, infrastructure, and data systems. The role started in hands-on application engineering and expanded into frontend performance, DevOps delivery, observability, and cloud data platform work.
+Experience Digital was a full-time role that progressed from senior software engineering into DevOps engineering. The work crossed product modernization, delivery automation, observability, and cloud-platform support.
 
-## What I owned
+## Responsibility
 
-- Product engineering across legacy modernization and modern application delivery
-- Frontend, backend, and delivery improvements that reduced product and platform drag
-- Support for CI/CD, infrastructure automation, observability, and cloud data/reporting work
+- Incremental modernization of existing web applications
+- Frontend, backend, and data-layer implementation
+- CI/CD and infrastructure-as-code work
+- Monitoring, logging, diagnostics, and cloud-platform support
 
-## Technical constraints
+## Engineering contribution
 
-The constraint set went well beyond feature delivery:
+The role required moving between product and platform concerns without treating them as separate worlds. Application changes had deployment consequences; infrastructure decisions affected delivery speed and operational visibility. The contribution was hands-on engineering across those boundaries.
 
-- legacy constraints without freezing progress
-- frontend and application performance without shallow optimization theater
-- CI/CD and infrastructure concerns that affect delivery speed and reliability
-- cloud data architecture that had to support reporting workflows and data movement across AWS and Azure
+## Production constraint
 
-## What I changed
-
-The work moved across several layers:
-
-- **Application modernization:** Updating legacy systems, extending schemas, integrating APIs, and introducing newer application patterns with Next.js, Tailwind, Jotai, tRPC, and Prisma.
-- **Frontend performance:** Improving React application behavior with better state and rendering discipline to reduce load and interaction friction.
-- **DevOps and delivery:** Supporting CI/CD pipelines, infrastructure automation, observability, and cross-functional release flow to reduce operational drag.
-- **Cloud data platform work:** Contributing to data pipelines, reporting architecture, and platform behavior for Power BI environments spanning Azure and AWS.
-
-## Why it mattered
-
-The value was learning to move across product code, delivery systems, and platform concerns without losing engineering clarity.
+The systems could not be paused for a clean rewrite. Modernization had to preserve existing behavior while improving application structure, release repeatability, and operational diagnostics.

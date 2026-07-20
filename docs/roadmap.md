@@ -4,13 +4,13 @@
 
 - establish workspace documentation and project rules
 - ship the Astro-based site foundation in `portfolio/`
-- publish `Home`, `Now`, `Work`, `Workflow`, and `Contact`
-- align content around maintainability, scalability, architecture, current work, and disciplined AI workflow
+- publish `Home`, `Work`, `AI-Native Engineering`, `Now`, and `Contact`
+- align content around staff-level product engineering, production delivery, and governed agentic workflows
 
 ## Phase 2
 
 - add a reusable notes/content pipeline only if there is a realistic publishing rhythm
-- expand selected work with another credible project profile
+- keep Ordr.now as the anchor case study and historical work bounded
 - align GitHub profile and repository metadata with the site narrative
 - improve deployment and preview workflow if needed
 

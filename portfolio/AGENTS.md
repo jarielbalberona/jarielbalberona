@@ -6,7 +6,7 @@ The root workspace rules still apply. This file narrows them for the public site
 
 ## Purpose
 
-`/portfolio` contains the actual public site app for `jarielbalberona.com`.
+`/portfolio` contains the actual public site app for `jarielbalberona.dev`.
 
 This app should stay:
 
@@ -46,9 +46,9 @@ This app should stay:
 MVP pages:
 
 - `Home`
-- `Now`
 - `Work`
-- `Workflow`
+- `AI-Native Engineering`
+- `Now`
 - `Contact`
 
 Do not add `About`, `Uses`, `Speaking`, or a public notes index unless the content is real and ready.

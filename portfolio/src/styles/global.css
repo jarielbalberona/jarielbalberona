@@ -29,7 +29,50 @@
     @apply transition-colors;
   }
 
+  :focus-visible {
+    outline: 3px solid var(--color-ink);
+    outline-offset: 4px;
+  }
+
+  main:focus {
+    outline: none;
+  }
+
   ::selection {
     @apply bg-ink text-paper;
+  }
+}
+
+@layer components {
+  .skip-link {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 50;
+    transform: translateY(-200%);
+    background: var(--color-ink);
+    color: var(--color-paper);
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .skip-link:focus {
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
   }
 }

@@ -5,3 +5,13 @@ services:
     rootDir: portfolio
     buildCommand: npm ci && npm run build
     staticPublishPath: dist
+    routes:
+      - type: redirect
+        source: /ai-automation
+        destination: /ai-native-engineering
+      - type: redirect
+        source: /workflow
+        destination: /ai-native-engineering
+      - type: redirect
+        source: /work/dumadine
+        destination: /work/ordr-now
