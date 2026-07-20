@@ -13,7 +13,13 @@ URLs to inspect and request for indexing:
 
 ## Google Search Console
 
-Ownership verification and submission status will be recorded here after the production deployment. In Search Console, select the URL-prefix property, submit the sitemap under **Sitemaps**, then use **URL inspection** for each URL above and select **Request indexing** when available.
+Completed on July 20, 2026:
+
+- Verified the `https://jarielbalberona.dev/` URL-prefix property through the deployed HTML meta tag.
+- Submitted `https://jarielbalberona.dev/sitemap-index.xml`; Search Console accepted the submission, then showed an initial `Couldn't fetch` processing state.
+- Requested indexing for all four URLs above; Search Console added each URL to its priority crawl queue.
+
+The property was new and the URLs were not yet indexed at submission time. Crawl and index acceptance remain Google-controlled external state.
 
 ## Bing Webmaster Tools
 
