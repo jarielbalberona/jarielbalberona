@@ -274,4 +274,6 @@ The model is useful because it refuses two weak extremes. It does not reduce AI 
 
 An independently owned example of these principles appears in the [Ordr.now offline recovery and idempotent synchronization proof](/work/ordr-now#offline-recovery-and-idempotent-synchronization). The point is not that one product proves a universal model. It shows how explicit behavioral criteria, layered verification, and human release authority can constrain agent-assisted implementation in a real system.
 
+The concrete repository, worktree, offline-mobile, device, and production-proof implementation is documented in [Inside the Ordr.now Agentic Engineering Loop](/notes/ordr-now-agentic-engineering-loop).
+
 The useful question is not whether an agent can write the code. It is whether the engineering system can prove that the resulting software satisfies the intended behavior without sacrificing security, maintainability, or accountability.
