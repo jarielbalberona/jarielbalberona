@@ -69,6 +69,8 @@ Ordr.now is also the primary environment in which I apply AI-native engineering 
 
 The authority remains bounded. Financial behavior, identity and tenant scope, destructive operations, ambiguous recovery, and release judgment require deterministic controls or human approval. A successful code generation step is never treated as proof that the product works.
 
+Read [the detailed Ordr.now agentic engineering workflow](/notes/ordr-now-agentic-engineering-loop) for the repository-owned lifecycle, worktree isolation, offline execution path, device proof, and production-canary boundaries behind this case study.
+
 ## Offline Recovery and Idempotent Synchronization
 
 ### Problem
