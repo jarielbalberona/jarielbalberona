@@ -1,6 +1,6 @@
 ---
 name: apply-to-job
-description: Process one job through employer, weekend, compensation, fit, canonical and best-supported answers, material-unknown readiness, source policy, submission authority, verification, persistence, and tracker sync. Use only for a specific application; dry-run and disallowed sources must never submit.
+description: Process one job through employer, schedule, compensation, fit, strongest-supported senior answers, capability-versus-vendor calibration, positioning review, source policy, submission authority, verification, persistence, and tracker sync. Use only for a specific application; dry-run and disallowed sources must never submit.
 ---
 
 # Apply to job
@@ -30,7 +30,11 @@ load job
 
 Never submit when the employer is excluded, company origin is Philippine-local or ambiguous, remote-from-Philippines eligibility is unresolved, recurring weekend work is required, known compensation violates policy, a `MATERIAL_UNKNOWN` remains, the listing is inactive or duplicate, source policy forbids it, or run mode is `DRY_RUN`.
 
+Before finalizing form answers, verify that forced-choice selections are fully supported and that source-of-discovery answers come from ledger provenance rather than the ATS host. A higher option containing an unsupported scale or specialization claim fails truthfulness even when part of the option matches.
+
 `BEST_SUPPORTED_ANSWER` and `CONSERVATIVE_ESTIMATE` are resolved, truthful answers and do not block submission. Resolve expected compensation autonomously; current salary remains separate and may be material unknown.
+
+`STRONGEST_SUPPORTED_ANSWER`, `DIRECT_DEEP`, `DIRECT_WORKING`, and `TRANSFERABLE_STRONG` are also resolved when their evidence is recorded. Before the submission boundary, require a passing `SENIOR_POSITIONING_REVIEW`. Revise `UNNECESSARY_UNDERSELL`; never submit `UNSUPPORTED_OVERCLAIM`. A missing vendor keyword must not erase an underlying senior capability, and transferable capability must not become a fabricated vendor claim.
 
 Expected compensation must follow the current job-specific policy decision. Advertised ranges take priority over generic anchors. Philippines-targeted international roles default to the localized-context anchor unless direct international-rate or other high-budget evidence supports more. Compensation above a target-range maximum is never itself a blocker.
 

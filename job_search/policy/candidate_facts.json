@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "employment_preferences": {
     "full_time": true,
     "accepted_engagement_types": [
@@ -15,6 +15,7 @@
   },
   "schedule": {
     "timezone_flexible": true,
+    "weekday_availability": "Monday-Friday",
     "allowed_days": [
       "Monday",
       "Tuesday",
@@ -111,6 +112,50 @@
       "interpretation": "Approximately five years of relevant production engineering experience across the requested full-stack technology area. Depth differs by technology; Python/FastAPI is secondary at approximately one year."
     }
   },
+  "cms": {
+    "general_cms": {
+      "level": "DIRECT_DEEP",
+      "summary": "Substantial hands-on CMS engineering across custom content models, administration, publishing workflows, media and content handling, taxonomies, permissions, SEO fields, APIs, and database-backed content."
+    },
+    "custom_cms_development": {
+      "level": "DIRECT_DEEP",
+      "summary": "Architected and built custom content-management capabilities and administrative workflows from scratch as parts of production web applications."
+    },
+    "wordpress": {
+      "level": "DIRECT_WORKING",
+      "summary": "Professional WordPress development and integration experience."
+    },
+    "shopify": {
+      "level": "DIRECT_WORKING",
+      "summary": "Professional Shopify and commerce content, catalog, and product-management experience."
+    },
+    "headless_cms_architecture": {
+      "level": "TRANSFERABLE_STRONG",
+      "summary": "Strongly transferable architecture experience across content models, APIs, React and Next.js applications, databases, admin interfaces, and custom CMS systems."
+    },
+    "enterprise_cms_concepts": {
+      "level": "TRANSFERABLE_STRONG",
+      "summary": "Strong underlying enterprise content-platform concepts without claiming unsupported vendor specialization."
+    },
+    "adobe_aem": {
+      "level": "LIMITED_OR_NONE"
+    },
+    "sitecore": {
+      "level": "LIMITED_OR_NONE"
+    }
+  },
+  "senior_positioning": {
+    "professional_software_engineering": "10+ years",
+    "answer_precedence": [
+      "EXACT",
+      "STRONGEST_SUPPORTED_ANSWER",
+      "BEST_SUPPORTED_ANSWER",
+      "CONSERVATIVE_ESTIMATE",
+      "MATERIAL_UNKNOWN"
+    ],
+    "capability_vendor_distinction": true,
+    "final_review": "SENIOR_POSITIONING_REVIEW"
+  },
   "client_experience": {
     "us_clients": true
   },
@@ -124,7 +169,8 @@
     "notice_period": "None",
     "rendering_period": "None",
     "available_immediately": true,
-    "earliest_start": "Immediately"
+    "earliest_start": "Immediately",
+    "upcoming_commitments_affecting_work_next_3_months": false
   },
   "candidate_media": {
     "photo": {

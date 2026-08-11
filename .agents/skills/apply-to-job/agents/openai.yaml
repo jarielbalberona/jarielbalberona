@@ -1,4 +1,4 @@
 interface:
   display_name: "Apply to Job"
-  short_description: "Gate material unknowns and submission"
-  default_prompt: "Use $apply-to-job to process this job through answer, compensation, readiness, autonomy, and source-policy gates."
+  short_description: "Gate answer quality and submission"
+  default_prompt: "Use $apply-to-job to process this job through strongest-supported answers, positioning review, compensation, readiness, autonomy, and source-policy gates."

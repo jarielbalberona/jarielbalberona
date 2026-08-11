@@ -206,6 +206,7 @@ class ApplicationPacket:
     compensation_decision: dict[str, Any] | None = None
     screening_questions_verified: bool = False
     screening_questions_source: str = ""
+    senior_positioning_review: dict[str, Any] = field(default_factory=dict)
     cv_version: str = "portfolio/public/jariel-balberona-cv.pdf"
     prepared_at: str = field(default_factory=utc_now)
 

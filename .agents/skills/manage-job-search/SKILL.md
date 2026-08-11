@@ -1,6 +1,6 @@
 ---
 name: manage-job-search
-description: Orchestrate Jariel Balberona's selective job search from discovery through employer, schedule, compensation, career-fit, best-supported-answer, readiness, submission-policy, verification, ledger, tracker, and response stages. Use for end-to-end job-search runs, calibration runs, or requests to find and process suitable opportunities.
+description: Orchestrate Jariel Balberona's selective job search from discovery through employer, schedule, compensation, career fit, strongest-supported senior answers, positioning review, readiness, submission policy, verification, ledger, tracker, and response stages. Use for end-to-end job-search runs, calibration runs, or requests to find and process suitable opportunities.
 ---
 
 # Manage job search
@@ -26,12 +26,13 @@ Use the smaller skills for their stages. Do not restate their policy from memory
 4. Deduplicate eligible jobs before fit scoring.
 5. Invoke `$assess-job-fit` for viable jobs. Separate technical fit, career direction, eligibility confidence, and application readiness. Do not keyword-score without reading responsibilities.
 6. Rank `STRONG APPLY`, `APPLY`, and `REVIEW` jobs. Keep hard-blocked roles out regardless of technical fit.
-7. Invoke `$prepare-job-application` for the best real candidates. Resolve exact facts, best-supported answers, conservative estimates, and compensation policy automatically. Preserve advertised ranges and classify Philippines-targeted versus direct-international compensation context before choosing an expectation; escalate only genuine material unknowns.
-8. Invoke `$apply-to-job` only when explicitly in scope. During calibration require individual review. In the eventual steady state, use the repository live-autonomy policy rather than assuming every strong score can submit.
-9. Persist per-job outcome, evidence, errors, and every external action.
-10. Invoke `$sync-job-application-tracker` only for meaningful lifecycle rows.
-11. Invoke `$check-job-application-responses` narrowly and read-only when follow-up is requested.
-12. Finish the run with counts, external writes, errors, and zero-submission confirmation when dry-running.
+7. Invoke `$prepare-job-application` for the best real candidates. Resolve exact facts, strongest-supported senior interpretations, direct and transferable capabilities, best-supported answers, conservative estimates, and compensation policy automatically. Preserve advertised ranges and classify Philippines-targeted versus direct-international compensation context before choosing an expectation; escalate only genuine material unknowns.
+8. Run `SENIOR_POSITIONING_REVIEW`; revise `UNNECESSARY_UNDERSELL`, block `UNSUPPORTED_OVERCLAIM`, and keep capability evidence distinct from specific vendor claims.
+9. Invoke `$apply-to-job` only when explicitly in scope. During calibration require individual review. In the eventual steady state, use the repository live-autonomy policy rather than assuming every strong score can submit.
+10. Persist per-job outcome, evidence, errors, and every external action.
+11. Invoke `$sync-job-application-tracker` only for meaningful lifecycle rows.
+12. Invoke `$check-job-application-responses` narrowly and read-only when follow-up is requested.
+13. Finish the run with counts, external writes, errors, and zero-submission confirmation when dry-running.
 
 ## Eligibility gate
 

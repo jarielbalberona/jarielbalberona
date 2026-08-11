@@ -73,9 +73,12 @@ availability:
   rendering_period: None
   available_immediately: true
   earliest_start: Immediately
+  upcoming_commitments_affecting_work_next_3_months: false
 ```
 
 For candidate-facing application questions, answer notice period as `None`, numeric notice or rendering days as `0`, immediate-start willingness as `Yes`, and ordinary earliest-start questions as `Immediately`. When an application requires an actual calendar date, use the earliest reasonable immediate date based on the application date.
+
+Answer questions about upcoming commitments, planned leave, or travel affecting work during the next three months as `No`. For required free text, use `No, I don't have any upcoming commitments that would affect my work schedule or availability.` Equivalent weekday-schedule restriction questions should also resolve without review.
 
 These candidate-facing availability answers do not change employer or client exclusion policy. Never disclose or infer a confidential relationship when answering an ordinary employment-status, notice-period, or start-date question.
 
@@ -90,6 +93,7 @@ These candidate-facing availability answers do not change employer or client exc
 - Available to start immediately: `Yes`; earliest start: `Immediately`.
 - Python or FastAPI: real secondary production/project experience; use conservative numeric `1` when a whole year is required and stronger evidence is absent.
 - Professional software engineering: `10+ years`; use numeric `10` for whole-year fields.
+- CMS experience: `Yes`; represent substantial custom CMS development, WordPress, Shopify, and content-platform engineering confidently.
 
 Do not reuse broad AI tenure for PyTorch, model training, ML research, MLOps, or another narrower specialty.
 
@@ -101,16 +105,45 @@ For the Omniflow combination of Next.js, TypeScript, Python/FastAPI, and Postgre
 
 If wording explicitly requires professional experience with `all`, `each`, or `every` listed technology, use weakest-depth semantics. If any listed technology has no real supporting experience, return `MATERIAL_UNKNOWN`; majority evidence must never hide an unsupported technology.
 
-## Best-supported-answer policy
+## CMS and content-platform experience
+
+Jariel has substantial hands-on CMS engineering experience. Treat capability and vendor experience separately.
+
+```yaml
+cms:
+  general_cms: DIRECT_DEEP
+  custom_cms_development: DIRECT_DEEP
+  wordpress: DIRECT_WORKING
+  shopify: DIRECT_WORKING
+  headless_cms_architecture: TRANSFERABLE_STRONG
+  enterprise_cms_concepts: TRANSFERABLE_STRONG
+  adobe_aem: LIMITED_OR_NONE
+  sitecore: LIMITED_OR_NONE
+```
+
+Custom CMS work includes content models, CRUD administration, admin dashboards, page and content management, media handling, categories and taxonomies, permissions, publishing workflows, catalog management, SEO fields, APIs, and database-backed content. Building these capabilities from scratch is direct CMS engineering, not an absence of CMS experience.
+
+For general CMS or hands-on CMS questions, answer confidently from the direct experience. WordPress and Shopify are direct working experience. Headless and enterprise CMS concepts have strong transferable support from React, Next.js, API, database, admin-interface, and custom CMS architecture. Do not convert that capability into false AEM or Sitecore specialist claims.
+
+Forced-choice answers are conjunctive: every material claim in the selected option must be supported. Do not treat an option that mentions `large-scale CMS solutions`, a `larger enterprise CMS environment`, multi-site or multi-language delivery, high-traffic CMS optimization, or an enterprise headless migration as a generic proxy for CMS depth. The current evidence does not establish those specific scale claims. Select the strongest lower option whose complete wording is true, then preserve the more precise custom-CMS depth in free text or the cover letter when the form permits it.
+
+## Strongest-supported-answer policy
 
 Resolve application questions in this order:
 
 1. Use an exact canonical fact.
-2. Use a strongly supported answer derived from current evidence.
-3. When real experience exists but duration is imprecise, use the lowest defensible floor-style estimate.
-4. Use `MATERIAL_UNKNOWN` only when an answer would invent experience, credentials, legal status, compensation history, or another unsupported material fact.
+2. Use the strongest truthful interpretation supported by career and project evidence.
+3. Use a best-supported answer when the application requires interpretation.
+4. When real experience exists but duration is imprecise, use a conservative floor-style estimate.
+5. Use `MATERIAL_UNKNOWN` only when an answer would invent experience, credentials, legal status, compensation history, or another unsupported material fact.
 
-Store `EXACT`, `BEST_SUPPORTED_ANSWER`, `CONSERVATIVE_ESTIMATE`, or `MATERIAL_UNKNOWN` with confidence, interpretation, and supporting evidence. Conservative estimates normally remain application-ready.
+Store `EXACT`, `STRONGEST_SUPPORTED_ANSWER`, `DIRECT_DEEP`, `DIRECT_WORKING`, `TRANSFERABLE_STRONG`, `BEST_SUPPORTED_ANSWER`, `CONSERVATIVE_ESTIMATE`, or `MATERIAL_UNKNOWN` with confidence, interpretation, and supporting evidence. Positive evidence-backed statuses are resolved and application-ready.
+
+For source-of-discovery questions, preserve the channel that actually surfaced the opportunity separately from the destination careers page and ATS host. Greenhouse, Lever, Recruitee, or another ATS is not the discovery source merely because it hosts the application. When a managed web search surfaced the listing but the search provider is not proven, use a truthful generic web-search or `Other` answer rather than inventing Google, LinkedIn, Indeed, or Greenhouse provenance.
+
+Do not turn a senior engineer's direct implementation of an underlying capability into a weak answer merely because the job uses different terminology or a vendor name. Infer capabilities such as API design, relational data modeling, system architecture, technical leadership, consulting delivery, CI/CD, and agentic engineering from the documented work. Keep specific vendor, legal, credential, and exact-duration claims bounded by evidence.
+
+Run `SENIOR_POSITIONING_REVIEW` on substantive answers and application writing. Rewrite `UNNECESSARY_UNDERSELL` before submission, and block `UNSUPPORTED_OVERCLAIM`. Lead with supported ownership using verbs such as built, designed, led, owned, architected, modernized, implemented, delivered, operated, and improved. Avoid eager-to-learn or limited-experience framing when stronger truthful capability evidence exists.
 
 ## Professional identity
 

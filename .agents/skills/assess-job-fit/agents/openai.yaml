@@ -1,4 +1,4 @@
 interface:
   display_name: "Assess Job Fit"
   short_description: "Score fit, compensation, and readiness"
-  default_prompt: "Use $assess-job-fit to assess career fit, schedule, compensation, evidence-backed answers, and readiness."
+  default_prompt: "Use $assess-job-fit to assess career fit, schedule, compensation, senior capability evidence, vendor-specific gaps, and readiness."

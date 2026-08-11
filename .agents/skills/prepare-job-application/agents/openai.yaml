@@ -1,4 +1,4 @@
 interface:
   display_name: "Prepare Job Application"
-  short_description: "Prepare answers with evidence provenance"
-  default_prompt: "Use $prepare-job-application to prepare a role-specific packet with best-supported answers and compensation policy."
+  short_description: "Prepare strong senior answers with evidence"
+  default_prompt: "Use $prepare-job-application to prepare a role-specific packet with strongest-supported senior answers, positioning review, and compensation policy."

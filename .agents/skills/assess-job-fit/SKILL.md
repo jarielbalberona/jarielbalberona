@@ -1,6 +1,6 @@
 ---
 name: assess-job-fit
-description: Evaluate a job against employer, weekend, compensation, career-direction, technical-fit, eligibility-confidence, and application-readiness policy. Use to score or rank roles, separate technical compatibility from direction, and distinguish conservative resolved answers from material unknowns.
+description: Evaluate a job against employer, weekend, compensation, career direction, technical fit, senior-capability evidence, eligibility confidence, and application readiness. Use to score or rank roles, separate technical compatibility from direction, distinguish capability from vendor experience, and separate strongest-supported answers from material unknowns.
 ---
 
 # Assess job fit
@@ -38,6 +38,8 @@ Do not treat conventional DevOps or SRE as a target AI/software-platform role me
 Multiply the base fit by eligibility confidence to produce the final fit score. Also return application readiness independently. Apply repository reason-code caps so optimistic inputs cannot hide material unknowns. Unknown compensation alone is not an eligibility penalty.
 
 Do not penalize legitimate full-time contractor, freelance, B2B, IC, or EOR structures. Do not reduce readiness for `BEST_SUPPORTED_ANSWER` or `CONSERVATIVE_ESTIMATE`; only genuine `MATERIAL_UNKNOWN` facts should block.
+
+Apply senior-experience calibration before calling a capability a gap. Infer API design from documented backend and REST ownership, database design from relational product systems, architecture from multi-tenant and production ownership, leadership from lead and hands-on CTO work, and CMS engineering from custom CMS, WordPress, Shopify, content models, administration, publishing, and API-backed content. Distinguish strong underlying capability from unsupported vendor specialization. Missing AEM, Sitecore, or another vendor keyword must not erase general CMS depth, but it also must not become a false vendor claim.
 
 Map 85-100 to `STRONG APPLY`, 75-84 to `APPLY`, 65-74 to `REVIEW`, and below 65 to `SKIP`.
 

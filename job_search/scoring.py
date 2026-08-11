@@ -15,6 +15,8 @@ APPLICATION_READINESS_CAPS = {
     "CAREER_DIRECTION_MISMATCH": 55,
     "MATERIAL_REQUIREMENT_GAP": 55,
     "MATERIAL_UNKNOWN": 80,
+    "UNNECESSARY_UNDERSELL": 55,
+    "UNSUPPORTED_OVERCLAIM": 0,
     "REQUIRED_VIDEO_INTRO": 84,
     "SCREENING_ANSWERS_UNRESOLVED": 60,
     "SCREENING_QUESTIONS_UNVERIFIED": 55,
@@ -51,6 +53,8 @@ def reconcile_assessment_with_answers(
             "SCREENING_ANSWERS_UNRESOLVED",
             "MATERIAL_UNKNOWN",
             "REQUIRED_VIDEO_INTRO",
+            "UNNECESSARY_UNDERSELL",
+            "UNSUPPORTED_OVERCLAIM",
         }
     ]
     statuses = {
@@ -61,6 +65,16 @@ def reconcile_assessment_with_answers(
         codes.append("MATERIAL_UNKNOWN")
     if any(status == "REQUIRED_VIDEO_INTRO" for status in statuses.values()):
         codes.append("REQUIRED_VIDEO_INTRO")
+    for value in packet.answer_metadata.values():
+        quality_review = value.get("senior_positioning_review", {})
+        if not isinstance(quality_review, dict):
+            continue
+        for code in quality_review.get("reason_codes", []):
+            if code in {"UNNECESSARY_UNDERSELL", "UNSUPPORTED_OVERCLAIM"}:
+                codes.append(str(code))
+    for code in packet.senior_positioning_review.get("reason_codes", []):
+        if code in {"UNNECESSARY_UNDERSELL", "UNSUPPORTED_OVERCLAIM"}:
+            codes.append(str(code))
     if packet.screening_questions_verified:
         codes = [code for code in codes if code != "SCREENING_QUESTIONS_UNVERIFIED"]
     elif packet.answer_metadata:

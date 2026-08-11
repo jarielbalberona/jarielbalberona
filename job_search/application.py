@@ -8,6 +8,7 @@ from .evidence import EvidenceSelection, select_evidence
 from .models import ApplicationPacket, Assessment, Job, Verdict
 from .normalization import application_id
 from .policy import EmployerExclusionMatcher
+from .positioning import assert_senior_positioning, strengthen_supported_positioning
 
 
 class ConfidentialityError(ValueError):
@@ -87,8 +88,11 @@ def prepare_application_packet(
         raise ValueError("application packets require an assessment without hard blockers")
 
     selected = select_evidence(job, assessment.narrative)
-    final_letter = (letter or _default_letter(job, assessment, selected)).strip()
+    final_letter = strengthen_supported_positioning(
+        (letter or _default_letter(job, assessment, selected)).strip()
+    )
     assert_public_safe(final_letter, matcher)
+    positioning_review = assert_senior_positioning(final_letter)
     if re.search(r"\b(i am|i'm) (thrilled|incredibly excited)\b", final_letter, re.IGNORECASE):
         raise ValueError("application text uses prohibited generic enthusiasm")
 
@@ -114,4 +118,5 @@ def prepare_application_packet(
         compensation_decision=compensation_decision,
         screening_questions_verified=screening_questions_verified,
         screening_questions_source=screening_questions_source,
+        senior_positioning_review=positioning_review.to_dict(),
     )

@@ -15,10 +15,15 @@ from .compensation import (
 )
 from .media import MediaRequirement, resolve_candidate_media
 from .models import Assessment, Job
+from .positioning import review_senior_positioning, strengthen_supported_positioning
 
 
 class AnswerStatus(StrEnum):
     EXACT = "EXACT"
+    STRONGEST_SUPPORTED_ANSWER = "STRONGEST_SUPPORTED_ANSWER"
+    DIRECT_DEEP = "DIRECT_DEEP"
+    DIRECT_WORKING = "DIRECT_WORKING"
+    TRANSFERABLE_STRONG = "TRANSFERABLE_STRONG"
     BEST_SUPPORTED_ANSWER = "BEST_SUPPORTED_ANSWER"
     CONSERVATIVE_ESTIMATE = "CONSERVATIVE_ESTIMATE"
     MATERIAL_UNKNOWN = "MATERIAL_UNKNOWN"
@@ -62,6 +67,31 @@ def _estimate(answer: str, interpretation: str, *evidence: str) -> AnswerResolut
     )
 
 
+def _strongest_supported(
+    answer: str,
+    interpretation: str,
+    *evidence: str,
+    confidence: float = 0.95,
+) -> AnswerResolution:
+    return AnswerResolution(
+        answer,
+        AnswerStatus.STRONGEST_SUPPORTED_ANSWER,
+        confidence,
+        interpretation,
+        evidence,
+    )
+
+
+def _capability_answer(
+    answer: str,
+    status: AnswerStatus,
+    interpretation: str,
+    *evidence: str,
+    confidence: float = 0.95,
+) -> AnswerResolution:
+    return AnswerResolution(answer, status, confidence, interpretation, evidence)
+
+
 def _best_supported(
     answer: str,
     interpretation: str,
@@ -79,6 +109,162 @@ def _best_supported(
 
 def _unknown(interpretation: str) -> AnswerResolution:
     return AnswerResolution(None, AnswerStatus.MATERIAL_UNKNOWN, 0.0, interpretation)
+
+
+def _is_boolean_question(text: str) -> bool:
+    return any(
+        term in text
+        for term in (
+            "do you have",
+            "have you",
+            "are you experienced",
+            "are you familiar",
+            "experience with",
+            "experience in",
+        )
+    ) and not any(term in text for term in ("describe", "how would you", "years"))
+
+
+def _cms_answer(text: str, facts: Mapping[str, Any]) -> AnswerResolution | None:
+    cms_terms = (
+        "cms",
+        "content management",
+        "wordpress",
+        "shopify",
+        "contentful",
+        "sanity",
+        "payload",
+        "storyblok",
+        "strapi",
+        "aem",
+        "sitecore",
+    )
+    if not any(term in text for term in cms_terms):
+        return None
+
+    cms = facts["cms"]
+    for vendor, label in (("aem", "Adobe AEM"), ("sitecore", "Sitecore")):
+        if vendor in text:
+            if "years" in text:
+                return _unknown(
+                    f"No defensible professional-duration claim exists for vendor-specific {label} experience."
+                )
+            return _exact(
+                "No",
+                f"Canonical CMS policy does not claim meaningful vendor-specific {label} experience.",
+                f"candidate_facts.cms.{vendor if vendor == 'sitecore' else 'adobe_aem'}",
+            )
+
+    if "wordpress" in text:
+        return _capability_answer(
+            "Yes" if _is_boolean_question(text) else cms["wordpress"]["summary"],
+            AnswerStatus.DIRECT_WORKING,
+            "Direct professional WordPress development and integration experience.",
+            "candidate_facts.cms.wordpress",
+        )
+
+    if "shopify" in text:
+        return _capability_answer(
+            "Yes" if _is_boolean_question(text) else cms["shopify"]["summary"],
+            AnswerStatus.DIRECT_WORKING,
+            "Direct professional Shopify and commerce content-management experience.",
+            "candidate_facts.cms.shopify",
+        )
+
+    named_headless_vendors = ("contentful", "sanity", "payload", "storyblok", "strapi")
+    if any(vendor in text for vendor in named_headless_vendors):
+        return _unknown(
+            "Strong headless CMS architecture does not prove experience with this specific vendor."
+        )
+
+    if "headless" in text:
+        return _capability_answer(
+            "Yes" if _is_boolean_question(text) else cms["headless_cms_architecture"]["summary"],
+            AnswerStatus.TRANSFERABLE_STRONG,
+            "Strongly transferable headless CMS architecture from custom CMS, API, database, React, Next.js, and admin-interface work; no unsupported vendor specialization is implied.",
+            "candidate_facts.cms.headless_cms_architecture",
+        )
+
+    if "custom" in text:
+        return _capability_answer(
+            "Yes" if _is_boolean_question(text) else cms["custom_cms_development"]["summary"],
+            AnswerStatus.DIRECT_DEEP,
+            "Direct deep custom CMS architecture and implementation experience.",
+            "candidate_facts.cms.custom_cms_development",
+        )
+
+    if "enterprise" in text:
+        answer = "Yes" if _is_boolean_question(text) else (
+            "Substantial hands-on CMS engineering experience across custom CMS architecture, "
+            "content models, administration and publishing workflows, WordPress, Shopify, APIs, "
+            "and database-backed content platforms."
+        )
+        return _strongest_supported(
+            answer,
+            "Direct CMS engineering plus strongly transferable enterprise content-platform architecture, without claiming AEM or Sitecore specialization.",
+            "candidate_facts.cms.general_cms",
+            "candidate_facts.cms.enterprise_cms_concepts",
+            confidence=0.97,
+        )
+
+    return _capability_answer(
+        "Yes" if _is_boolean_question(text) else cms["general_cms"]["summary"],
+        AnswerStatus.DIRECT_DEEP,
+        "Substantial direct CMS engineering experience, including custom CMS development.",
+        "candidate_facts.cms.general_cms",
+        "candidate_facts.cms.custom_cms_development",
+        confidence=0.99,
+    )
+
+
+def _senior_capability_answer(text: str) -> AnswerResolution | None:
+    if "years" in text:
+        return None
+    capabilities = (
+        (
+            ("api design", "api architecture", "rest api"),
+            "Substantial API design, integration, and production backend experience.",
+            "canonical full-stack, REST, Node.js, tRPC, and production API evidence",
+        ),
+        (
+            ("database design", "data modeling", "relational database"),
+            "Substantial relational database design and data-modeling experience.",
+            "canonical PostgreSQL, MySQL, multi-tenant SaaS, and data-modeling evidence",
+        ),
+        (
+            ("system architecture", "software architecture", "solution architecture"),
+            "Substantial hands-on system and product architecture experience.",
+            "canonical multi-tenant SaaS, offline-first, cloud, and product-ownership evidence",
+        ),
+        (
+            ("technical leadership", "tech lead", "engineering leadership"),
+            "Substantial hands-on technical leadership and architecture ownership.",
+            "canonical frontend-lead, founder and CTO, modernization, and architecture evidence",
+        ),
+        (
+            ("client-facing", "client facing", "consulting experience"),
+            "Substantial client-facing consulting and international distributed-team experience.",
+            "canonical consulting and international client-delivery evidence",
+        ),
+        (
+            ("ci/cd", "continuous integration", "continuous delivery"),
+            "Substantial CI/CD, infrastructure automation, and production-delivery experience.",
+            "canonical GitHub Actions, Terraform, Docker, cloud, and release evidence",
+        ),
+        (
+            ("agentic ai", "coding agents", "agentic engineering"),
+            "Substantial practical AI-native and agentic software-engineering experience.",
+            "canonical repository-grounded agent execution and verification-loop evidence",
+        ),
+    )
+    for terms, description, evidence in capabilities:
+        if any(term in text for term in terms):
+            return _strongest_supported(
+                "Yes" if _is_boolean_question(text) else description,
+                "Senior capability inferred from documented underlying implementation and ownership evidence.",
+                evidence,
+            )
+    return None
 
 
 def _mentioned_technology_keys(text: str, facts: Mapping[str, Any]) -> list[str]:
@@ -212,10 +398,22 @@ def resolve_question(
     field_type: str = "",
 ) -> AnswerResolution:
     if supplied_answer.strip():
-        return _exact(supplied_answer.strip(), "Explicit canonical or application-specific answer.")
+        supplied = supplied_answer.strip()
+        strengthened = strengthen_supported_positioning(supplied)
+        if strengthened != supplied:
+            return _strongest_supported(
+                strengthened,
+                "An evidence-backed weak CMS answer was strengthened before submission.",
+                "candidate_facts.cms",
+            )
+        return _exact(supplied, "Explicit canonical or application-specific answer.")
 
     facts = load_candidate_facts()
     text = f"{key} {question}".casefold()
+
+    cms_answer = _cms_answer(text, facts)
+    if cms_answer is not None:
+        return cms_answer
 
     normalized_field_type = field_type.casefold().replace("-", "_").replace(" ", "_")
     if normalized_field_type in {
@@ -284,6 +482,36 @@ def resolve_question(
         )
 
     availability = facts["availability"]
+    commitments_terms = (
+        "upcoming commitments",
+        "planned leave",
+        "upcoming travel",
+        "commitments that would prevent",
+        "commitments affecting",
+        "scheduling restrictions",
+        "anything affecting availability",
+    )
+    if any(term in text for term in commitments_terms):
+        no_commitments = not availability["upcoming_commitments_affecting_work_next_3_months"]
+        free_text_types = {"text", "textbox", "textarea", "free_text", "long_text"}
+        answer = (
+            "No, I don't have any upcoming commitments that would affect my work schedule or availability."
+            if normalized_field_type in free_text_types and no_commitments
+            else "No" if no_commitments else "Yes"
+        )
+        return _exact(
+            answer,
+            "Canonical next-three-month work availability has no affecting commitments.",
+            "candidate_facts.availability.upcoming_commitments_affecting_work_next_3_months",
+        )
+
+    if "fully available" in text and "schedule" in text:
+        return _exact(
+            "Yes",
+            "Canonical weekday and international-timezone availability supports the required schedule.",
+            "candidate_facts.schedule",
+            "candidate_facts.availability",
+        )
     if "notice period" in text or "rendering period" in text or "rendering time" in text:
         if "how many" in text or "days" in text or "numeric" in text:
             return _exact(
@@ -504,15 +732,19 @@ def resolve_question(
             "candidate_facts.ai_experience",
         )
 
+    capability_answer = _senior_capability_answer(text)
+    if capability_answer is not None:
+        return capability_answer
+
     rating_terms = ("rate your", "proficiency", "skill level", "self-rating", "self rating")
     if any(term in text for term in rating_terms):
         core_terms = ("typescript", "react", "next.js", "node.js", "postgresql", "aws", "terraform")
         secondary_terms = ("python", "fastapi")
         if any(term in text for term in core_terms):
             answer = "4" if "1-5" in text else "8" if "1-10" in text else "Advanced"
-            return _estimate(
+            return _strongest_supported(
                 answer,
-                "Strong rating below the maximum for a core long-term technology.",
+                "Strong senior rating for a core long-term technology without automatically claiming the maximum.",
                 "canonical CV and project evidence",
             )
         if any(term in text for term in secondary_terms):
@@ -575,9 +807,13 @@ def resolve_questions(
             field_type=(field_types or {}).get(key, ""),
         )
         metadata[key] = resolution.to_dict()
+        positioning_review = review_senior_positioning(resolution.answer or "")
+        metadata[key]["senior_positioning_review"] = positioning_review.to_dict()
         if resolution.answer is not None:
             resolved[key] = resolution.answer
         if resolution.blocks_readiness:
+            unresolved.append(question)
+        if not positioning_review.passes:
             unresolved.append(question)
         decision = resolution.internal.get("compensation_decision")
         if decision:

@@ -10,11 +10,12 @@ Every application starts from the complete current job description. Never reuse 
 4. Assess the employer's real problem, responsibilities, seniority, architecture, career direction, stack, AI/product/platform relevance, and remote compatibility.
 5. Choose one candidate narrative and the strongest two or three evidence sources.
 6. Prepare a concise job-specific letter and direct screening-answer plan.
-7. Resolve exact and best-supported answers, including conservative floor-style experience estimates. Surface only genuine material unknowns.
-8. Check the source execution policy.
-9. Submit only when the source and run mode permit it.
-10. Require submission evidence before recording `APPLIED`.
-11. Persist the local event, sync the human tracker, and later reconcile inbound Gmail evidence.
+7. Resolve exact, strongest-supported, capability-depth, best-supported, and conservative answers. Surface only genuine material unknowns.
+8. Run `SENIOR_POSITIONING_REVIEW` across screening answers and application writing.
+9. Check the source execution policy.
+10. Submit only when the source and run mode permit it.
+11. Require submission evidence before recording `APPLIED`.
+12. Persist the local event, sync the human tracker, and later reconcile inbound Gmail evidence.
 
 ## Required assessment output
 
@@ -80,16 +81,26 @@ Default to roughly three short paragraphs:
 2. Connect the strongest two or three real evidence points to that responsibility.
 3. Close plainly with interest in discussing the contribution.
 
-Use concise, direct, engineering-focused language. Avoid generic praise, autobiography, keyword dumping, exaggerated confidence, obvious AI prose, and em dashes. Do not repeat the CV.
+Use concise, direct, engineering-focused language. Lead with supported ownership and outcomes. Avoid generic praise, autobiography, keyword dumping, exaggerated confidence, obvious AI prose, eager-to-learn framing, and em dashes. Do not repeat the CV or volunteer a secondary weakness when it is not central to the role.
 
 ## Questions
 
-Answer questions directly. Do not turn each answer into a cover letter. Use exact facts first, then best-supported answers and conservative floor-style estimates grounded in the candidate context, CV, and project evidence. Record answer, interpretation, confidence, and supporting evidence. A conservative estimate is resolved and normally does not reduce readiness.
+Answer questions directly. Do not turn each answer into a cover letter. Use exact facts first, then the strongest supported interpretation, direct or transferable capability classifications, best-supported answers, and conservative floor-style estimates grounded in the candidate context, CV, and project evidence. Record answer, interpretation, confidence, and supporting evidence. Positive evidence-backed statuses and conservative estimates are resolved and normally do not reduce readiness.
+
+Recognize senior engineering equivalence. Custom CMS development, WordPress, Shopify, and content administration are substantial CMS capability; REST and full-stack ownership support API design; relational product systems support database design; multi-tenant SaaS and production ownership support architecture; lead and consulting roles support technical leadership and client-facing delivery. Do not turn missing vendor keywords into missing capability. Conversely, do not claim a vendor specialization, exact duration, legal fact, credential, or metric without evidence.
+
+Evaluate forced-choice options as complete claims. Do not choose an option because one clause is supported when another clause asserts unsupported enterprise scale, vendor depth, migration history, traffic volume, or organizational scope. Select the highest option whose full meaning is supported, even when a lower option compresses or understates nuance; preserve the accurate nuance in a related free-text field or letter.
+
+Resolve `How did you hear about us?` from original discovery evidence, not the current URL. Store discovery channel, destination page, and ATS host separately. If managed web search surfaced an ATS-hosted listing and the search provider is not known, answer with a generic online-search or `Other` value supported by the live form rather than naming the ATS as the source.
+
+Before reaching the submission boundary, run `SENIOR_POSITIONING_REVIEW` and ask whether every substantive answer is truthful, the strongest defensible answer, senior in tone, free of irrelevant weakness framing, and free of overclaim. Automatically replace known evidence-backed weak CMS framing. Any remaining `UNNECESSARY_UNDERSELL` must be revised; `UNSUPPORTED_OVERCLAIM` blocks readiness.
 
 Never invent current salary, authorization, visa, relocation, team size, management scope, revenue, user counts, metrics, technology experience with no real implementation evidence, degrees, or certifications. Record those as `MATERIAL_UNKNOWN` when no legitimate non-disclosure option exists. Expected compensation, contractor willingness, weekday timezone availability, broad AI experience, and ordinary defensible technology estimates should not remain unresolved.
 
 Resolve expected compensation from the engagement type, role level, AI alignment, advertised range, Philippines-targeted versus direct-international market context, and actual high-budget evidence. High job fit alone is not proof of a premium budget. Prefer a defensible conversion-friendly anchor over automatically selecting the top of the policy range, while preserving hard minimums and never treating compensation above the target maximum as a reason to reject.
 
 Notice period and start availability come from `job_search/policy/candidate_facts.json`. Use zero days, no notice or rendering period, and immediate availability unless Jariel later changes that canonical policy. Do not invent a conventional two-week period, and do not expose confidential employer or client relationships when answering ordinary availability questions.
+
+Upcoming commitments affecting availability during the next three months are canonically `false`. Answer equivalent yes/no questions `No`; for required free text use `No, I don't have any upcoming commitments that would affect my work schedule or availability.` Do not escalate this fact again.
 
 For one numeric field spanning multiple technologies, determine whether it asks for overall stack experience or explicitly requires depth in every technology. Overall questions use a documented dominant-stack estimate from majority/core evidence; they do not default to the weakest technology, minimum tenure, or an average. Individual questions remain technology-specific. Explicit `all`/`each` wording uses weakest-depth semantics, and any never-used technology remains unresolved rather than being hidden by the stronger majority.

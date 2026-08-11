@@ -174,6 +174,14 @@ class PolicyTests(unittest.TestCase):
         self.assertEqual(85, calibrate_eligibility_confidence(100, reasons))
         self.assertEqual(55, calibrate_application_readiness(100, reasons))
 
+    def test_positioning_quality_failures_cap_readiness(self) -> None:
+        self.assertEqual(
+            55, calibrate_application_readiness(100, ["UNNECESSARY_UNDERSELL"])
+        )
+        self.assertEqual(
+            0, calibrate_application_readiness(100, ["UNSUPPORTED_OVERCLAIM"])
+        )
+
     def test_unknown_compensation_alone_does_not_reduce_signals(self) -> None:
         reasons = ["COMPENSATION_EXPECTATION_UNRESOLVED"]
         self.assertEqual(100, calibrate_eligibility_confidence(100, reasons))

@@ -5,7 +5,7 @@ from datetime import datetime
 from types import SimpleNamespace
 from zoneinfo import ZoneInfo
 
-from job_search.answers import AnswerStatus, resolve_question
+from job_search.answers import AnswerStatus, resolve_question, resolve_questions
 from job_search.candidate import accepts_engagement_type
 from job_search.compensation import (
     build_compensation_decision,
@@ -80,6 +80,16 @@ class CandidateAvailabilityTests(unittest.TestCase):
             EmployerExclusionMatcher([]),
         )
         self.assertEqual(("REQUIRED_WEEKEND_WORK",), result.reason_codes)
+
+    def test_explicit_no_recurring_weekend_requirement_is_not_a_false_positive(self) -> None:
+        result = evaluate_eligibility(
+            job(
+                work_schedule="No recurring weekend requirement disclosed",
+                recurring_weekend_work=False,
+            ),
+            EmployerExclusionMatcher([]),
+        )
+        self.assertTrue(result.can_score)
 
     def test_unclear_on_call_weekend_language_requires_review(self) -> None:
         result = evaluate_eligibility(
@@ -170,6 +180,28 @@ class AnswerPolicyTests(unittest.TestCase):
         self.assertEqual("Immediately", start.answer)
         self.assertEqual("Yes", immediate.answer)
 
+    def test_upcoming_commitments_are_canonically_resolved(self) -> None:
+        boolean = resolve_question(
+            "upcoming_commitments",
+            "Do you have any upcoming commitments over the next three months?",
+        )
+        free_text = resolve_question(
+            "upcoming_commitments",
+            "Do you have any upcoming commitments over the next three months that could affect your work schedule or availability?",
+            field_type="textbox",
+        )
+        fully_available = resolve_question(
+            "schedule_availability",
+            "Are you fully available for the required schedule?",
+        )
+        self.assertEqual("No", boolean.answer)
+        self.assertEqual(
+            "No, I don't have any upcoming commitments that would affect my work schedule or availability.",
+            free_text.answer,
+        )
+        self.assertEqual("Yes", fully_available.answer)
+        self.assertEqual(AnswerStatus.EXACT, boolean.status)
+
     def test_required_start_date_uses_application_day(self) -> None:
         result = resolve_question(
             "earliest_start",
@@ -195,6 +227,76 @@ class AnswerPolicyTests(unittest.TestCase):
         self.assertEqual("2", numeric.answer)
         self.assertEqual(AnswerStatus.EXACT, numeric.status)
         self.assertEqual("2+ years", free_text.answer)
+
+    def test_cms_capability_is_strong_without_vendor_overclaim(self) -> None:
+        general = resolve_question("cms", "Do you have CMS experience?")
+        custom = resolve_question(
+            "custom_cms", "Describe your custom content management experience"
+        )
+        wordpress = resolve_question(
+            "wordpress", "Do you have professional WordPress experience?"
+        )
+        shopify = resolve_question(
+            "shopify", "Do you have professional Shopify experience?"
+        )
+        headless = resolve_question(
+            "headless_cms", "Do you have headless CMS architecture experience?"
+        )
+        aem = resolve_question(
+            "aem", "Do you have deep hands-on Adobe AEM experience?"
+        )
+        contentful = resolve_question(
+            "contentful", "Do you have Contentful experience?"
+        )
+        self.assertEqual("Yes", general.answer)
+        self.assertEqual(AnswerStatus.DIRECT_DEEP, general.status)
+        self.assertEqual(AnswerStatus.DIRECT_DEEP, custom.status)
+        self.assertEqual("Yes", wordpress.answer)
+        self.assertEqual(AnswerStatus.DIRECT_WORKING, wordpress.status)
+        self.assertEqual("Yes", shopify.answer)
+        self.assertEqual(AnswerStatus.DIRECT_WORKING, shopify.status)
+        self.assertEqual("Yes", headless.answer)
+        self.assertEqual(AnswerStatus.TRANSFERABLE_STRONG, headless.status)
+        self.assertEqual("No", aem.answer)
+        self.assertEqual(AnswerStatus.EXACT, aem.status)
+        self.assertIsNone(contentful.answer)
+        self.assertEqual(AnswerStatus.MATERIAL_UNKNOWN, contentful.status)
+
+    def test_enterprise_cms_uses_strongest_supported_framing(self) -> None:
+        result = resolve_question(
+            "enterprise_cms",
+            "How would you describe your hands-on experience with enterprise content management systems?",
+        )
+        self.assertEqual(AnswerStatus.STRONGEST_SUPPORTED_ANSWER, result.status)
+        self.assertIn("Substantial hands-on CMS engineering", result.answer or "")
+        self.assertNotIn("eager to learn", (result.answer or "").casefold())
+
+    def test_documented_senior_capabilities_resolve_strongly(self) -> None:
+        api = resolve_question(
+            "api_design", "Do you have substantial API design experience?"
+        )
+        architecture = resolve_question(
+            "system_architecture", "Describe your system architecture experience"
+        )
+        self.assertEqual("Yes", api.answer)
+        self.assertEqual(AnswerStatus.STRONGEST_SUPPORTED_ANSWER, api.status)
+        self.assertIn("Substantial hands-on system", architecture.answer or "")
+
+    def test_known_weak_cms_answer_is_strengthened_before_review(self) -> None:
+        resolved, unresolved, metadata, _ = resolve_questions(
+            {"cms": "Describe your CMS experience"},
+            {
+                "cms": "I have limited or no direct CMS experience, but I am eager to learn and grow in this area."
+            },
+        )
+        self.assertIn("substantial hands-on CMS engineering", resolved["cms"])
+        self.assertEqual([], unresolved)
+        self.assertEqual(
+            "STRONGEST_SUPPORTED_ANSWER", metadata["cms"]["status"]
+        )
+        self.assertEqual(
+            "PASS", metadata["cms"]["senior_positioning_review"]["status"]
+        )
 
     def test_narrow_pytorch_question_does_not_reuse_ai_tenure(self) -> None:
         result = resolve_question("years_pytorch", "How many years of PyTorch experience?")
@@ -280,12 +382,13 @@ class AnswerPolicyTests(unittest.TestCase):
         self.assertEqual(80, calibrate_application_readiness(100, ["MATERIAL_UNKNOWN"]))
         self.assertEqual(84, calibrate_application_readiness(100, ["REQUIRED_VIDEO_INTRO"]))
 
-    def test_self_ratings_are_conservative_and_evidence_based(self) -> None:
+    def test_self_ratings_are_strong_and_evidence_based(self) -> None:
         core = resolve_question("typescript_rating", "Rate your TypeScript proficiency from 1-10")
         secondary = resolve_question("python_rating", "Select your Python skill level")
         self.assertEqual("8", core.answer)
         self.assertEqual("Intermediate", secondary.answer)
-        self.assertEqual(AnswerStatus.CONSERVATIVE_ESTIMATE, core.status)
+        self.assertEqual(AnswerStatus.STRONGEST_SUPPORTED_ANSWER, core.status)
+        self.assertEqual(AnswerStatus.CONSERVATIVE_ESTIMATE, secondary.status)
 
 
 class CompensationTests(unittest.TestCase):

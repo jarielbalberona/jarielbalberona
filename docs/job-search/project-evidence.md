@@ -80,6 +80,14 @@ Evidence: React, TypeScript, Apollo GraphQL, Gatsby, service booking and schedul
 
 Use when frontend leadership, complex workflow UI, GraphQL, or scheduling is central.
 
+## CMS and content-platform engineering
+
+Cross-career capability evidence. Jariel has architected and built custom content-management features and administrative workflows from scratch, including content models, CRUD administration, page and content management, media handling, taxonomies, permissions, publishing flows, catalog management, SEO fields, APIs, and database-backed content.
+
+He also has professional WordPress development and integration experience and professional Shopify commerce, catalog, and content-management experience. React, Next.js, API, database, admin-interface, and custom CMS work provide strong transferable headless and enterprise content-platform architecture experience.
+
+Use this evidence for CMS, content platform, headless architecture, publishing workflow, commerce CMS, and administration-system roles. Describe the underlying capability confidently. Do not claim unsupported AEM or Sitecore specialist depth.
+
 ## Evidence selection by narrative
 
 - Senior Software Engineer: Ordr.now plus the closest production role; AI-native practice is the differentiator.
@@ -87,5 +95,6 @@ Use when frontend leadership, complex workflow UI, GraphQL, or scheduling is cen
 - AI Product Engineer: DataGPT AI and Ordr.now; add the delivery platform only when orchestration is central.
 - Platform: Ordr.now and Experience Digital; add the multi-tenant delivery platform when tenancy or developer tooling matters.
 - Modernization: PRIVV and Experience Digital.
+- CMS or content platforms: CMS and content-platform engineering plus the closest product evidence; distinguish custom capability from vendor specialization.
 
 Choose two or three sources, not all of them.

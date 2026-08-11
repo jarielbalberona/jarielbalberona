@@ -38,7 +38,13 @@ Confirmed current employers and clients always produce `SKIP / CURRENT_EMPLOYER_
 - `REQUIRED_CANDIDATE_PHOTO`
 - `REQUIRED_VIDEO_INTRO`
 - `BEST_SUPPORTED_ANSWER`
+- `STRONGEST_SUPPORTED_ANSWER`
+- `DIRECT_DEEP`
+- `DIRECT_WORKING`
+- `TRANSFERABLE_STRONG`
 - `CONSERVATIVE_ESTIMATE`
+- `UNNECESSARY_UNDERSELL`
+- `UNSUPPORTED_OVERCLAIM`
 - `APPLICATION_ENTRY_UNAVAILABLE`
 - `SCREENING_ANSWERS_UNRESOLVED`
 - `SCREENING_QUESTIONS_UNVERIFIED`
@@ -64,7 +70,19 @@ Current-employer identities are represented by normalized fingerprints in tracke
 
 Timezone inconvenience is not a blocker. Full-time contractor, independent-contractor, consultant, freelance, B2B, and EOR structures are accepted. Required recurring weekend work is a hard incompatibility; ambiguous or rare on-call language requires evidence rather than an automatic skip.
 
-Uncertainty is not the same as unanswerable. `EXACT`, `BEST_SUPPORTED_ANSWER`, and `CONSERVATIVE_ESTIMATE` answers are truthful resolved answers. Only a genuine `MATERIAL_UNKNOWN` remains consequential. Compensation evaluation follows `compensation-policy.md`; undisclosed compensation is not a blocker and ordinary expected-compensation answers are autonomous.
+Uncertainty is not the same as unanswerable. Resolve in this order: `EXACT`, `STRONGEST_SUPPORTED_ANSWER`, capability-depth classifications such as `DIRECT_DEEP`, `DIRECT_WORKING`, and `TRANSFERABLE_STRONG`, then `BEST_SUPPORTED_ANSWER`, `CONSERVATIVE_ESTIMATE`, and finally `MATERIAL_UNKNOWN`. All positive evidence-backed statuses are truthful resolved answers. Only a genuine `MATERIAL_UNKNOWN` remains consequential. Compensation evaluation follows `compensation-policy.md`; undisclosed compensation is not a blocker and ordinary expected-compensation answers are autonomous.
+
+## Senior candidate positioning
+
+Application answers must present Jariel as a 10+ year senior engineer with documented full-stack, product, platform, cloud, architecture, consulting, CMS, AI-product, and agentic-development depth. Use the strongest truthful interpretation supported by career and project history. Do not optimize for the most cautious wording when that wording materially understates direct experience.
+
+Distinguish the underlying engineering capability from experience with a specific vendor. Custom CMS architecture, WordPress, Shopify, admin systems, and content workflows establish substantial CMS engineering even without AEM or Sitecore specialization. Apply the same distinction to cloud, observability, APIs, databases, and AI engineering.
+
+Run `SENIOR_POSITIONING_REVIEW` before the submission boundary. Revise answers or writing flagged `UNNECESSARY_UNDERSELL`; do not submit content flagged `UNSUPPORTED_OVERCLAIM`. Boolean answers remain concise when `Yes` or `No` is supported. Free text should lead with what Jariel built, owned, designed, architected, delivered, or improved instead of junior-style eager-to-learn language.
+
+For forced-choice questions, `strongest supported` applies to the complete semantics of an option, not one attractive phrase inside it. Every material scale, environment, vendor, migration, traffic, certification, or scope claim must be evidenced. If a higher option mixes supported capability with an unsupported enterprise-scale claim, select the strongest fully supported lower option and use available free text to preserve accurate depth.
+
+Discovery provenance and application infrastructure are separate facts. Record the channel that originally surfaced the job, the destination employer page, and the ATS host independently. Never answer a source-of-discovery question with an ATS name solely because the ATS hosts the form.
 
 ## Candidate media
 

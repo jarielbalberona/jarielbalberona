@@ -1,4 +1,4 @@
 interface:
   display_name: "Manage Job Search"
-  short_description: "Run governed search and answer policy"
-  default_prompt: "Use $manage-job-search to process opportunities with canonical facts, compensation, readiness, and submission policy."
+  short_description: "Run governed senior job-search policy"
+  default_prompt: "Use $manage-job-search to process opportunities with canonical facts, strongest-supported senior positioning, compensation, readiness, and submission policy."

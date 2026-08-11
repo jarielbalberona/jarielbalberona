@@ -126,8 +126,9 @@ def evaluate_eligibility(job: Job, matcher: EmployerExclusionMatcher | None = No
         )
 
     schedule_text = normalize_text(job.work_schedule)
-    if job.recurring_weekend_work is True or any(
-        re.search(pattern, schedule_text) for pattern in REQUIRED_WEEKEND_PATTERNS
+    if job.recurring_weekend_work is True or (
+        job.recurring_weekend_work is not False
+        and any(re.search(pattern, schedule_text) for pattern in REQUIRED_WEEKEND_PATTERNS)
     ):
         return EligibilityResult(
             can_score=False,
