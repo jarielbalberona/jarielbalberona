@@ -7,7 +7,7 @@ Every application starts from the complete current job description. Never reuse 
 1. Load the normalized job and confirm it remains active.
 2. Resolve the actual employer and run hard eligibility gates.
 3. Deduplicate against the local ledger and tracker.
-4. Assess the employer's real problem, responsibilities, seniority, architecture, stack, AI/product/platform relevance, and remote compatibility.
+4. Assess the employer's real problem, responsibilities, seniority, architecture, career direction, stack, AI/product/platform relevance, and remote compatibility.
 5. Choose one candidate narrative and the strongest two or three evidence sources.
 6. Prepare a concise job-specific letter and direct screening-answer plan.
 7. Surface consequential unknowns. Continue preparing known sections without inventing answers.
@@ -19,6 +19,9 @@ Every application starts from the complete current job description. Never reuse 
 ## Required assessment output
 
 - Fit score and verdict
+- Base fit, technical fit, and career-direction fit
+- Eligibility confidence and application readiness
+- Readiness reason codes and consequential unresolved questions
 - Why the role exists or the employer's real problem
 - Strongest matches
 - Relevant projects and technologies
@@ -29,10 +32,11 @@ Every application starts from the complete current job description. Never reuse 
 ## Fit rubric
 
 ```text
-Actual responsibilities               30
-Architecture / engineering match      20
-Technical stack                       15
-AI / product / platform relevance     15
+Actual responsibilities               25
+Architecture / engineering match      15
+Career-direction fit                  20
+Technical stack                       10
+AI / product / platform relevance     10
 Seniority / scope                     10
 Remote / employment compatibility     10
                                       ---
@@ -40,6 +44,23 @@ Remote / employment compatibility     10
 ```
 
 Verdicts: 85-100 `STRONG APPLY`, 75-84 `APPLY`, 65-74 `REVIEW`, below 65 `SKIP`. Eligibility gates override the score.
+
+The rubric total is the base fit. The final fit score is:
+
+```text
+round(base fit * eligibility confidence / 100)
+```
+
+Report these separately:
+
+- `Technical Fit`: responsibilities, architecture, stack, and seniority normalized to 100.
+- `Career Direction Fit`: the career-direction dimension normalized to 100.
+- `Eligibility Confidence`: confidence that employer, activity, remote, location, and employment facts are correctly resolved.
+- `Application Readiness`: whether the current listing, packet, actual screening questions, required answers, and material experience claims are ready for submission.
+
+Unknown compensation does not reduce eligibility by itself. Reduce readiness or require review for unresolved remote eligibility, required working hours, work authorization, actual mandatory screening answers, unavailable application entry, or materially unsupported requirements.
+
+The engine enforces upper bounds for these reason codes. Caller-supplied confidence or readiness cannot override a stricter cap. Unknown compensation has no automatic cap; if the live form requires an answer, the unanswered consequential question still blocks submission.
 
 ## Narrative selection
 

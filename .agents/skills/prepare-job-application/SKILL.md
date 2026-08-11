@@ -13,7 +13,7 @@ Read `docs/job-search/application-workflow.md`, `docs/job-search/candidate-conte
 2. Select one narrative: senior software, AI-native/agentic, AI product, platform, or modernization.
 3. Select only the strongest two or three evidence sources.
 4. Write roughly three short paragraphs: role-specific hook, connected evidence, plain close.
-5. Draft direct screening-answer plans. Record consequential unknowns without guessing.
+5. Draft direct screening-answer plans from questions actually observed in the current application. Mark whether the questions were verified and record consequential unknowns without guessing. Do not invent generic salary, notice, or authorization questions when the source did not ask them.
 6. Record legitimate gaps, interview risks, CV version, and reasons to apply or not apply.
 7. Scan public text for confidential client names, unrelated employer names, fabricated metrics, generic flattery, keyword dumps, and em dashes.
 8. Persist the packet under ignored `.job-search/artifacts/` and the draft record in SQLite.

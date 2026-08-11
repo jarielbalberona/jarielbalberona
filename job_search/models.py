@@ -93,16 +93,18 @@ class Job:
 class FitRubric:
     actual_responsibilities: int
     architecture_match: int
+    career_direction_fit: int
     technical_stack: int
     ai_product_platform_relevance: int
     seniority_scope: int
     remote_compatibility: int
 
     LIMITS = {
-        "actual_responsibilities": 30,
-        "architecture_match": 20,
-        "technical_stack": 15,
-        "ai_product_platform_relevance": 15,
+        "actual_responsibilities": 25,
+        "architecture_match": 15,
+        "career_direction_fit": 20,
+        "technical_stack": 10,
+        "ai_product_platform_relevance": 10,
         "seniority_scope": 10,
         "remote_compatibility": 10,
     }
@@ -116,6 +118,20 @@ class FitRubric:
     @property
     def total(self) -> int:
         return sum(getattr(self, name) for name in self.LIMITS)
+
+    @property
+    def technical_fit_score(self) -> int:
+        earned = (
+            self.actual_responsibilities
+            + self.architecture_match
+            + self.technical_stack
+            + self.seniority_scope
+        )
+        return round(earned / 60 * 100)
+
+    @property
+    def career_direction_fit_score(self) -> int:
+        return round(self.career_direction_fit / self.LIMITS["career_direction_fit"] * 100)
 
     def to_dict(self) -> dict[str, int]:
         return {name: getattr(self, name) for name in self.LIMITS}
@@ -133,8 +149,14 @@ class EligibilityResult:
 class Assessment:
     job_id: str
     fit_score: int | None
+    base_fit_score: int | None
+    technical_fit_score: int | None
+    career_direction_fit_score: int | None
+    eligibility_confidence: int | None
+    application_readiness: int
     verdict: Verdict
     reason_codes: list[str]
+    readiness_reason_codes: list[str]
     real_problem: str
     strongest_matches: list[str]
     relevant_projects: list[str]
@@ -146,6 +168,7 @@ class Assessment:
     application_angle: str
     interview_risks: list[str]
     rubric: FitRubric | None = None
+    scoring_version: str = "career-direction-v2"
     created_at: str = field(default_factory=utc_now)
 
     def to_dict(self) -> dict[str, Any]:
@@ -168,6 +191,8 @@ class ApplicationPacket:
     unresolved_questions: list[str]
     gaps: list[str]
     reasons: list[str]
+    screening_questions_verified: bool = False
+    screening_questions_source: str = ""
     cv_version: str = "portfolio/public/jariel-balberona-cv.pdf"
     prepared_at: str = field(default_factory=utc_now)
 

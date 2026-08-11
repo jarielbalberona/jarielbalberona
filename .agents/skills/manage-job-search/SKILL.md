@@ -22,10 +22,10 @@ Use the smaller skills for their stages. Do not restate their policy from memory
 2. Invoke `$discover-jobs` and persist every normalized result, including skips.
 3. Identify the actual destination employer. Run current-employer, company-origin, remote-from-Philippines, seniority, and engineering-domain gates in that order.
 4. Deduplicate eligible jobs before fit scoring.
-5. Invoke `$assess-job-fit` for viable jobs. Do not keyword-score without reading responsibilities.
+5. Invoke `$assess-job-fit` for viable jobs. Separate technical fit, career direction, eligibility confidence, and application readiness. Do not keyword-score without reading responsibilities.
 6. Rank `STRONG APPLY`, `APPLY`, and `REVIEW` jobs. Keep hard-blocked roles out regardless of technical fit.
 7. Invoke `$prepare-job-application` for the best real candidates. Select only relevant evidence.
-8. Invoke `$apply-to-job` only when explicitly in scope. Obey source and run modes; `DRY_RUN` can never submit.
+8. Invoke `$apply-to-job` only when explicitly in scope. During calibration require individual review. In the eventual steady state, use the repository live-autonomy policy rather than assuming every strong score can submit.
 9. Persist per-job outcome, evidence, errors, and every external action.
 10. Invoke `$sync-job-application-tracker` only for meaningful lifecycle rows.
 11. Invoke `$check-job-application-responses` narrowly and read-only when follow-up is requested.

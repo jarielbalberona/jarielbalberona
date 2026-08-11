@@ -34,6 +34,17 @@ Confirmed current employers and clients always produce `SKIP / CURRENT_EMPLOYER_
 - `DUPLICATE_JOB`
 - `SUSPECT_LISTING`
 - `UNRESOLVED_CONSEQUENTIAL_FACT`
+- `APPLICATION_ENTRY_UNAVAILABLE`
+- `SCREENING_ANSWERS_UNRESOLVED`
+- `SCREENING_QUESTIONS_UNVERIFIED`
+- `TIMEZONE_REQUIREMENT_UNRESOLVED`
+- `MATERIAL_REQUIREMENT_GAP`
+- `CAREER_DIRECTION_MISMATCH`
+- `CALIBRATION_REVIEW_REQUIRED`
+- `READINESS_BELOW_AUTONOMY_THRESHOLD`
+- `VERDICT_REQUIRES_REVIEW`
+- `VERDICT_SKIP`
+- `SOURCE_NOT_AUTONOMOUS`
 - `SOURCE_EXECUTION_FORBIDDEN`
 - `SUBMISSION_UNVERIFIED`
 
@@ -68,3 +79,31 @@ Clicking an Apply control is not success. Mark `APPLIED` only after a confirmati
 - `DISABLED`: do not access the source.
 
 V1 is `DRY_RUN`. Real applications submitted during initial calibration must be zero.
+
+## Live-autonomy policy
+
+Live submission remains disabled during calibration. The intended steady state is:
+
+```text
+STRONG APPLY
++ no hard blocker
++ no consequential unresolved question
++ source permits autonomous submission
++ application readiness >= 85
+-> autonomous application permitted
+
+APPLY
++ the same gates
++ application readiness >= 92
+-> autonomous application permitted
+
+REVIEW
+-> Jariel review required
+
+SKIP
+-> never apply
+```
+
+The higher `APPLY` threshold prevents a merely acceptable fit from becoming autonomous without unusually strong readiness evidence. Individual approval for every strong application is a calibration-stage rule, not the intended permanent operating model.
+
+Do not enable autonomy by changing run mode alone. The source must be explicitly verified for live submission, `live_submit` must be enabled, the calibration flag must be cleared, and the current assessment plus actual screening questions must pass the policy.

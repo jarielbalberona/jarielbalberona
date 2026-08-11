@@ -1,5 +1,8 @@
 version: 1
 default_run_mode: DRY_RUN
+autonomy_calibration_stage: true
+strong_apply_readiness_threshold: 85
+apply_readiness_threshold: 92
 
 sources:
   indeed_ph:

@@ -1,6 +1,6 @@
 ---
 name: assess-job-fit
-description: Evaluate a job against Jariel's hard employer rules and weighted responsibility, architecture, stack, AI/product/platform, seniority, and remote-compatibility rubric. Use to score a specific role, rank discovered jobs, select candidate narrative and evidence, or explain a skip/review/apply verdict.
+description: Evaluate a job against Jariel's hard employer rules, career direction, technical fit, eligibility confidence, and application readiness. Use to score a specific role, rank discovered jobs, separate infrastructure compatibility from target-role fit, select candidate evidence, or explain a skip/review/apply verdict.
 ---
 
 # Assess job fit
@@ -21,18 +21,26 @@ Do not calculate a flattering score for a hard-blocked job.
 
 Score from the full description, not keyword overlap:
 
-- actual responsibilities: 30
-- architecture and engineering match: 20
-- technical stack: 15
-- AI, product, or platform relevance: 15
+- actual responsibilities: 25
+- architecture and engineering match: 15
+- career-direction fit: 20
+- technical stack: 10
+- AI, product, or platform relevance: 10
 - seniority and scope: 10
 - remote and employment compatibility: 10
+
+Do not treat conventional DevOps or SRE as a target AI/software-platform role merely because AWS, Terraform, CI/CD, Kubernetes, or observability match. Score technical credibility and career direction separately.
+
+Multiply the base fit by eligibility confidence to produce the final fit score. Also return application readiness independently. Apply repository reason-code caps so optimistic inputs cannot hide material unknowns. Unknown compensation alone is not an eligibility penalty.
 
 Map 85-100 to `STRONG APPLY`, 75-84 to `APPLY`, 65-74 to `REVIEW`, and below 65 to `SKIP`.
 
 ## Return
 
 - fit score and verdict
+- base fit, technical fit, and career-direction fit
+- eligibility confidence and application readiness
+- readiness reason codes
 - employer-origin evidence and eligibility reason codes
 - why the role exists or the employer's real problem
 - strongest matches

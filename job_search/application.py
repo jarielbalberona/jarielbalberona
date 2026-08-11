@@ -79,6 +79,8 @@ def prepare_application_packet(
     letter: str | None = None,
     screening_questions: Mapping[str, str] | None = None,
     canonical_answers: Mapping[str, str] | None = None,
+    screening_questions_verified: bool = False,
+    screening_questions_source: str = "",
     matcher: EmployerExclusionMatcher | None = None,
 ) -> ApplicationPacket:
     if assessment.verdict not in {Verdict.STRONG_APPLY, Verdict.APPLY, Verdict.REVIEW}:
@@ -107,4 +109,6 @@ def prepare_application_packet(
         unresolved_questions=unresolved,
         gaps=list(assessment.legitimate_gaps),
         reasons=[assessment.real_problem, assessment.application_angle],
+        screening_questions_verified=screening_questions_verified,
+        screening_questions_source=screening_questions_source,
     )

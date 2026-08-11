@@ -100,6 +100,7 @@ def run_dry_run(
         "discovered_count": len(payload["jobs"]),
         "normalized_count": 0,
         "duplicate_count": 0,
+        "reassessed_count": 0,
         "skipped_count": 0,
         "review_count": 0,
         "apply_count": 0,
@@ -126,7 +127,9 @@ def run_dry_run(
                 counts["normalized_count"] += 1
                 if duplicate:
                     counts["duplicate_count"] += 1
-                    continue
+                    if not payload.get("reassess_existing", False):
+                        continue
+                    counts["reassessed_count"] += 1
 
                 rubric_data = item.get("rubric")
                 rubric = FitRubric(**rubric_data) if rubric_data and eligibility.can_score else None
@@ -135,6 +138,9 @@ def run_dry_run(
                     job_id=job_id,
                     eligibility=eligibility,
                     rubric=rubric,
+                    eligibility_confidence=int(analysis.get("eligibility_confidence", 100)),
+                    application_readiness=int(analysis.get("application_readiness", 100)),
+                    readiness_reason_codes=_list(analysis.get("readiness_reason_codes")),
                     real_problem=analysis.get("real_problem", ""),
                     strongest_matches=_list(analysis.get("strongest_matches")),
                     relevant_projects=_list(analysis.get("relevant_projects")),
@@ -162,8 +168,14 @@ def run_dry_run(
                     "role": job.role,
                     "url": canonicalize_url(job.original_url),
                     "fit_score": assessment.fit_score,
+                    "base_fit_score": assessment.base_fit_score,
+                    "technical_fit_score": assessment.technical_fit_score,
+                    "career_direction_fit_score": assessment.career_direction_fit_score,
+                    "eligibility_confidence": assessment.eligibility_confidence,
+                    "application_readiness": assessment.application_readiness,
                     "verdict": assessment.verdict.value,
                     "reason_codes": assessment.reason_codes,
+                    "readiness_reason_codes": assessment.readiness_reason_codes,
                     "why_it_fits": assessment.real_problem,
                     "main_gap": assessment.legitimate_gaps[0] if assessment.legitimate_gaps else "",
                     "application_angle": assessment.application_angle,
@@ -178,6 +190,12 @@ def run_dry_run(
                         letter=packet_input.get("letter"),
                         screening_questions=packet_input.get("screening_questions", {}),
                         canonical_answers=packet_input.get("canonical_answers", {}),
+                        screening_questions_verified=bool(
+                            packet_input.get("screening_questions_verified", False)
+                        ),
+                        screening_questions_source=packet_input.get(
+                            "screening_questions_source", ""
+                        ),
                         matcher=matcher,
                     )
                     ledger.save_draft(packet)

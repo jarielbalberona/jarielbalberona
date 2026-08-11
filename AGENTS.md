@@ -22,9 +22,11 @@ Optimize for truth, credibility, maintainability, and production judgment. Rejec
 - Never fabricate candidate history, achievements, metrics, salary, notice period, authorization, visa status, relocation intent, management scope, or technology tenure.
 - Keep confidential current clients generic in public material. Do not infer or publish identities from private exclusion checks.
 - Run current-employer and company-origin eligibility checks before fit scoring.
+- Score career direction separately from technical compatibility. Pure DevOps or SRE work must not become `STRONG APPLY` merely because Jariel has infrastructure experience.
 - Target international employers that can hire remotely from the Philippines. Do not treat a Philippine job location, payroll entity, office, or EOR as proof that the underlying employer is Philippine-local.
 - Follow `docs/job-search/source-registry.yaml` before any job-board write. Technical capability is not authorization.
 - Do not mark an application `APPLIED` without verified submission evidence.
+- Keep live autonomy in calibration until repository policy explicitly changes; readiness and source permission are mandatory even for `STRONG APPLY` roles.
 - Keep Gmail access narrow, job-search-related, and read-only unless the user later authorizes a write.
 - Never commit passwords, OAuth material, cookies, MFA secrets, browser state, job-board credentials, or tokens.
 - `.job-search/` is ignored private runtime state. Do not move its contents into tracked files.

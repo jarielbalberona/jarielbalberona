@@ -1,4 +1,4 @@
 interface:
   display_name: "Assess Job Fit"
-  short_description: "Assess role fit with hard eligibility gates"
-  default_prompt: "Use $assess-job-fit to assess this role against Jariel current policy and evidence."
+  short_description: "Score career, technical, and readiness fit"
+  default_prompt: "Use $assess-job-fit to separate this role's technical fit, career direction, eligibility confidence, and application readiness."

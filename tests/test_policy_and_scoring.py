@@ -4,10 +4,16 @@ import json
 import unittest
 from pathlib import Path
 
-from job_search.models import CompanyOrigin, FitRubric, Job, Verdict
+from job_search.models import CompanyOrigin, EligibilityResult, FitRubric, Job, Verdict
 from job_search.normalization import fingerprint
 from job_search.policy import EmployerExclusionMatcher, ExclusionIdentity, evaluate_eligibility
-from job_search.scoring import build_assessment, verdict_from_score
+from job_search.scoring import (
+    build_assessment,
+    calibrate_application_readiness,
+    calibrate_eligibility_confidence,
+    uncertainty_adjusted_score,
+    verdict_from_score,
+)
 
 
 def job(**overrides: object) -> Job:
@@ -100,7 +106,10 @@ class PolicyTests(unittest.TestCase):
         assessment = build_assessment(
             job_id="job_1",
             eligibility=eligibility,
-            rubric=FitRubric(30, 20, 15, 15, 10, 10),
+            rubric=FitRubric(25, 15, 20, 10, 10, 10, 10),
+            eligibility_confidence=100,
+            application_readiness=100,
+            readiness_reason_codes=[],
             real_problem="Perfect technical match",
             strongest_matches=["Everything"],
             relevant_projects=["All"],
@@ -114,6 +123,53 @@ class PolicyTests(unittest.TestCase):
         )
         self.assertEqual(Verdict.SKIP, assessment.verdict)
         self.assertIsNone(assessment.fit_score)
+
+    def test_pure_devops_role_cannot_become_strong_from_technical_overlap(self) -> None:
+        rubric = FitRubric(
+            actual_responsibilities=22,
+            architecture_match=14,
+            career_direction_fit=6,
+            technical_stack=9,
+            ai_product_platform_relevance=4,
+            seniority_scope=9,
+            remote_compatibility=9,
+        )
+        assessment = build_assessment(
+            job_id="job_devops",
+            eligibility=EligibilityResult(can_score=True),
+            rubric=rubric,
+            eligibility_confidence=90,
+            application_readiness=55,
+            readiness_reason_codes=["MATERIAL_REQUIREMENT_GAP"],
+            real_problem="Operate conventional cloud infrastructure.",
+            strongest_matches=["AWS", "Terraform", "observability"],
+            relevant_projects=["Experience Digital"],
+            relevant_technologies=["AWS", "Terraform"],
+            legitimate_gaps=["Deep production Kubernetes operations"],
+            dealbreakers=[],
+            narrative="Platform engineering",
+            cv_emphasis="Infrastructure history",
+            application_angle="Review only",
+            interview_risks=[],
+        )
+        self.assertEqual(90, assessment.technical_fit_score)
+        self.assertEqual(30, assessment.career_direction_fit_score)
+        self.assertEqual(66, assessment.fit_score)
+        self.assertEqual(Verdict.REVIEW, assessment.verdict)
+
+    def test_eligibility_uncertainty_prevents_near_perfect_score(self) -> None:
+        self.assertEqual(80, uncertainty_adjusted_score(100, 80))
+        self.assertEqual(88, uncertainty_adjusted_score(96, 92))
+
+    def test_material_unknowns_cap_optimistic_confidence_and_readiness(self) -> None:
+        reasons = ["TIMEZONE_REQUIREMENT_UNRESOLVED", "MATERIAL_REQUIREMENT_GAP"]
+        self.assertEqual(92, calibrate_eligibility_confidence(100, reasons))
+        self.assertEqual(55, calibrate_application_readiness(100, reasons))
+
+    def test_unknown_compensation_alone_does_not_reduce_signals(self) -> None:
+        reasons = ["COMPENSATION_EXPECTATION_UNRESOLVED"]
+        self.assertEqual(100, calibrate_eligibility_confidence(100, reasons))
+        self.assertEqual(100, calibrate_application_readiness(100, reasons))
 
     def test_verdict_boundaries(self) -> None:
         cases = {

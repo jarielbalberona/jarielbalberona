@@ -16,7 +16,7 @@ Senior Software Engineer is the baseline identity. AI-native and agentic product
 - AI Application Engineer
 - Agentic AI Engineer
 - AI Platform Engineer
-- Senior Platform Engineer
+- Senior Product Platform Engineer
 - Developer Productivity Engineer
 - Developer Experience Engineer - AI
 - Software Engineer - Autonomous Agents or Coding Agents
@@ -29,6 +29,14 @@ Senior Software Engineer is the baseline identity. AI-native and agentic product
 Heavily penalize or skip pure ML research, research scientist, data scientist, model-training specialist, CUDA or kernel engineering, roles centered on advanced PyTorch/model training, pure DevOps, pure SRE with little product work, minimally hands-on management, junior or mid-level roles, pixel-only frontend implementation, WordPress-only work, and generic VA/BPO technical work.
 
 Python is not itself a blocker. Determine whether it is merely the implementation language or whether deep ML research is the actual job.
+
+## Career direction
+
+Technical compatibility is not the same as career-direction fit. Jariel's AWS, Terraform, CI/CD, observability, and DevOps history can support a product or software-platform role, but conventional infrastructure operations are not the target destination.
+
+Give high career-direction scores to hands-on senior software, product, full-stack, AI product, agentic AI, developer platform, and AI platform work. Give low scores to pure DevOps, pure SRE, cluster operations, infrastructure administration, and incident/on-call roles whose product engineering content is incidental.
+
+A pure DevOps or SRE role may still be technically credible. It must not reach `STRONG APPLY` from technical overlap alone.
 
 ## International-company requirement
 
