@@ -116,7 +116,7 @@ class ApplicationTests(unittest.TestCase):
         with self.assertRaises(ConfidentialityError):
             assert_public_safe(f"I currently build systems for {private_name}.", matcher)
 
-    def test_canonical_notice_resolves_while_legal_fact_remains_unknown(self) -> None:
+    def test_canonical_notice_and_us_work_authorization_resolve_exactly(self) -> None:
         resolved, unresolved = resolve_application_answers(
             {
                 "work_authorization": "Are you authorized to work in the United States?",
@@ -127,12 +127,13 @@ class ApplicationTests(unittest.TestCase):
         )
         self.assertEqual(
             {
+                "work_authorization": "No",
                 "notice_period": "None",
                 "portfolio": "https://jarielbalberona.dev",
             },
             resolved,
         )
-        self.assertEqual(["Are you authorized to work in the United States?"], unresolved)
+        self.assertEqual([], unresolved)
 
 
 if __name__ == "__main__":

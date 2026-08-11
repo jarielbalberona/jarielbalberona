@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import json
 import unittest
 from datetime import datetime
+from pathlib import Path
 from types import SimpleNamespace
 from zoneinfo import ZoneInfo
 
@@ -127,6 +129,87 @@ class CandidateAvailabilityTests(unittest.TestCase):
 
 
 class AnswerPolicyTests(unittest.TestCase):
+    def test_canonical_philippine_residence_shape_is_persisted(self) -> None:
+        facts = json.loads(
+            Path("job_search/policy/candidate_facts.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(
+            {
+                "country": "Philippines",
+                "city": "Dumaguete City",
+                "region": "Negros Oriental",
+                "state_or_region": "Negros Oriental",
+            },
+            facts["residence"],
+        )
+
+    def test_philippine_citizenship_and_work_authorization_are_exact(self) -> None:
+        citizenship = resolve_question(
+            "filipino_citizen", "Are you a Filipino citizen?"
+        )
+        country = resolve_question(
+            "citizenship_country", "What is your country of citizenship?"
+        )
+        nationality = resolve_question("nationality", "What is your nationality?")
+        authorization = resolve_question(
+            "ph_work_authorization",
+            "Are you legally authorized to work in the Philippines?",
+        )
+        teamified = resolve_question(
+            "based_and_can_legally_work_in_philippines",
+            "Are you based and can legally work in The Philippines?",
+        )
+        sponsorship = resolve_question(
+            "ph_sponsorship", "Will you require sponsorship to work in the Philippines?"
+        )
+
+        self.assertEqual("Yes", citizenship.answer)
+        self.assertEqual("Philippines", country.answer)
+        self.assertEqual("Philippines", nationality.answer)
+        self.assertEqual("Yes", authorization.answer)
+        self.assertEqual("Yes", teamified.answer)
+        self.assertEqual("No", sponsorship.answer)
+        self.assertTrue(
+            all(
+                result.status == AnswerStatus.EXACT
+                for result in (
+                    citizenship,
+                    country,
+                    nationality,
+                    authorization,
+                    teamified,
+                    sponsorship,
+                )
+            )
+        )
+
+    def test_philippines_job_work_visa_question_uses_job_context(self) -> None:
+        result = resolve_question(
+            "work_visa",
+            "Do you need a work visa?",
+            job=job(location="Philippines", remote_policy="Remote in the Philippines"),
+        )
+        self.assertEqual("No", result.answer)
+        self.assertEqual(AnswerStatus.EXACT, result.status)
+
+    def test_united_states_work_authorization_is_not_generalized_from_ph_status(self) -> None:
+        boolean = resolve_question(
+            "us_work_authorization",
+            "Are you legally authorized to work in the United States?",
+        )
+        status = resolve_question(
+            "us_work_authorization_status", "US work authorization status"
+        )
+        canada = resolve_question(
+            "canada_work_authorization",
+            "Are you legally authorized to work in Canada?",
+        )
+
+        self.assertEqual("No", boolean.answer)
+        self.assertEqual("Not Applicable / located outside the US", status.answer)
+        self.assertEqual(AnswerStatus.EXACT, boolean.status)
+        self.assertEqual(AnswerStatus.MATERIAL_UNKNOWN, canada.status)
+
     def test_canonical_candidate_photo_is_reused_for_required_upload(self) -> None:
         result = resolve_question(
             "candidate_photo",
@@ -359,11 +442,12 @@ class AnswerPolicyTests(unittest.TestCase):
         self.assertEqual(AnswerStatus.MATERIAL_UNKNOWN, result.status)
         self.assertIn("cannot be hidden", result.interpretation)
 
-    def test_legal_authorization_unknown_is_material(self) -> None:
+    def test_canonical_us_legal_authorization_is_exact_no(self) -> None:
         result = resolve_question(
             "work_authorization", "Are you authorized to work in the United States?"
         )
-        self.assertEqual(AnswerStatus.MATERIAL_UNKNOWN, result.status)
+        self.assertEqual("No", result.answer)
+        self.assertEqual(AnswerStatus.EXACT, result.status)
 
     def test_current_salary_is_unknown_unless_non_disclosure_exists(self) -> None:
         unknown = resolve_question("current_salary", "What is your current salary?")

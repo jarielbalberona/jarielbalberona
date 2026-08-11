@@ -9,6 +9,7 @@ from typing import Any, Mapping
 from .campaign import CampaignPolicy, classify_freshness
 from .models import ApplicationPacket, ApplicationStatus, Assessment, Job, RunMode, utc_now
 from .normalization import application_id, canonicalize_url, content_fingerprint, description_hash
+from .tracker import should_sync_review_queue
 
 
 MEDIA_REQUIREMENT_VALUES = frozenset(
@@ -380,7 +381,139 @@ class Ledger:
                 now,
             ),
         )
+        if status == ApplicationStatus.APPLIED:
+            self.connection.execute(
+                """
+                UPDATE review_queue SET
+                  application_id = ?, queue_status = 'CLOSED',
+                  hold_review_reason = 'Resolved by verified application submission.',
+                  next_action = 'Monitor application lifecycle in Applications.',
+                  re_review_after = NULL, updated_at = ?
+                WHERE job_id = ?
+                """,
+                (packet.application_id, now, packet.job_id),
+            )
         self.connection.commit()
+
+    def upsert_review_queue(self, record: Mapping[str, Any]) -> None:
+        if not should_sync_review_queue(record):
+            raise ValueError("SKIP and non-queue lifecycle records must not enter Review Queue")
+        required = (
+            "queue_id",
+            "job_id",
+            "company",
+            "role",
+            "job_url",
+            "queue_status",
+        )
+        missing = [key for key in required if not str(record.get(key, "")).strip()]
+        if missing:
+            raise ValueError(f"missing review queue fields: {', '.join(missing)}")
+        if (
+            str(record["queue_status"]).strip().upper() != "CLOSED"
+            and not str(record.get("cover_letter", "")).strip()
+        ):
+            raise ValueError("worthwhile active Review Queue records require a prepared cover letter")
+        now = utc_now()
+        self.connection.execute(
+            """
+            INSERT INTO review_queue(
+              queue_id, job_id, application_id, source_posting_id, description_hash,
+              date_discovered, last_reviewed, company, role, source, ats, job_url,
+              posted_date, job_age, fit_score, verdict, readiness, queue_status,
+              hold_review_reason, next_action, compensation, key_matches,
+              material_gaps, prepared_screening_answers, cover_letter, cv_version,
+              media_requirement, source_ats_policy, re_review_after, notes,
+              created_at, updated_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(queue_id) DO UPDATE SET
+              job_id = excluded.job_id,
+              application_id = COALESCE(excluded.application_id, review_queue.application_id),
+              source_posting_id = excluded.source_posting_id,
+              description_hash = excluded.description_hash,
+              date_discovered = excluded.date_discovered,
+              last_reviewed = excluded.last_reviewed,
+              company = excluded.company,
+              role = excluded.role,
+              source = excluded.source,
+              ats = excluded.ats,
+              job_url = excluded.job_url,
+              posted_date = excluded.posted_date,
+              job_age = excluded.job_age,
+              fit_score = excluded.fit_score,
+              verdict = excluded.verdict,
+              readiness = excluded.readiness,
+              queue_status = excluded.queue_status,
+              hold_review_reason = excluded.hold_review_reason,
+              next_action = excluded.next_action,
+              compensation = excluded.compensation,
+              key_matches = excluded.key_matches,
+              material_gaps = excluded.material_gaps,
+              prepared_screening_answers = excluded.prepared_screening_answers,
+              cover_letter = excluded.cover_letter,
+              cv_version = excluded.cv_version,
+              media_requirement = excluded.media_requirement,
+              source_ats_policy = excluded.source_ats_policy,
+              re_review_after = excluded.re_review_after,
+              notes = excluded.notes,
+              updated_at = excluded.updated_at
+            """,
+            (
+                record["queue_id"],
+                record["job_id"],
+                record.get("application_id"),
+                record.get("source_posting_id", ""),
+                record.get("description_hash", ""),
+                record.get("date_discovered", ""),
+                record.get("last_reviewed", ""),
+                record["company"],
+                record["role"],
+                record.get("source", ""),
+                record.get("ats", ""),
+                canonicalize_url(str(record["job_url"])),
+                record.get("posted_date"),
+                record.get("job_age"),
+                record.get("fit_score"),
+                record.get("verdict", ""),
+                record.get("readiness"),
+                record["queue_status"],
+                record.get("hold_review_reason", ""),
+                record.get("next_action", ""),
+                record.get("compensation", ""),
+                json.dumps(record.get("key_matches", [])),
+                json.dumps(record.get("material_gaps", [])),
+                json.dumps(record.get("prepared_screening_answers", {}), sort_keys=True),
+                record.get("cover_letter", ""),
+                record.get("cv_version", ""),
+                record.get("media_requirement", ""),
+                record.get("source_ats_policy", ""),
+                record.get("re_review_after"),
+                record.get("notes", ""),
+                now,
+                now,
+            ),
+        )
+        self.connection.commit()
+
+    def list_review_queue(
+        self,
+        *,
+        include_closed: bool = True,
+        due_on_or_before: str | None = None,
+    ) -> list[dict[str, Any]]:
+        clauses: list[str] = []
+        values: list[Any] = []
+        if not include_closed:
+            clauses.append("queue_status != 'CLOSED'")
+        if due_on_or_before:
+            clauses.append("re_review_after IS NOT NULL AND date(re_review_after) <= date(?)")
+            values.append(due_on_or_before[:10])
+        where = f"WHERE {' AND '.join(clauses)}" if clauses else ""
+        rows = self.connection.execute(
+            f"SELECT * FROM review_queue {where} ORDER BY COALESCE(re_review_after, '9999-12-31'), fit_score DESC, queue_id",
+            values,
+        ).fetchall()
+        return [dict(row) for row in rows]
 
     def record_email_event(
         self,
@@ -492,6 +625,7 @@ class Ledger:
             "application_events",
             "email_events",
             "application_media_requirements",
+            "review_queue",
         }:
             raise ValueError("unsupported table")
         return int(self.connection.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0])

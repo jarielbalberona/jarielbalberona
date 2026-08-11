@@ -1,6 +1,6 @@
 ---
 name: sync-job-application-tracker
-description: Initialize or idempotently reconcile Jariel's Google Sheet tracker from SQLite, preserving manual status edits, advertised and expected compensation provenance, and meaningful lifecycle-only rows. Use for tracker setup, application upserts, or response reconciliation.
+description: Initialize or idempotently reconcile Jariel's Applications and Review Queue Google Sheet tabs from SQLite, preserving manual edits, compensation provenance, meaningful lifecycle rows, holds, re-review dates, and applied transitions. Use for tracker setup, application upserts, review-queue reconciliation, or response reconciliation.
 ---
 
 # Sync application tracker
@@ -11,9 +11,10 @@ Read `docs/job-search/tracker-schema.md`. Use the Google Sheets connector, not b
 
 1. Resolve spreadsheet ID `1UXc3HdWvR6SXX_1Y430-d1OUDpjKxrHWKARyqZj2Fxs` and live tab metadata.
 2. Read the live header and nearby formatting before writing.
-3. Initialize A:Z exactly as documented when the sheet is empty.
-4. Freeze row 1, enable filtering, wrap long text, set readable widths, format dates and numeric fit score, and add controlled-value validation where supported.
-5. Re-read the header and formatting to verify the result.
+3. Rename the original `Sheet1` tab to `Applications` in place when applicable; never recreate or clear it.
+4. Initialize `Applications` and `Review Queue` A:Z exactly as documented when missing or empty.
+5. Freeze row 1, enable filtering, wrap long text, set readable widths, format dates and numeric score/age fields, and add controlled-value validation where supported.
+6. Re-read both headers and nearby formatting to verify the result.
 
 ## Upsert
 
@@ -25,3 +26,12 @@ Read `docs/job-search/tracker-schema.md`. Use the Google Sheets connector, not b
 6. Format compensation as advertised source text plus expected/submitted currency, amount, and basis. Keep exchange-rate and conversion details in SQLite rather than overloading the Sheet.
 
 Log the spreadsheet, tab, range, row action, and fields changed without exposing unrelated Sheet content.
+
+## Review Queue
+
+1. Sync only worthwhile `PREPARED`, `HELD`, `REVIEW`, or `READY TO APPLY` records plus explicit `CLOSED` transitions. Never queue `SKIP`.
+2. Match by Queue ID, canonical job URL, then normalized employer plus role. Queue ID remains bound in SQLite to posting ID and description hash.
+3. Require a role-specific cover letter and prepared screening summary for every active row, even when the live form lacks a cover-letter field.
+4. Preserve non-empty manual queue status, next action, re-review date, and notes unless an explicitly authorized or proven lifecycle transition is newer.
+5. When submission is verified, upsert `Applications` once, close the matching queue row, clear its re-review date, and direct future monitoring to `Applications`.
+6. Treat due non-closed `Re-review After` dates as inputs to future `$manage-job-search` runs.

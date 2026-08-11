@@ -24,6 +24,56 @@ def fixture_job(source: str, url: str, source_id: str) -> Job:
 
 
 class DeduplicationTests(unittest.TestCase):
+    def test_review_queue_persists_once_and_applied_transition_closes_it(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            db = Path(directory) / "ledger.sqlite"
+            with Ledger(db) as ledger:
+                ledger.initialize()
+                stored_job = fixture_job(
+                    "workable", "https://jobs.example.com/review", "review"
+                )
+                job_id, _ = ledger.upsert_job(stored_job)
+                queue = {
+                    "queue_id": job_id,
+                    "job_id": job_id,
+                    "company": stored_job.company,
+                    "role": stored_job.role,
+                    "source": stored_job.source,
+                    "ats": "Workable",
+                    "job_url": stored_job.original_url,
+                    "fit_score": 91,
+                    "verdict": "STRONG APPLY",
+                    "readiness": 70,
+                    "queue_status": "HELD",
+                    "hold_review_reason": "Consequential answer pending",
+                    "cover_letter": "A role-specific letter.",
+                    "re_review_after": "2026-08-12",
+                }
+                ledger.upsert_review_queue(queue)
+                ledger.upsert_review_queue({**queue, "readiness": 75})
+                self.assertEqual(1, ledger.table_count("review_queue"))
+                self.assertEqual(
+                    75, ledger.list_review_queue(due_on_or_before="2026-08-12")[0]["readiness"]
+                )
+
+                packet = ApplicationPacket(
+                    application_id=job_id,
+                    job_id=job_id,
+                    company=stored_job.company,
+                    role=stored_job.role,
+                    narrative="Senior product engineering",
+                    selected_evidence=["Ordr.now"],
+                    letter="A role-specific letter.",
+                    screening_plan={},
+                    unresolved_questions=[],
+                    gaps=[],
+                    reasons=[],
+                )
+                ledger.upsert_application(packet, ApplicationStatus.APPLIED)
+                row = ledger.list_review_queue()[0]
+                self.assertEqual("CLOSED", row["queue_status"])
+                self.assertEqual(0, len(ledger.list_review_queue(include_closed=False)))
+
     def test_tracking_parameters_are_removed_but_job_identity_is_preserved(self) -> None:
         result = canonicalize_url(
             "https://ph.indeed.com/viewjob?jk=abc123&utm_source=email&from=serp"

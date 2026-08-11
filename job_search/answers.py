@@ -111,6 +111,87 @@ def _unknown(interpretation: str) -> AnswerResolution:
     return AnswerResolution(None, AnswerStatus.MATERIAL_UNKNOWN, 0.0, interpretation)
 
 
+def _legal_work_answer(
+    text: str,
+    facts: Mapping[str, Any],
+    job: Job | None,
+) -> AnswerResolution | None:
+    citizenship = facts["citizenship"]
+    authorization = facts["work_authorization"]
+    philippines = authorization["philippines"]
+    united_states = authorization["united_states"]
+
+    philippines_terms = ("philippines", "philippine", "filipino")
+    united_states_terms = ("united states", "u.s.", "us work", "usa")
+    job_context = " ".join(
+        value for value in ((job.location if job else ""), (job.remote_policy if job else "")) if value
+    ).casefold()
+    is_philippines = any(term in text for term in philippines_terms) or (
+        "philipp" in job_context
+        and any(term in text for term in ("work visa", "sponsorship", "sponsor"))
+    )
+    is_united_states = any(term in text for term in united_states_terms)
+
+    if any(term in text for term in ("citizenship country", "country of citizenship")):
+        return _exact(
+            str(citizenship["country"]),
+            "Canonical country of citizenship.",
+            "candidate_facts.citizenship.country",
+        )
+
+    if "nationality" in text and not is_united_states:
+        return _exact(
+            str(citizenship["country"]),
+            "Canonical nationality for application purposes is Filipino / Philippines.",
+            "candidate_facts.citizenship",
+        )
+
+    if is_philippines and any(term in text for term in ("citizen", "citizenship", "nationality")):
+        return _exact(
+            "Yes" if citizenship["filipino_citizen"] else "No",
+            "Canonical Filipino citizenship status.",
+            "candidate_facts.citizenship.filipino_citizen",
+        )
+
+    legal_work_terms = (
+        "legally work",
+        "legal right to work",
+        "work authorization",
+        "authorised to work",
+        "authorized to work",
+        "eligible to work",
+    )
+    if is_philippines and any(term in text for term in legal_work_terms):
+        return _exact(
+            "Yes" if philippines["legally_authorized_to_work"] else "No",
+            "Canonical legal authorization to work in the Philippines.",
+            "candidate_facts.work_authorization.philippines.legally_authorized_to_work",
+        )
+
+    sponsorship_terms = ("sponsorship", "sponsor", "work visa")
+    if is_philippines and any(term in text for term in sponsorship_terms):
+        return _exact(
+            "Yes" if philippines["sponsorship_required"] else "No",
+            "Canonical Philippines employment-sponsorship requirement.",
+            "candidate_facts.work_authorization.philippines.sponsorship_required",
+        )
+
+    if is_united_states and any(term in text for term in legal_work_terms):
+        boolean_form = any(
+            term in text
+            for term in ("are you", "do you", "can you", "yes/no", "yes or no")
+        )
+        answer = "No" if boolean_form else "Not Applicable / located outside the US"
+        return _exact(
+            answer,
+            "Canonical United States work authorization is not applicable because the candidate is located outside the US and is not authorized to work there.",
+            "candidate_facts.work_authorization.united_states",
+            "candidate_facts.residence.country",
+        )
+
+    return None
+
+
 def _is_boolean_question(text: str) -> bool:
     return any(
         term in text
@@ -465,10 +546,16 @@ def resolve_question(
             )
         return _unknown("Current compensation has no canonical value and must never be inferred.")
 
+    legal_work_answer = _legal_work_answer(text, facts, job)
+    if legal_work_answer is not None:
+        return legal_work_answer
+
     legal_unknowns = (
         "work authorization",
         "authorised to work",
         "authorized to work",
+        "legally work",
+        "eligible to work",
         "citizenship",
         "visa status",
         "security clearance",

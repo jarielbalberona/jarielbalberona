@@ -1,5 +1,5 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "employment_preferences": {
     "full_time": true,
     "accepted_engagement_types": [
@@ -163,6 +163,26 @@
     "country": "Philippines",
     "city": "Dumaguete City",
     "state_or_region": "Negros Oriental"
+  },
+  "citizenship": {
+    "country": "Philippines",
+    "filipino_citizen": true
+  },
+  "residence": {
+    "country": "Philippines",
+    "city": "Dumaguete City",
+    "region": "Negros Oriental",
+    "state_or_region": "Negros Oriental"
+  },
+  "work_authorization": {
+    "philippines": {
+      "legally_authorized_to_work": true,
+      "sponsorship_required": false
+    },
+    "united_states": {
+      "authorized_to_work": false,
+      "applicable": false
+    }
   },
   "availability": {
     "notice_period_days": 0,

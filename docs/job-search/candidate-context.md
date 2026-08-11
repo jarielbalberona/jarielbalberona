@@ -226,10 +226,24 @@ Current confidential client work may be described only through the generic evide
 The following require Jariel's explicit answer when a form asks for them:
 
 - current salary when a legitimate non-disclosure option is unavailable
-- work authorization and visa status for a specific jurisdiction
+- work authorization and visa status for a jurisdiction not covered by the canonical facts below
 - relocation willingness
 - professional experience with a technology that has no actual implementation evidence
 - management scope or exact team size
 - degrees, certifications, clearance, or licenses not in the canonical CV
 
 Expected compensation is resolved by `docs/job-search/compensation-policy.md`; it is not grouped with unknown current salary.
+
+## Citizenship, residence, and work authorization
+
+Canonical application facts:
+
+- Filipino citizen: `Yes`
+- Citizenship country: `Philippines`
+- Residence: `Dumaguete City, Negros Oriental, Philippines`
+- Legally authorized to work in the Philippines: `Yes`
+- Philippines employment sponsorship required: `No`
+- Authorized to work in the United States: `No`
+- United States work authorization applicability: `Not Applicable / located outside the US` when the control supports that answer
+
+Residence and work authorization are separate facts. A Philippines question may be resolved automatically from this section. A United States yes/no authorization question is `No`; a status-style control that supports non-applicability should use `Not Applicable / located outside the US`. Do not generalize these facts to any other jurisdiction.
