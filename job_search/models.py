@@ -26,6 +26,7 @@ class Verdict(StrEnum):
 class RunMode(StrEnum):
     DRY_RUN = "DRY_RUN"
     AUTONOMOUS = "AUTONOMOUS"
+    AUTONOMOUS_CAMPAIGN = "AUTONOMOUS_CAMPAIGN"
     ASSISTED = "ASSISTED"
     DISCOVERY_ONLY = "DISCOVERY_ONLY"
     DISABLED = "DISABLED"
@@ -34,7 +35,9 @@ class RunMode(StrEnum):
 class ApplicationStatus(StrEnum):
     SHORTLISTED = "SHORTLISTED"
     PREPARED = "PREPARED"
+    HELD = "HELD"
     APPLIED = "APPLIED"
+    SUBMISSION_UNVERIFIED = "SUBMISSION_UNVERIFIED"
     ASSESSMENT = "ASSESSMENT"
     INTERVIEW = "INTERVIEW"
     REJECTED = "REJECTED"
@@ -87,6 +90,8 @@ class Job:
     active: bool = True
     posted_at: str | None = None
     discovered_at: str = field(default_factory=utc_now)
+    posting_age_days: int | None = None
+    freshness_bucket: str | None = None
     engineering_domain_eligible: bool | None = None
     raw: dict[str, Any] = field(default_factory=dict)
 

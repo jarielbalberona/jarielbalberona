@@ -1,8 +1,13 @@
-version: 1
-default_run_mode: DRY_RUN
-autonomy_calibration_stage: true
+version: 2
+default_run_mode: AUTONOMOUS_CAMPAIGN
+autonomy_calibration_stage: false
 strong_apply_readiness_threshold: 85
 apply_readiness_threshold: 92
+campaign_minimum_desired_new_submissions: 8
+campaign_normal_target_new_submissions: 10
+campaign_maximum_new_submissions: 13
+p0_max_age_days: 7
+p1_max_age_days: 14
 
 sources:
   indeed_ph:
@@ -10,19 +15,81 @@ sources:
     enabled: true
     priority: P0
     discovery: true
-    execution_mode: ASSISTED
-    dry_run: true
+    execution_mode: DISCOVERY_ONLY
     live_submit: false
-    policy_verified_at: null
-    note: "V1 permits real browser discovery and preparation only. No submission."
+    policy_verified_at: "2026-08-12"
+    policy_evidence: "https://www.indeed.com/legal?hl=en_US"
+    note: "Indeed prohibits third-party automation of Indeed Apply. Never submit autonomously on Indeed; use a legitimate external employer destination only under that destination's own policy."
 
   linkedin:
+    enabled: true
+    priority: P0
+    discovery: false
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    policy_verified_at: "2026-08-12"
+    policy_evidence: "https://www.linkedin.com/legal/user-agreement"
+    note: "LinkedIn prohibits unauthorized automated access and activity. Do not automate discovery or submission on LinkedIn."
+
+  workable:
+    url: "https://jobs.workable.com/"
+    enabled: true
+    priority: P0
+    discovery: true
+    execution_mode: AUTONOMOUS
+    live_submit: true
+    policy_verified_at: "2026-08-12"
+    policy_evidence: "https://jobs.workable.com/terms"
+    supporting_evidence: "https://help.workable.com/hc/en-us/articles/35293126257815-Managing-AI-assisted-and-automated-job-applications"
+    note: "Candidate terms permit job search and application use and do not prohibit applicant-side automation; Workable explicitly documents handling AI-assisted and automated applications. Employer-specific declarations still govern each form."
+
+  greenhouse:
+    url: "https://job-boards.greenhouse.io/"
+    enabled: true
+    priority: P0
+    discovery: true
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    policy_verified_at: "2026-08-12"
+    policy_evidence: "https://my.greenhouse.io/users/agreement"
+    note: "Greenhouse's job-seeker user agreement prohibits automated means. Fueled proved the assisted flow only; autonomous Greenhouse submission remains disabled."
+
+  ashby:
+    url: "https://jobs.ashbyhq.com/"
     enabled: true
     priority: P0
     discovery: true
     execution_mode: DISCOVERY_ONLY
     live_submit: false
     policy_verified_at: null
+    note: "Public jobs may be discovered, but applicant-side autonomous submission policy is not yet verified."
+
+  recruitee:
+    enabled: true
+    priority: P0
+    discovery: true
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    policy_verified_at: null
+    note: "ShortPoint proved the form semantics but not autonomous submission permission."
+
+  lever:
+    enabled: true
+    priority: P0
+    discovery: true
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    policy_verified_at: null
+    note: "Public jobs may be discovered, but applicant-side autonomous submission policy is not yet verified."
+
+  employer_direct:
+    enabled: true
+    priority: P0
+    discovery: true
+    execution_mode: ASSISTED
+    live_submit: false
+    policy_verified_at: null
+    note: "No blanket permission. Promote an employer-specific form only after its current terms and submission behavior are verified."
 
   jobstreet_ph:
     enabled: true
@@ -96,6 +163,6 @@ sources:
     live_submit: false
     policy_verified_at: null
 
-# Before any source becomes live-submit capable, verify its current platform
-# rules, record the verification date and rationale, choose AUTONOMOUS or
-# ASSISTED explicitly, and set live_submit only when the policy permits it.
+# Browser capability never grants submission authority. Before promoting any
+# additional source, verify current platform rules, record dated evidence,
+# choose AUTONOMOUS or ASSISTED explicitly, and test its confirmation semantics.

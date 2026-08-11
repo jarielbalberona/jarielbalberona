@@ -6,6 +6,7 @@ import sqlite3
 from pathlib import Path
 from typing import Any, Mapping
 
+from .campaign import CampaignPolicy, classify_freshness
 from .models import ApplicationPacket, ApplicationStatus, Assessment, Job, RunMode, utc_now
 from .normalization import application_id, canonicalize_url, content_fingerprint, description_hash
 
@@ -58,10 +59,32 @@ class Ledger:
             )
         self.connection.commit()
 
-    def start_run(self, run_id: str, source: str, mode: RunMode, started_at: str | None = None) -> None:
+    def start_run(
+        self,
+        run_id: str,
+        source: str,
+        mode: RunMode,
+        started_at: str | None = None,
+        campaign_policy: CampaignPolicy | None = None,
+    ) -> None:
+        if mode == RunMode.AUTONOMOUS_CAMPAIGN and campaign_policy is None:
+            campaign_policy = CampaignPolicy()
         self.connection.execute(
-            "INSERT INTO runs(run_id, started_at, source, mode) VALUES (?, ?, ?, ?)",
-            (run_id, started_at or utc_now(), source, mode.value),
+            """
+            INSERT INTO runs(
+              run_id, started_at, source, mode,
+              campaign_minimum_desired, campaign_normal_target, campaign_maximum
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                run_id,
+                started_at or utc_now(),
+                source,
+                mode.value,
+                campaign_policy.minimum_desired_new_submissions if campaign_policy else None,
+                campaign_policy.normal_target_new_submissions if campaign_policy else None,
+                campaign_policy.maximum_new_submissions if campaign_policy else None,
+            ),
         )
         self.connection.commit()
 
@@ -76,6 +99,10 @@ class Ledger:
             "strong_apply_count",
             "prepared_count",
             "submitted_count",
+            "eligible_count",
+            "assessed_count",
+            "held_count",
+            "verified_submitted_count",
         )
         assignments = ", ".join(f"{name} = ?" for name in columns)
         values = [int(counts.get(name, 0)) for name in columns]
@@ -108,6 +135,10 @@ class Ledger:
         reason_codes: list[str] | tuple[str, ...] = (),
     ) -> tuple[str, bool]:
         canonical_url = canonicalize_url(job.original_url)
+        if job.posting_age_days is None or job.freshness_bucket is None:
+            age, bucket = classify_freshness(job.posted_at, job.discovered_at)
+            job.posting_age_days = age
+            job.freshness_bucket = bucket.value
         existing = self._find_existing_job(job)
         now = utc_now()
         if existing:
@@ -132,7 +163,8 @@ class Ledger:
                       advertised_compensation_exchange_rate_to_php = ?,
                       advertised_compensation_conversion_date = ?, strategically_exceptional = ?,
                       description = ?, description_hash = ?, content_fingerprint = ?, active = ?,
-                      posted_at = ?, eligibility_verdict = ?, reason_codes_json = ?, raw_json = ?,
+                      posted_at = ?, posting_age_days = ?, freshness_bucket = ?,
+                      eligibility_verdict = ?, reason_codes_json = ?, raw_json = ?,
                       updated_at = ?
                     WHERE job_id = ?
                     """,
@@ -170,6 +202,8 @@ class Ledger:
                         content_fingerprint(job),
                         int(job.active),
                         job.posted_at,
+                        job.posting_age_days,
+                        job.freshness_bucket,
                         eligibility_verdict,
                         json.dumps(list(reason_codes)),
                         json.dumps(job.raw, sort_keys=True),
@@ -222,6 +256,8 @@ class Ledger:
             int(job.active),
             job.posted_at,
             job.discovered_at,
+            job.posting_age_days,
+            job.freshness_bucket,
             eligibility_verdict,
             json.dumps(list(reason_codes)),
             json.dumps(job.raw, sort_keys=True),
@@ -242,9 +278,10 @@ class Ledger:
               advertised_compensation_exchange_rate_to_php,
               advertised_compensation_conversion_date, strategically_exceptional,
               description, description_hash, content_fingerprint,
-              active, posted_at, discovered_at, eligibility_verdict, reason_codes_json, raw_json,
+              active, posted_at, discovered_at, posting_age_days, freshness_bucket,
+              eligibility_verdict, reason_codes_json, raw_json,
               created_at, updated_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             values,
         )
@@ -321,6 +358,7 @@ class Ledger:
               created_at, updated_at
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(application_id) DO UPDATE SET
+              status = excluded.status,
               application_method = excluded.application_method,
               cv_version = excluded.cv_version,
               answer_metadata_json = excluded.answer_metadata_json,

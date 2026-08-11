@@ -1,0 +1,14 @@
+BEGIN;
+
+ALTER TABLE jobs ADD COLUMN posting_age_days INTEGER;
+ALTER TABLE jobs ADD COLUMN freshness_bucket TEXT;
+
+ALTER TABLE runs ADD COLUMN eligible_count INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE runs ADD COLUMN assessed_count INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE runs ADD COLUMN held_count INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE runs ADD COLUMN verified_submitted_count INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE runs ADD COLUMN campaign_minimum_desired INTEGER;
+ALTER TABLE runs ADD COLUMN campaign_normal_target INTEGER;
+ALTER TABLE runs ADD COLUMN campaign_maximum INTEGER;
+
+COMMIT;

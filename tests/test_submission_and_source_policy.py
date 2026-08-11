@@ -3,6 +3,13 @@ from __future__ import annotations
 import unittest
 
 from job_search.models import Assessment, RunMode, Verdict
+from job_search.campaign import (
+    CampaignPolicy,
+    CampaignStopReason,
+    FreshnessBucket,
+    classify_freshness,
+    evaluate_campaign_progress,
+)
 from job_search.source_registry import get_source_policy, load_source_registry
 from job_search.submission import (
     SourcePolicy,
@@ -39,15 +46,18 @@ def assessment(verdict: Verdict, readiness: int) -> Assessment:
 
 
 class SubmissionTests(unittest.TestCase):
-    def test_indeed_registry_is_dry_run_and_not_live_submit(self) -> None:
+    def test_registry_enables_only_verified_workable_autonomy(self) -> None:
         registry = load_source_registry()
-        self.assertTrue(registry["autonomy_calibration_stage"])
+        self.assertFalse(registry["autonomy_calibration_stage"])
+        self.assertEqual("AUTONOMOUS_CAMPAIGN", registry["default_run_mode"])
         self.assertEqual(85, registry["strong_apply_readiness_threshold"])
         self.assertEqual(92, registry["apply_readiness_threshold"])
         indeed = registry["sources"]["indeed_ph"]
-        self.assertTrue(indeed["dry_run"])
         self.assertFalse(indeed["live_submit"])
-        self.assertEqual(RunMode.ASSISTED, get_source_policy("indeed_ph").execution_mode)
+        self.assertEqual(RunMode.DISCOVERY_ONLY, get_source_policy("indeed_ph").execution_mode)
+        self.assertFalse(registry["sources"]["greenhouse"]["live_submit"])
+        self.assertTrue(registry["sources"]["workable"]["live_submit"])
+        self.assertEqual(RunMode.AUTONOMOUS, get_source_policy("workable").execution_mode)
 
     def test_dry_run_never_executes_submission_handler(self) -> None:
         called = 0
@@ -141,6 +151,43 @@ class SubmissionTests(unittest.TestCase):
             handler=lambda: SubmissionEvidence(True, "confirmation-page"),
         )
         self.assertTrue(result.verified)
+
+    def test_campaign_controller_enforces_verified_submission_cap(self) -> None:
+        controller = SubmissionController()
+        with self.assertRaisesRegex(SubmissionBlocked, "campaign maximum"):
+            controller.submit(
+                run_mode=RunMode.AUTONOMOUS_CAMPAIGN,
+                source_policy=SourcePolicy(RunMode.AUTONOMOUS, True, "2026-08-12"),
+                unresolved_questions=[],
+                assessment=assessment(Verdict.STRONG_APPLY, 95),
+                calibration_stage=False,
+                campaign_verified_submissions=13,
+                handler=lambda: SubmissionEvidence(True, "confirmation-page"),
+            )
+
+    def test_campaign_freshness_and_stop_conditions(self) -> None:
+        self.assertEqual(
+            (3, FreshnessBucket.P0_FRESH),
+            classify_freshness("2026-08-09", "2026-08-12"),
+        )
+        self.assertEqual(
+            (10, FreshnessBucket.P1_RECENT),
+            classify_freshness("2026-08-02", "2026-08-12"),
+        )
+        self.assertEqual(
+            CampaignStopReason.QUALITY_LIMITED_INVENTORY_EXHAUSTED,
+            evaluate_campaign_progress(
+                verified_submitted=5,
+                quality_inventory_exhausted=True,
+            ).stop_reason,
+        )
+        self.assertEqual(
+            CampaignStopReason.MAXIMUM_VERIFIED_SUBMISSIONS,
+            evaluate_campaign_progress(
+                verified_submitted=CampaignPolicy().maximum_new_submissions,
+                quality_inventory_exhausted=False,
+            ).stop_reason,
+        )
 
 
 if __name__ == "__main__":

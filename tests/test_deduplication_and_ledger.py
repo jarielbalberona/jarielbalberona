@@ -97,6 +97,13 @@ class DeduplicationTests(unittest.TestCase):
                 self.assertIn("BEST_SUPPORTED_ANSWER", application_row["answer_metadata_json"])
                 self.assertIn("275000", application_row["compensation_decision_json"])
 
+                ledger.upsert_application(packet, ApplicationStatus.HELD)
+                updated_status = ledger.connection.execute(
+                    "SELECT status FROM applications WHERE application_id = ?",
+                    (job_id,),
+                ).fetchone()["status"]
+                self.assertEqual(ApplicationStatus.HELD.value, updated_status)
+
     def test_media_requirement_audit_is_persisted_and_queryable(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             db = Path(directory) / "ledger.sqlite"

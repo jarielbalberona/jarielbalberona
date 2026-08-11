@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from .application import prepare_application_packet
+from .campaign import classify_freshness
 from .ledger import DEFAULT_DB, Ledger
 from .models import ApplicationStatus, CompanyOrigin, FitRubric, Job, RunMode, Verdict, utc_now
 from .normalization import application_id, canonicalize_url
@@ -56,9 +57,14 @@ def _job_from_dict(item: dict[str, Any], source: str) -> Job:
         "active",
         "posted_at",
         "discovered_at",
+        "posting_age_days",
+        "freshness_bucket",
         "engineering_domain_eligible",
     }
     raw = {key: value for key, value in item.items() if key not in known}
+    posting_age_days, freshness_bucket = classify_freshness(
+        item.get("posted_at"), item.get("discovered_at", utc_now())
+    )
     return Job(
         source=source,
         role=item["role"],
@@ -99,6 +105,8 @@ def _job_from_dict(item: dict[str, Any], source: str) -> Job:
         active=bool(item.get("active", True)),
         posted_at=item.get("posted_at"),
         discovered_at=item.get("discovered_at", utc_now()),
+        posting_age_days=item.get("posting_age_days", posting_age_days),
+        freshness_bucket=item.get("freshness_bucket", freshness_bucket.value),
         engineering_domain_eligible=item.get("engineering_domain_eligible"),
         raw=raw,
     )
@@ -137,6 +145,10 @@ def run_dry_run(
         "strong_apply_count": 0,
         "prepared_count": 0,
         "submitted_count": 0,
+        "eligible_count": 0,
+        "assessed_count": 0,
+        "held_count": 0,
+        "verified_submitted_count": 0,
     }
     errors: list[str] = []
     ranked: list[dict[str, Any]] = []
@@ -161,6 +173,9 @@ def run_dry_run(
                         continue
                     counts["reassessed_count"] += 1
 
+                if eligibility.can_score:
+                    counts["eligible_count"] += 1
+
                 rubric_data = item.get("rubric")
                 rubric = FitRubric(**rubric_data) if rubric_data and eligibility.can_score else None
                 analysis = item.get("analysis", {})
@@ -182,6 +197,7 @@ def run_dry_run(
                     application_angle=analysis.get("application_angle", ""),
                     interview_risks=_list(analysis.get("interview_risks")),
                 )
+                counts["assessed_count"] += 1
                 packet_input = item.get("application_packet")
                 if packet_input and assessment.verdict != Verdict.SKIP:
                     packet = prepare_application_packet(

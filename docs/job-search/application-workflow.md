@@ -7,15 +7,17 @@ Every application starts from the complete current job description. Never reuse 
 1. Load the normalized job and confirm it remains active.
 2. Resolve the actual employer and run hard eligibility gates.
 3. Deduplicate against the local ledger and tracker.
-4. Assess the employer's real problem, responsibilities, seniority, architecture, career direction, stack, AI/product/platform relevance, and remote compatibility.
-5. Choose one candidate narrative and the strongest two or three evidence sources.
-6. Prepare a concise job-specific letter and direct screening-answer plan.
-7. Resolve exact, strongest-supported, capability-depth, best-supported, and conservative answers. Surface only genuine material unknowns.
-8. Run `SENIOR_POSITIONING_REVIEW` across screening answers and application writing.
-9. Check the source execution policy.
-10. Submit only when the source and run mode permit it.
-11. Require submission evidence before recording `APPLIED`.
-12. Persist the local event, sync the human tracker, and later reconcile inbound Gmail evidence.
+4. Persist posting date, discovery date, age in days, and freshness bucket. Search `P0_FRESH` before `P1_RECENT`; normally skip older listings during a bounded campaign.
+5. Assess the employer's real problem, responsibilities, seniority, architecture, career direction, stack, AI/product/platform relevance, and remote compatibility.
+6. Choose one candidate narrative and the strongest two or three evidence sources.
+7. Prepare a concise job-specific letter and direct screening-answer plan.
+8. Inspect every live form control; resolve exact, strongest-supported, capability-depth, best-supported, and conservative answers. Surface only genuine material unknowns.
+9. Run `SENIOR_POSITIONING_REVIEW` across the complete live payload.
+10. Check the dated source execution policy and any employer-specific declarations.
+11. Submit only when the source, run mode, readiness, and campaign cap permit it.
+12. Require submission evidence before recording `APPLIED`.
+13. Persist the local event, sync the human tracker, and later reconcile inbound Gmail evidence.
+14. On a per-job blocker, hold or skip that application and continue the campaign.
 
 ## Required assessment output
 

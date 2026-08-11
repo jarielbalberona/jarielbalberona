@@ -65,6 +65,10 @@ Confirmed current employers and clients always produce `SKIP / CURRENT_EMPLOYER_
 - `SOURCE_NOT_AUTONOMOUS`
 - `SOURCE_EXECUTION_FORBIDDEN`
 - `SUBMISSION_UNVERIFIED`
+- `CAMPAIGN_MAXIMUM_REACHED`
+- `POSTING_DATE_UNVERIFIED`
+- `STALE_JOB`
+- `HUMAN_ONLY_ACTION`
 
 Current-employer identities are represented by normalized fingerprints in tracked policy. Do not log or publish the private relationship.
 
@@ -96,7 +100,9 @@ Local jobs may be `DISCOVERED`, `SKIPPED`, `REVIEW`, or `CANDIDATE`. Human-facin
 
 - `SHORTLISTED`
 - `PREPARED`
+- `HELD`
 - `APPLIED`
+- `SUBMISSION_UNVERIFIED`
 - `ASSESSMENT`
 - `INTERVIEW`
 - `REJECTED`
@@ -116,13 +122,14 @@ Clicking an Apply control is not success. Mark `APPLIED` only after a confirmati
 - `DISCOVERY_ONLY`: discover and inspect; never submit.
 - `ASSISTED`: prepare and navigate only to the documented human boundary; do not claim submission without evidence.
 - `AUTONOMOUS`: allowed only after current platform policy is verified and `source-registry.yaml` explicitly permits live submission.
+- `AUTONOMOUS_CAMPAIGN`: apply the same per-application autonomy gate inside a persisted campaign with freshness priority, hold-and-continue behavior, separate verified-submission counting, and a hard submission cap.
 - `DISABLED`: do not access the source.
 
-V1 is `DRY_RUN`. Real applications submitted during initial calibration must be zero.
+Initial calibration is complete for the control plane, but source permission remains ATS-specific. A proven assisted submission does not promote that ATS to autonomous use. Indeed, LinkedIn, and Greenhouse remain non-autonomous under their verified current policies. Workable is the first autonomous source because its candidate terms permit applying and its current documentation explicitly recognizes AI-assisted and automated applications. Employer-specific declarations on each form still override source-level permission.
 
 ## Live-autonomy policy
 
-Live submission remains disabled during calibration. The intended steady state is:
+The bounded live policy is:
 
 ```text
 STRONG APPLY
@@ -147,3 +154,21 @@ SKIP
 The higher `APPLY` threshold prevents a merely acceptable fit from becoming autonomous without unusually strong readiness evidence. Individual approval for every strong application is a calibration-stage rule, not the intended permanent operating model.
 
 Do not enable autonomy by changing run mode alone. The source must be explicitly verified for live submission, `live_submit` must be enabled, the calibration flag must be cleared, and the current assessment plus actual screening questions must pass the policy.
+
+## Bounded autonomous campaigns
+
+`AUTONOMOUS_CAMPAIGN` uses these repository-owned limits:
+
+```text
+minimum desired new verified submissions: 8
+normal target:                            10
+absolute maximum:                        13
+P0 freshness:                            0-7 days
+P1 freshness:                            8-14 days
+```
+
+Only a submission backed by confirmation evidence increments `verified_submitted`. Prepared, held, failed, duplicate, and unverified attempts do not count. Stop immediately at 13 verified submissions. At 8 or more, stop when fresh high-quality inventory has been reasonably exhausted. Below 8, stop rather than weakening eligibility, fit, readiness, truthfulness, source, schedule, or compensation policy.
+
+One blocked job never blocks the campaign. Persist its exact outcome as `HELD`, `SKIP`, or `PREPARED`, then continue. Required video, inaccessible forms, human-only actions, unsupported consequential declarations, non-autonomous sources, failed verification, inactive listings, and source-policy failures are per-job outcomes.
+
+Before every submission, query the SQLite ledger and Google Sheet for the canonical URL, employer, role, posting ID, description fingerprint, and previous events. Run `SENIOR_POSITIONING_REVIEW` on the complete live payload. Do not retry an unverified submission blindly.

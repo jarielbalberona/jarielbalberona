@@ -95,6 +95,8 @@ class SubmissionController:
         assessment: Assessment | None = None,
         calibration_stage: bool = True,
         autonomy_policy: LiveAutonomyPolicy = LiveAutonomyPolicy(),
+        campaign_verified_submissions: int = 0,
+        campaign_maximum_submissions: int = 13,
     ) -> SubmissionEvidence:
         if run_mode == RunMode.DRY_RUN:
             raise SubmissionBlocked("DRY_RUN blocks the submission handler")
@@ -106,7 +108,10 @@ class SubmissionController:
             raise SubmissionBlocked("live submission is not verified and enabled for this source")
         if unresolved_questions:
             raise SubmissionBlocked("consequential application questions remain unresolved")
-        if run_mode == RunMode.AUTONOMOUS:
+        if run_mode == RunMode.AUTONOMOUS_CAMPAIGN:
+            if campaign_verified_submissions >= campaign_maximum_submissions:
+                raise SubmissionBlocked("campaign maximum verified submissions reached")
+        if run_mode in {RunMode.AUTONOMOUS, RunMode.AUTONOMOUS_CAMPAIGN}:
             if assessment is None:
                 raise SubmissionBlocked("autonomous submission requires a current assessment")
             decision = evaluate_live_autonomy(

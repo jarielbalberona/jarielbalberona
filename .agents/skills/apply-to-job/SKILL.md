@@ -42,7 +42,7 @@ Expected compensation must follow the current job-specific policy decision. Adve
 
 ## Live autonomy
 
-During calibration, require Jariel review for every real submission. After calibration, permit autonomy only when repository policy allows it:
+Permit autonomy only when repository policy allows it:
 
 - `STRONG APPLY`: readiness at least 85, no blocker or consequential unknown, autonomous source permitted.
 - `APPLY`: readiness at least 92 with the same gates.
@@ -50,6 +50,8 @@ During calibration, require Jariel review for every real submission. After calib
 - `SKIP`: never apply.
 
 Do not enable live submission in this skill. Source policy and the calibration flag remain authoritative.
+
+For `AUTONOMOUS_CAMPAIGN`, also enforce the persisted campaign maximum before entering the submission handler. Count only verified submissions. If one application needs a video, human-only action, unsupported consequential declaration, inaccessible form, non-autonomous source, or unresolved verification, record `HELD`, `PREPARED`, `SKIP`, or `SUBMISSION_UNVERIFIED` and continue to the next job.
 
 ## Verification
 
