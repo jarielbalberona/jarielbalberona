@@ -72,6 +72,14 @@ These candidate-facing availability answers do not change employer or client exc
 
 Do not reuse broad AI tenure for PyTorch, model training, ML research, MLOps, or another narrower specialty.
 
+## Combined-technology experience questions
+
+A single numeric field covering several technologies normally asks for overall relevant experience in that stack or area. Use a conservative dominant-stack estimate based on the majority of core technologies, production depth, relevant engineering duration, and the purpose of the question. Do not default to the weakest technology or a mathematical average, and do not simply copy the strongest technology's tenure.
+
+For the Omniflow combination of Next.js, TypeScript, Python/FastAPI, and PostgreSQL, use `5` with `BEST_SUPPORTED_ANSWER`. This represents approximately five years across the requested full-stack area; it does not claim five years of Python or FastAPI. Separate Python and FastAPI questions remain `1` year.
+
+If wording explicitly requires professional experience with `all`, `each`, or `every` listed technology, use weakest-depth semantics. If any listed technology has no real supporting experience, return `MATERIAL_UNKNOWN`; majority evidence must never hide an unsupported technology.
+
 ## Best-supported-answer policy
 
 Resolve application questions in this order:

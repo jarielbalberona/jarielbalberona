@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from enum import StrEnum
+import re
 from typing import Any, Mapping
 from zoneinfo import ZoneInfo
 
@@ -56,8 +57,101 @@ def _estimate(answer: str, interpretation: str, *evidence: str) -> AnswerResolut
     )
 
 
+def _best_supported(
+    answer: str,
+    interpretation: str,
+    *evidence: str,
+    confidence: float = 0.9,
+) -> AnswerResolution:
+    return AnswerResolution(
+        answer,
+        AnswerStatus.BEST_SUPPORTED_ANSWER,
+        confidence,
+        interpretation,
+        evidence,
+    )
+
+
 def _unknown(interpretation: str) -> AnswerResolution:
     return AnswerResolution(None, AnswerStatus.MATERIAL_UNKNOWN, 0.0, interpretation)
+
+
+def _mentioned_technology_keys(text: str, facts: Mapping[str, Any]) -> list[str]:
+    profiles = facts["technology_experience"].get("technology_profiles", {})
+    mentioned: list[str] = []
+    for key, profile in profiles.items():
+        aliases = profile.get("aliases", ())
+        if any(re.search(rf"\b{re.escape(str(alias).casefold())}\b", text) for alias in aliases):
+            mentioned.append(str(key))
+    return mentioned
+
+
+def _technology_years_answer(
+    text: str,
+    facts: Mapping[str, Any],
+) -> AnswerResolution | None:
+    if "years" not in text:
+        return None
+
+    technology_experience = facts["technology_experience"]
+    profiles = technology_experience.get("technology_profiles", {})
+    mentioned = _mentioned_technology_keys(text, facts)
+    if not mentioned:
+        return None
+
+    unsupported = [key for key in mentioned if not profiles[key].get("used", False)]
+    if unsupported:
+        return _unknown(
+            "A listed technology has no supported professional-use evidence and cannot be hidden by a combined-stack estimate."
+        )
+
+    evidence = tuple(
+        f"candidate_facts.technology_experience.technology_profiles.{key}"
+        for key in mentioned
+    )
+    if len(mentioned) == 1:
+        profile = profiles[mentioned[0]]
+        answer = str(profile["numeric_years_floor"])
+        interpretation = (
+            f"Technology-specific floor for {mentioned[0]}; combined-stack majority evidence is not used."
+        )
+        status = AnswerStatus(profile["individual_answer_status"])
+        if status == AnswerStatus.EXACT:
+            return _exact(answer, interpretation, *evidence)
+        if status == AnswerStatus.BEST_SUPPORTED_ANSWER:
+            return _best_supported(answer, interpretation, *evidence)
+        return _estimate(answer, interpretation, *evidence)
+
+    explicit_weakest_link_terms = (
+        "all of the following",
+        "all the following",
+        "each of the following",
+        "each technology",
+        "every technology",
+        "all technologies",
+        "used all",
+    )
+    if any(term in text for term in explicit_weakest_link_terms):
+        weakest = min(int(profiles[key]["numeric_years_floor"]) for key in mentioned)
+        return _estimate(
+            str(weakest),
+            "The wording explicitly requires experience across every listed technology, so weakest-depth semantics apply.",
+            *evidence,
+        )
+
+    mentioned_set = set(mentioned)
+    for combined in technology_experience.get("combined_stack_profiles", ()):
+        if set(combined["technology_keys"]) == mentioned_set:
+            return _best_supported(
+                str(combined["dominant_stack_years"]),
+                str(combined["interpretation"]),
+                *evidence,
+                confidence=float(combined.get("confidence", 0.9)),
+            )
+
+    return _unknown(
+        "The question combines technologies, but no defensible dominant-stack profile exists for this exact combination."
+    )
 
 
 def resolve_question(
@@ -280,23 +374,9 @@ def resolve_question(
     if any(term in text for term in narrow_ai_terms):
         return _unknown("Broad AI tenure cannot be reused for narrower unsupported specialization.")
 
-    combined_stack_terms = ("next.js", "typescript", "python", "fastapi", "postgresql")
-    if "years" in text and sum(term in text for term in combined_stack_terms) >= 4:
-        combined = facts["technology_experience"]["omniflow_combined_stack"]
-        return _estimate(
-            str(combined["default_numeric_years_when_required"]),
-            str(combined["interpretation"]),
-            "canonical CV: Next.js and TypeScript production work since 2022",
-            "candidate_facts.technology_experience.python_fastapi",
-        )
-
-    if "years" in text and ("fastapi" in text or "python" in text):
-        python = facts["technology_experience"]["python_fastapi"]
-        return _estimate(
-            str(python["default_numeric_years_when_required"]),
-            "Floor-style estimate for real but secondary Python or FastAPI experience.",
-            "candidate_facts.technology_experience.python_fastapi",
-        )
+    technology_years = _technology_years_answer(text, facts)
+    if technology_years is not None:
+        return technology_years
 
     broad_ai_terms = (
         "ai experience",

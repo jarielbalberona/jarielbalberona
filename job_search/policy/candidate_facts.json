@@ -38,9 +38,77 @@
       "depth": "some_production_or_project_experience",
       "default_numeric_years_when_required": 1
     },
+    "technology_profiles": {
+      "react": {
+        "aliases": ["react"],
+        "used": true,
+        "depth": "core",
+        "numeric_years_floor": 7,
+        "individual_answer_status": "EXACT"
+      },
+      "typescript": {
+        "aliases": ["typescript", "ts"],
+        "used": true,
+        "depth": "core",
+        "numeric_years_floor": 5,
+        "individual_answer_status": "EXACT"
+      },
+      "next_js": {
+        "aliases": ["next.js", "nextjs"],
+        "used": true,
+        "depth": "core_substantial",
+        "numeric_years_floor": 4,
+        "individual_answer_status": "BEST_SUPPORTED_ANSWER"
+      },
+      "postgresql": {
+        "aliases": ["postgresql", "postgres"],
+        "used": true,
+        "depth": "core_substantial",
+        "numeric_years_floor": 4,
+        "individual_answer_status": "BEST_SUPPORTED_ANSWER"
+      },
+      "python": {
+        "aliases": ["python"],
+        "used": true,
+        "depth": "secondary",
+        "numeric_years_floor": 1,
+        "individual_answer_status": "CONSERVATIVE_ESTIMATE"
+      },
+      "fastapi": {
+        "aliases": ["fastapi", "fast api"],
+        "used": true,
+        "depth": "secondary",
+        "numeric_years_floor": 1,
+        "individual_answer_status": "CONSERVATIVE_ESTIMATE"
+      },
+      "kotlin": {
+        "aliases": ["kotlin"],
+        "used": false,
+        "depth": "unsupported",
+        "numeric_years_floor": null,
+        "individual_answer_status": "MATERIAL_UNKNOWN"
+      }
+    },
+    "combined_stack_profiles": [
+      {
+        "id": "omniflow_next_typescript_python_fastapi_postgresql",
+        "technology_keys": ["next_js", "typescript", "python", "fastapi", "postgresql"],
+        "dominant_stack_years": 5,
+        "confidence": 0.9,
+        "interpretation": "Approximately five years of relevant production engineering experience across the requested full-stack technology area. Depth differs by technology; Python/FastAPI is secondary at approximately one year."
+      },
+      {
+        "id": "react_typescript_postgresql_python",
+        "technology_keys": ["react", "typescript", "postgresql", "python"],
+        "dominant_stack_years": 5,
+        "confidence": 0.9,
+        "interpretation": "Approximately five years of relevant production engineering experience across the dominant requested stack. Technology depth differs and Python remains secondary."
+      }
+    ],
     "omniflow_combined_stack": {
-      "default_numeric_years_when_required": 4,
-      "interpretation": "Conservative overall full-stack experience with the listed stack; Python and FastAPI depth is approximately one year and is not represented as equal to TypeScript depth."
+      "default_numeric_years_when_required": 5,
+      "answer_status": "BEST_SUPPORTED_ANSWER",
+      "interpretation": "Approximately five years of relevant production engineering experience across the requested full-stack technology area. Depth differs by technology; Python/FastAPI is secondary at approximately one year."
     }
   },
   "client_experience": {

@@ -190,14 +190,34 @@ class AnswerPolicyTests(unittest.TestCase):
         self.assertIsNone(result.answer)
         self.assertTrue(result.blocks_readiness)
 
-    def test_ambiguous_combined_stack_uses_supported_interpretation(self) -> None:
+    def test_ambiguous_combined_stack_uses_dominant_stack_evidence(self) -> None:
         result = resolve_question(
             "years_stack",
             "How many years is your experience with Next.js, TS, Python (FastAPI), PostgreSQL?",
         )
-        self.assertEqual("4", result.answer)
+        self.assertEqual("5", result.answer)
+        self.assertEqual(AnswerStatus.BEST_SUPPORTED_ANSWER, result.status)
+        self.assertEqual(0.9, result.confidence)
+        self.assertIn("Python/FastAPI is secondary", result.interpretation)
+        self.assertEqual(5, len(result.supporting_evidence))
+
+    def test_explicit_all_technologies_uses_weakest_depth_semantics(self) -> None:
+        result = resolve_question(
+            "years_all_stack",
+            "How many years have you used ALL of the following technologies professionally: Next.js, TypeScript, Python, FastAPI, and PostgreSQL?",
+        )
+        self.assertEqual("1", result.answer)
         self.assertEqual(AnswerStatus.CONSERVATIVE_ESTIMATE, result.status)
-        self.assertIn("not represented as equal", result.interpretation)
+        self.assertIn("weakest-depth semantics", result.interpretation)
+
+    def test_never_used_technology_cannot_hide_in_combined_stack(self) -> None:
+        result = resolve_question(
+            "years_stack_with_kotlin",
+            "How many years of experience do you have with TypeScript, PostgreSQL, Python, and Kotlin?",
+        )
+        self.assertIsNone(result.answer)
+        self.assertEqual(AnswerStatus.MATERIAL_UNKNOWN, result.status)
+        self.assertIn("cannot be hidden", result.interpretation)
 
     def test_legal_authorization_unknown_is_material(self) -> None:
         result = resolve_question(
