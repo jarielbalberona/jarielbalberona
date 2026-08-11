@@ -154,6 +154,49 @@ def _technology_years_answer(
     )
 
 
+def _compensation_context(job: Job | None) -> tuple[bool, bool, bool, str | None]:
+    if job is None:
+        return False, False, False, None
+
+    raw = job.raw if isinstance(job.raw, Mapping) else {}
+    market_context = str(raw.get("compensation_market_context", "")).casefold()
+    philippines_targeted = market_context == "philippines_targeted_international"
+    if not philippines_targeted and job.company_origin.value == "INTERNATIONAL":
+        targeting_text = f"{job.location} {job.remote_policy}".casefold()
+        philippines_targeted = any(
+            term in targeting_text
+            for term in ("philippines", "national capital region", "metro manila")
+        )
+
+    direct_international_rate = (
+        market_context == "direct_international_rate"
+        or bool(raw.get("direct_international_rate"))
+    )
+    high_budget_evidence = bool(raw.get("high_budget_compensation_evidence"))
+    employer_names = " ".join(
+        value
+        for value in (
+            job.company,
+            job.actual_employer,
+            job.destination_company,
+        )
+        if value
+    ).casefold()
+    policy_override = (
+        "omniflow"
+        if "omniflow" in employer_names
+        and not high_budget_evidence
+        and not direct_international_rate
+        else None
+    )
+    return (
+        philippines_targeted,
+        direct_international_rate,
+        high_budget_evidence,
+        policy_override,
+    )
+
+
 def resolve_question(
     key: str,
     question: str,
@@ -319,11 +362,19 @@ def resolve_question(
         demanding_timezone = "pst" in text or "est" in text or bool(
             job and any(term in job.remote_policy.casefold() for term in ("pst", "est"))
         )
+        (
+            philippines_targeted,
+            direct_international_rate,
+            high_budget_evidence,
+            policy_override,
+        ) = _compensation_context(job)
         if "range" in text:
             low, high = select_expected_range_monthly_php(
                 employment_type,
                 strong_ai_alignment=strong_ai,
                 staff_scope=staff_scope,
+                direct_international_rate=direct_international_rate,
+                high_budget_evidence=high_budget_evidence,
             )
             return AnswerResolution(
                 f"PHP {low:,}-{high:,} per month",
@@ -355,6 +406,10 @@ def resolve_question(
             strong_ai_alignment=strong_ai,
             staff_scope=staff_scope,
             demanding_timezone=demanding_timezone,
+            philippines_targeted_international=philippines_targeted,
+            direct_international_rate=direct_international_rate,
+            high_budget_evidence=high_budget_evidence,
+            policy_override=policy_override,
             requested_basis=requested_basis,
             advertised_currency=job.advertised_compensation_currency if job else None,
             advertised_min=job.advertised_compensation_min if job else None,

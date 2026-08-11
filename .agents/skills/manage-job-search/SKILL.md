@@ -26,7 +26,7 @@ Use the smaller skills for their stages. Do not restate their policy from memory
 4. Deduplicate eligible jobs before fit scoring.
 5. Invoke `$assess-job-fit` for viable jobs. Separate technical fit, career direction, eligibility confidence, and application readiness. Do not keyword-score without reading responsibilities.
 6. Rank `STRONG APPLY`, `APPLY`, and `REVIEW` jobs. Keep hard-blocked roles out regardless of technical fit.
-7. Invoke `$prepare-job-application` for the best real candidates. Resolve exact facts, best-supported answers, conservative estimates, and compensation policy automatically; escalate only genuine material unknowns.
+7. Invoke `$prepare-job-application` for the best real candidates. Resolve exact facts, best-supported answers, conservative estimates, and compensation policy automatically. Preserve advertised ranges and classify Philippines-targeted versus direct-international compensation context before choosing an expectation; escalate only genuine material unknowns.
 8. Invoke `$apply-to-job` only when explicitly in scope. During calibration require individual review. In the eventual steady state, use the repository live-autonomy policy rather than assuming every strong score can submit.
 9. Persist per-job outcome, evidence, errors, and every external action.
 10. Invoke `$sync-job-application-tracker` only for meaningful lifecycle rows.

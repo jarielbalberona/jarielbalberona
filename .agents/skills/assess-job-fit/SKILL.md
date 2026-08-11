@@ -17,6 +17,8 @@ Read `docs/job-search/candidate-context.md`, `docs/job-search/project-evidence.m
 6. Return `SKIP / REQUIRED_WEEKEND_WORK` for required recurring Saturday or Sunday work. Review unclear on-call wording.
 7. Evaluate known advertised compensation against employee or contractor thresholds. Undisclosed compensation is not a blocker.
 
+When compensation is undisclosed, classify whether the role is Philippines-targeted international hiring, direct international-rate hiring, or genuinely unknown. Do not infer a premium budget from foreign headquarters or high job fit alone. Preserve any advertised range or recruiter budget evidence for application preparation.
+
 Do not calculate a flattering score for a hard-blocked job.
 
 ## Score viable jobs

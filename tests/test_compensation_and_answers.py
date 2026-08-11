@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import unittest
 from datetime import datetime
+from types import SimpleNamespace
 from zoneinfo import ZoneInfo
 
 from job_search.answers import AnswerStatus, resolve_question
@@ -10,6 +11,7 @@ from job_search.compensation import (
     build_compensation_decision,
     evaluate_compensation,
     evaluate_compensation_range,
+    load_compensation_policy,
     select_expected_monthly_php,
     select_expected_range_monthly_php,
 )
@@ -250,6 +252,19 @@ class AnswerPolicyTests(unittest.TestCase):
 
 
 class CompensationTests(unittest.TestCase):
+    def test_hard_and_preferred_minimums_remain_unchanged(self) -> None:
+        policy = load_compensation_policy()
+        self.assertEqual(160000, policy["employee"]["hard_minimum_monthly_php"])
+        self.assertEqual(180000, policy["employee"]["preferred_minimum_monthly_php"])
+        self.assertEqual(220000, policy["employee"]["default_strong_senior_monthly_php"])
+        self.assertEqual(240000, policy["employee"]["default_ai_native_senior_monthly_php"])
+        self.assertIsNone(policy["employee"]["upper_rejection_ceiling_monthly_php"])
+        self.assertEqual(200000, policy["contractor"]["hard_minimum_monthly_php"])
+        self.assertEqual(220000, policy["contractor"]["preferred_minimum_monthly_php"])
+        self.assertEqual(240000, policy["contractor"]["default_strong_senior_monthly_php"])
+        self.assertEqual(250000, policy["contractor"]["default_ai_native_senior_monthly_php"])
+        self.assertIsNone(policy["contractor"]["upper_rejection_ceiling_monthly_php"])
+
     def test_employee_compensation_boundaries(self) -> None:
         self.assertEqual(
             Verdict.SKIP, evaluate_compensation(150000, "Full-time employee").verdict
@@ -274,15 +289,70 @@ class CompensationTests(unittest.TestCase):
             evaluate_compensation(250000, "Independent contractor").reason_code,
         )
 
-    def test_high_alignment_ai_contractor_selects_275k(self) -> None:
-        selected = select_expected_monthly_php(
-            "Full-time independent contractor", strong_ai_alignment=True
-        )
-        self.assertEqual(275000, selected)
+    def test_conversion_friendly_default_anchors(self) -> None:
         self.assertEqual(
-            (250000, 300000),
+            220000,
+            select_expected_monthly_php("Full-time employee"),
+        )
+        self.assertEqual(
+            240000,
+            select_expected_monthly_php(
+                "Full-time employee", strong_ai_alignment=True
+            ),
+        )
+        self.assertEqual(
+            240000,
+            select_expected_monthly_php("Full-time independent contractor"),
+        )
+        self.assertEqual(
+            250000,
+            select_expected_monthly_php(
+                "Full-time independent contractor",
+                strong_ai_alignment=True,
+                philippines_targeted_international=True,
+            ),
+        )
+        self.assertEqual(
+            (250000, 250000),
             select_expected_range_monthly_php(
                 "Full-time independent contractor", strong_ai_alignment=True
+            ),
+        )
+
+    def test_staff_ai_without_budget_evidence_does_not_jump_to_300k(self) -> None:
+        selected = select_expected_monthly_php(
+            "Full-time independent contractor",
+            strong_ai_alignment=True,
+            staff_scope=True,
+        )
+        self.assertEqual(275000, selected)
+        self.assertLessEqual(selected, 275000)
+        self.assertEqual(
+            (250000, 275000),
+            select_expected_range_monthly_php(
+                "Full-time independent contractor",
+                strong_ai_alignment=True,
+                staff_scope=True,
+            ),
+        )
+
+    def test_direct_international_staff_rate_can_use_300k(self) -> None:
+        self.assertEqual(
+            300000,
+            select_expected_monthly_php(
+                "Full-time independent contractor",
+                strong_ai_alignment=True,
+                staff_scope=True,
+                direct_international_rate=True,
+            ),
+        )
+        self.assertEqual(
+            (275000, 300000),
+            select_expected_range_monthly_php(
+                "Full-time independent contractor",
+                strong_ai_alignment=True,
+                staff_scope=True,
+                direct_international_rate=True,
             ),
         )
 
@@ -323,6 +393,44 @@ class CompensationTests(unittest.TestCase):
         )
         self.assertEqual(240000, decision.submitted_amount)
         self.assertEqual(180000, decision.advertised_min)
+
+    def test_employer_range_supporting_300k_can_select_300k(self) -> None:
+        decision = build_compensation_decision(
+            "Full-time independent contractor",
+            strong_ai_alignment=True,
+            advertised_currency="PHP",
+            advertised_min=250000,
+            advertised_max=350000,
+            advertised_basis="gross_monthly",
+        )
+        self.assertEqual(300000, decision.submitted_amount)
+        self.assertTrue(decision.high_budget_evidence)
+
+    def test_omniflow_override_is_250k_best_supported_answer(self) -> None:
+        omniflow = job(
+            role="AI Software Engineer (Remote)",
+            company="Global Finance Teams",
+            destination_company="Omniflow",
+            location="Remote in National Capital Region",
+            remote_policy="Remote from the Philippines; Monday-Friday PST or EST",
+            employment_type="Full-time independent contractor",
+        )
+        assessment = SimpleNamespace(
+            career_direction_fit_score=100,
+            narrative="AI-native / agentic engineering",
+        )
+        result = resolve_question(
+            "expected_monthly_service_pay",
+            "How much is your expected monthly service pay?",
+            job=omniflow,
+            assessment=assessment,  # type: ignore[arg-type]
+        )
+        self.assertEqual("250000", result.answer)
+        self.assertEqual(AnswerStatus.BEST_SUPPORTED_ANSWER, result.status)
+        decision = result.internal["compensation_decision"]
+        self.assertEqual(250000, decision["php_reference_monthly"])
+        self.assertEqual("omniflow", decision["policy_override"])
+        self.assertTrue(decision["philippines_targeted_international"])
 
     def test_advertised_maximum_below_floor_cannot_be_agreed_autonomously(self) -> None:
         with self.assertRaises(ValueError):

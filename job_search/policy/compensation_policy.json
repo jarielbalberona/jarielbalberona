@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "currency": "PHP",
   "basis": "gross_monthly",
   "employee": {
@@ -8,7 +8,10 @@
     "target_range_monthly_php": {
       "min": 200000,
       "max": 250000
-    }
+    },
+    "default_strong_senior_monthly_php": 220000,
+    "default_ai_native_senior_monthly_php": 240000,
+    "upper_rejection_ceiling_monthly_php": null
   },
   "contractor": {
     "hard_minimum_monthly_php": 200000,
@@ -16,18 +19,53 @@
     "target_range_monthly_php": {
       "min": 220000,
       "max": 300000
-    }
+    },
+    "default_strong_senior_monthly_php": 240000,
+    "default_ai_native_senior_monthly_php": 250000,
+    "upper_rejection_ceiling_monthly_php": null
   },
   "high_alignment": {
     "preferred_minimum_monthly_php": 230000,
     "stretch_target_monthly_php": 300000
   },
   "single_value_anchors_monthly_php": {
-    "standard_senior_employee": 220000,
-    "strong_ai_senior_employee": 240000,
-    "high_alignment_staff_employee": 275000,
-    "standard_strong_contractor": 250000,
-    "high_alignment_ai_contractor": 275000
+    "staff_ai_without_high_budget_employee": 250000,
+    "staff_ai_without_high_budget_contractor": 275000,
+    "high_budget_staff_employee": 300000,
+    "high_budget_staff_contractor": 300000
+  },
+  "expected_ranges_monthly_php": {
+    "standard_senior_employee": {
+      "min": 200000,
+      "max": 250000
+    },
+    "strong_ai_senior_employee": {
+      "min": 230000,
+      "max": 250000
+    },
+    "standard_strong_contractor": {
+      "min": 230000,
+      "max": 240000
+    },
+    "strong_ai_senior_contractor": {
+      "min": 250000,
+      "max": 250000
+    },
+    "staff_ai_without_high_budget": {
+      "min": 250000,
+      "max": 275000
+    },
+    "high_budget_staff": {
+      "min": 275000,
+      "max": 300000
+    }
+  },
+  "job_overrides": {
+    "omniflow": {
+      "expected_monthly_service_pay_php": 250000,
+      "provenance": "BEST_SUPPORTED_ANSWER",
+      "rationale": "Highly aligned AI-native contractor role explicitly targeting Philippines-based candidates without advertised evidence of a PHP 275,000 or higher budget."
+    }
   },
   "hourly_conversion": {
     "default_full_time_monthly_hours": 173.33

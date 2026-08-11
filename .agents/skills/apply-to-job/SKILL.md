@@ -32,6 +32,8 @@ Never submit when the employer is excluded, company origin is Philippine-local o
 
 `BEST_SUPPORTED_ANSWER` and `CONSERVATIVE_ESTIMATE` are resolved, truthful answers and do not block submission. Resolve expected compensation autonomously; current salary remains separate and may be material unknown.
 
+Expected compensation must follow the current job-specific policy decision. Advertised ranges take priority over generic anchors. Philippines-targeted international roles default to the localized-context anchor unless direct international-rate or other high-budget evidence supports more. Compensation above a target-range maximum is never itself a blocker.
+
 `DRY_RUN` must block the submission handler itself, not rely on operator restraint.
 
 ## Live autonomy

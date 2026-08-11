@@ -41,6 +41,10 @@ class CompensationDecision:
     advertised_min: int | None = None
     advertised_max: int | None = None
     advertised_basis: str | None = None
+    philippines_targeted_international: bool = False
+    direct_international_rate: bool = False
+    high_budget_evidence: bool = False
+    policy_override: str | None = None
     rationale: str = ""
 
     def to_dict(self) -> dict[str, Any]:
@@ -171,29 +175,47 @@ def select_expected_monthly_php(
     strong_ai_alignment: bool = False,
     staff_scope: bool = False,
     demanding_timezone: bool = False,
+    philippines_targeted_international: bool = False,
+    direct_international_rate: bool = False,
+    high_budget_evidence: bool = False,
+    policy_override: str | None = None,
 ) -> int:
     policy = load_compensation_policy()
     anchors = policy["single_value_anchors_monthly_php"]
+    if policy_override:
+        override = policy.get("job_overrides", {}).get(policy_override)
+        if override:
+            return int(override["expected_monthly_service_pay_php"])
+
     category = engagement_category(employment_type)
+    category_policy = policy[category.value]
     if category == EngagementCategory.CONTRACTOR:
-        selected = int(
-            anchors[
-                "high_alignment_ai_contractor"
-                if strong_ai_alignment or staff_scope
-                else "standard_strong_contractor"
-            ]
-        )
-        if demanding_timezone and (strong_ai_alignment or staff_scope):
-            selected = max(selected, 275000)
+        if staff_scope and (high_budget_evidence or direct_international_rate):
+            selected = int(anchors["high_budget_staff_contractor"])
+        elif staff_scope:
+            selected = int(anchors["staff_ai_without_high_budget_contractor"])
+        elif strong_ai_alignment:
+            selected = int(category_policy["default_ai_native_senior_monthly_php"])
+        else:
+            selected = int(category_policy["default_strong_senior_monthly_php"])
+        if philippines_targeted_international and not high_budget_evidence:
+            selected = min(selected, 275000 if staff_scope else 250000)
         return selected
 
     if staff_scope:
-        selected = int(anchors["high_alignment_staff_employee"])
+        anchor = (
+            "high_budget_staff_employee"
+            if high_budget_evidence or direct_international_rate
+            else "staff_ai_without_high_budget_employee"
+        )
+        selected = int(anchors[anchor])
     elif strong_ai_alignment:
-        selected = int(anchors["strong_ai_senior_employee"])
+        selected = int(category_policy["default_ai_native_senior_monthly_php"])
     else:
-        selected = int(anchors["standard_senior_employee"])
-    if demanding_timezone and (strong_ai_alignment or staff_scope):
+        selected = int(category_policy["default_strong_senior_monthly_php"])
+    if demanding_timezone and staff_scope and not philippines_targeted_international:
+        selected = max(selected, 275000)
+    elif demanding_timezone and strong_ai_alignment and not philippines_targeted_international:
         selected = max(selected, 250000)
     return selected
 
@@ -203,15 +225,29 @@ def select_expected_range_monthly_php(
     *,
     strong_ai_alignment: bool = False,
     staff_scope: bool = False,
+    direct_international_rate: bool = False,
+    high_budget_evidence: bool = False,
 ) -> tuple[int, int]:
+    ranges = load_compensation_policy()["expected_ranges_monthly_php"]
     category = engagement_category(employment_type)
-    if category == EngagementCategory.CONTRACTOR:
-        return (250000, 300000) if strong_ai_alignment or staff_scope else (220000, 300000)
     if staff_scope:
-        return (250000, 300000)
-    if strong_ai_alignment:
-        return (220000, 260000)
-    return (200000, 250000)
+        key = (
+            "high_budget_staff"
+            if high_budget_evidence or direct_international_rate
+            else "staff_ai_without_high_budget"
+        )
+    elif category == EngagementCategory.CONTRACTOR:
+        key = (
+            "strong_ai_senior_contractor"
+            if strong_ai_alignment
+            else "standard_strong_contractor"
+        )
+    elif strong_ai_alignment:
+        key = "strong_ai_senior_employee"
+    else:
+        key = "standard_senior_employee"
+    selected = ranges[key]
+    return int(selected["min"]), int(selected["max"])
 
 
 def build_compensation_decision(
@@ -228,12 +264,27 @@ def build_compensation_decision(
     advertised_min: int | None = None,
     advertised_max: int | None = None,
     advertised_basis: str | None = None,
+    philippines_targeted_international: bool = False,
+    direct_international_rate: bool = False,
+    high_budget_evidence: bool = False,
+    policy_override: str | None = None,
 ) -> CompensationDecision:
+    advertised_high_budget = bool(
+        (advertised_currency or "PHP").upper() == "PHP"
+        and advertised_basis in {None, "monthly", "gross_monthly"}
+        and advertised_max is not None
+        and advertised_max >= 300000
+    )
+    effective_high_budget_evidence = high_budget_evidence or advertised_high_budget
     php_monthly = select_expected_monthly_php(
         employment_type,
         strong_ai_alignment=strong_ai_alignment,
         staff_scope=staff_scope,
         demanding_timezone=demanding_timezone,
+        philippines_targeted_international=philippines_targeted_international,
+        direct_international_rate=direct_international_rate,
+        high_budget_evidence=effective_high_budget_evidence,
+        policy_override=policy_override,
     )
     if (advertised_currency or "PHP").upper() == "PHP" and advertised_basis in {
         None,
@@ -254,8 +305,8 @@ def build_compensation_decision(
                 raise ValueError("invalid advertised compensation range")
             if low > high:
                 low, high = high, low
-            upper_quartile = int(round((low + (high - low) * 0.75) / 5000) * 5000)
-            php_monthly = min(max(php_monthly, upper_quartile, low), high)
+            midpoint = int(round(((low + high) / 2) / 5000) * 5000)
+            php_monthly = min(max(php_monthly, midpoint, low), high)
     if requested_currency == "PHP":
         submitted = php_monthly
     else:
@@ -287,5 +338,14 @@ def build_compensation_decision(
         advertised_min=advertised_min,
         advertised_max=advertised_max,
         advertised_basis=advertised_basis,
-        rationale="Selected from the canonical engagement, alignment, scope, and schedule policy.",
+        philippines_targeted_international=philippines_targeted_international,
+        direct_international_rate=direct_international_rate,
+        high_budget_evidence=effective_high_budget_evidence,
+        policy_override=policy_override,
+        rationale=(
+            load_compensation_policy()["job_overrides"][policy_override]["rationale"]
+            if policy_override
+            and policy_override in load_compensation_policy().get("job_overrides", {})
+            else "Selected from the canonical engagement, alignment, scope, market context, and advertised-range policy."
+        ),
     )
