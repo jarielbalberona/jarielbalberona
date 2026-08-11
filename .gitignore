@@ -7,3 +7,6 @@ portfolio/dist/
 portfolio/node_modules/
 
 interview/*
+
+# Private job-search database, run logs, drafts, and browser-derived artifacts.
+/.job-search/

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Apply to Job"
+  short_description: "Gate, submit, verify, and record applications"
+  default_prompt: "Use $apply-to-job to process this job under the configured execution policy."

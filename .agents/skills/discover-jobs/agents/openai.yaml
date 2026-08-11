@@ -1,0 +1,4 @@
+interface:
+  display_name: "Discover Jobs"
+  short_description: "Discover and normalize job opportunities"
+  default_prompt: "Use $discover-jobs to discover and normalize eligible job opportunities."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Manage Job Search"
+  short_description: "Run the governed job-search lifecycle"
+  default_prompt: "Use $manage-job-search to find and process suitable opportunities according to the repository policy."

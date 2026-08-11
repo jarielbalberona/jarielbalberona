@@ -1,0 +1,98 @@
+version: 1
+default_run_mode: DRY_RUN
+
+sources:
+  indeed_ph:
+    url: "https://ph.indeed.com/?from=gnav-jobseeker-profile--profile-one-frontend"
+    enabled: true
+    priority: P0
+    discovery: true
+    execution_mode: ASSISTED
+    dry_run: true
+    live_submit: false
+    policy_verified_at: null
+    note: "V1 permits real browser discovery and preparation only. No submission."
+
+  linkedin:
+    enabled: true
+    priority: P0
+    discovery: true
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    policy_verified_at: null
+
+  jobstreet_ph:
+    enabled: true
+    priority: P0
+    discovery: false
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    policy_verified_at: null
+
+  outsourced:
+    enabled: true
+    priority: P1
+    discovery: false
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    policy_verified_at: null
+
+  cloudstaff:
+    enabled: true
+    priority: P1
+    discovery: false
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    policy_verified_at: null
+
+  remote_staff:
+    enabled: true
+    priority: P1
+    discovery: false
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    policy_verified_at: null
+
+  reddit_pinoyprogrammer:
+    enabled: true
+    priority: P1
+    discovery: false
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    policy_verified_at: null
+
+  reddit_forhire:
+    enabled: true
+    priority: P1
+    discovery: false
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    policy_verified_at: null
+
+  kalibrr:
+    enabled: true
+    priority: P2
+    discovery: false
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    policy_verified_at: null
+
+  virtualstaff_ph:
+    enabled: true
+    priority: P2
+    discovery: false
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    policy_verified_at: null
+
+  bossjob:
+    enabled: true
+    priority: P2
+    discovery: false
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    policy_verified_at: null
+
+# Before any source becomes live-submit capable, verify its current platform
+# rules, record the verification date and rationale, choose AUTONOMOUS or
+# ASSISTED explicitly, and set live_submit only when the policy permits it.

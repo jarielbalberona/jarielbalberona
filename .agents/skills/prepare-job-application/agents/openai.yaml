@@ -1,0 +1,4 @@
+interface:
+  display_name: "Prepare Job Application"
+  short_description: "Prepare truthful role-specific applications"
+  default_prompt: "Use $prepare-job-application to create a concise role-specific application packet."

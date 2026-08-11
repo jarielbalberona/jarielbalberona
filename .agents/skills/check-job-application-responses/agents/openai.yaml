@@ -1,0 +1,4 @@
+interface:
+  display_name: "Check Application Responses"
+  short_description: "Read and reconcile job-search email responses"
+  default_prompt: "Use $check-job-application-responses to check job-related Gmail responses read-only."
