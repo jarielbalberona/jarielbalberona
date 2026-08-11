@@ -52,17 +52,27 @@ def _selection(narrative: str, keys: tuple[str, ...]) -> EvidenceSelection:
 def select_evidence(job: Job, narrative_hint: str | None = None) -> EvidenceSelection:
     text = normalize_text(" ".join([job.role, job.description, narrative_hint or ""]))
 
+    # Platform roles can mention agentic automation without being agent-product
+    # roles. Preserve the role's center of gravity instead of allowing one AI
+    # keyword to displace the stronger infrastructure evidence.
+    if any(
+        term in text
+        for term in (
+            "devops engineer",
+            "platform engineer",
+            "infrastructure",
+            "terraform",
+            "observability",
+            "developer experience",
+        )
+    ):
+        return _selection("Platform engineering", ("ordr-now", "experience-digital"))
+
     if any(term in text for term in ("coding agent", "agentic", "autonomous agent", "developer productivity")):
         return _selection("AI-native / agentic engineering", ("ai-native-platform", "ordr-now"))
 
     if any(term in text for term in ("ai product", "analytics", "llm application", "workflow ux")):
         return _selection("AI product engineering", ("datagpt", "ordr-now"))
-
-    if any(
-        term in text
-        for term in ("platform engineer", "infrastructure", "terraform", "observability", "developer experience")
-    ):
-        return _selection("Platform engineering", ("ordr-now", "experience-digital"))
 
     if any(term in text for term in ("modernization", "legacy", "migration", "react architecture")):
         return _selection("Incremental modernization", ("privv", "experience-digital"))

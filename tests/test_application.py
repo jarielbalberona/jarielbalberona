@@ -35,6 +35,16 @@ class ApplicationTests(unittest.TestCase):
             ("AI-native multi-tenant delivery platform", "Ordr.now"), selection.projects
         )
 
+    def test_devops_role_keeps_platform_evidence_when_it_uses_agents(self) -> None:
+        selection = select_evidence(
+            job(
+                "Senior DevOps Engineer",
+                "Own AWS, Terraform, observability, and agentic automation for operational toil.",
+            )
+        )
+        self.assertEqual("Platform engineering", selection.narrative)
+        self.assertEqual(("Ordr.now", "Experience Digital"), selection.projects)
+
     def test_modernization_role_selects_modernization_evidence(self) -> None:
         selection = select_evidence(
             job("Senior Software Engineer", "Lead an incremental legacy React modernization and migration.")
