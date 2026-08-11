@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "normalization": "sha256(kind + ':' + normalized_value)",
+  "reason_code": "CURRENT_EMPLOYER_EXCLUDED",
+  "identities": [
+    {
+      "id": "confidential-employer-1",
+      "company_hashes": [
+        "7c9490c5b4ad634b3de8982182d346ac92ba136d06897e97ccaf53809fea92cc"
+      ],
+      "domain_hashes": [
+        "b3af143923382b0c75de63be846f1a3d2f0ce0873ebbda32ce03c3751f46e377"
+      ]
+    },
+    {
+      "id": "confidential-employer-2",
+      "company_hashes": [
+        "755f4787255b9124d7df0039b87de5ef66b549f3997ab506242f495492a1964d"
+      ],
+      "domain_hashes": [
+        "75f8ebb44f9ff7e366ac1d1c601b11acd768d504833e4be67009dc3b6f847e35"
+      ]
+    },
+    {
+      "id": "confidential-employer-3",
+      "company_hashes": [
+        "a0072e232ebf6633e53f22927ebafae1c1458f23ffd4bfd9174ffc10b3e1d43e",
+        "1ad19bf412161cf260baf066f017f32634e4bef35f924a7cff6c3a806bc536f7",
+        "cda09a34151b1f5481db1b14e621c71da0b471f361f310088872d351d1855cba"
+      ],
+      "domain_hashes": [
+        "1231cc028a1153e04e1fc35b681a093db35318d7b3e4dfd7d61da78412ab2dca",
+        "a4c4bb0a47d4d7e0474009d538ff5c54aaa878f683e46d9d0d9a7a1ea354292d"
+      ]
+    }
+  ]
+}

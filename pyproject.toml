@@ -1,0 +1,8 @@
+[project]
+name = "jariel-job-search"
+version = "0.1.0"
+description = "Repository-owned job-search policy, ledger, and workflow primitives"
+requires-python = ">=3.11"
+
+[tool.unittest]
+start-directory = "tests"

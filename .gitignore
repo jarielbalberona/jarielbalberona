@@ -10,3 +10,7 @@ interview/*
 
 # Private job-search database, run logs, drafts, and browser-derived artifacts.
 /.job-search/
+
+# Local Python verification artifacts.
+__pycache__/
+*.py[cod]
