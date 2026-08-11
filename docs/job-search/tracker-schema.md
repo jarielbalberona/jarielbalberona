@@ -52,6 +52,8 @@ Application ID is derived from canonical URL, source posting ID where present, n
 
 Update an existing row rather than appending a duplicate. Preserve non-empty manually edited Sheet status, next-action, follow-up, and notes fields unless the operator explicitly authorizes an overwrite or reliable update timestamps prove the local state is newer.
 
+Keep column L human-readable without discarding provenance. Use `Advertised: <original source text> | Expected/submitted: <currency amount basis>` when an application answer exists. SQLite remains authoritative for the structured original advertised range, its PHP-normalized monthly range, exchange rate and date, expected-compensation PHP reference, conversion basis, rounded submitted amount, and hourly-hours assumption.
+
 ## Presentation
 
 Freeze row 1, enable a filter across A:Z, wrap long text, format dates consistently, keep fit score numeric, use readable column widths, and apply clear restrained header styling. Add dropdown validation for controlled values where the connector supports it.

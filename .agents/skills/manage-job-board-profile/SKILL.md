@@ -5,7 +5,7 @@ description: Inspect, create, or update supported job-board profiles from the ca
 
 # Manage job-board profile
 
-Read `docs/job-search/candidate-context.md` and the source policy. Prefer truthful completeness over aggressive optimization.
+Read `docs/job-search/candidate-context.md`, `docs/job-search/compensation-policy.md`, `job_search/policy/candidate_facts.json`, and the source policy. Prefer truthful completeness over aggressive optimization.
 
 ## Authentication
 
@@ -20,6 +20,6 @@ Never request, extract, store, log, or commit a password, OAuth credential, cook
 
 Use canonical name, email, location, remote preference, headline, summary, skills, experience, portfolio, GitHub, LinkedIn, and current CV. Do not create a new CV during routine profile work.
 
-Do not answer unknown salary, current compensation, notice, authorization, visa, or relocation declarations. Report them as unresolved.
+Reuse repository-owned employment, weekday schedule, broad AI experience, US-client, Python/FastAPI, remote, and expected-compensation facts. Apply the best-supported-answer policy for defensible experience estimates. Never infer current salary, authorization, visa, relocation, or another genuine material unknown.
 
 Record any external profile mutation in the run log. Profile access does not authorize applying to jobs.

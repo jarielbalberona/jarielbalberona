@@ -17,6 +17,54 @@ This is the authoritative, public-safe candidate profile for job-search operatio
 
 Do not create a replacement CV during routine job-search work. If a form requires facts not present here or in the canonical CV source, record them as unresolved.
 
+Machine-readable canonical applicant facts live in `job_search/policy/candidate_facts.json`. Reuse them automatically and do not ask Jariel again unless the specific application materially differs.
+
+## Employment and availability
+
+```yaml
+employment_preferences:
+  full_time: true
+  accepted_engagement_types:
+    - employee
+    - contractor
+    - consultant
+    - independent_contractor
+    - freelance
+    - b2b
+    - employer_of_record
+
+schedule:
+  timezone_flexible: true
+  allowed_days: [Monday, Tuesday, Wednesday, Thursday, Friday]
+  recurring_weekend_work: false
+```
+
+Accept legitimate full-time employee and non-employee structures. Part-time work is not the primary target. Answer full-time contractor, consultant, freelance, IC, B2B, and weekday international-timezone willingness positively. PST, PDT, EST, EDT, CST, MST, UK, European, Australian, Philippine, and other international weekday hours are acceptable.
+
+Required recurring Saturday or Sunday work is incompatible. Rare emergency or on-call language is not automatically recurring weekend work; use review when the actual obligation is unclear.
+
+## Canonical application answers
+
+- Broad AI experience: `2+ years`; use numeric `2` for whole-year fields.
+- US client experience: `Yes`.
+- Remote work: `Yes`.
+- Based in the Philippines: `Yes`.
+- Python or FastAPI: real secondary production/project experience; use conservative numeric `1` when a whole year is required and stronger evidence is absent.
+- Professional software engineering: `10+ years`; use numeric `10` for whole-year fields.
+
+Do not reuse broad AI tenure for PyTorch, model training, ML research, MLOps, or another narrower specialty.
+
+## Best-supported-answer policy
+
+Resolve application questions in this order:
+
+1. Use an exact canonical fact.
+2. Use a strongly supported answer derived from current evidence.
+3. When real experience exists but duration is imprecise, use the lowest defensible floor-style estimate.
+4. Use `MATERIAL_UNKNOWN` only when an answer would invent experience, credentials, legal status, compensation history, or another unsupported material fact.
+
+Store `EXACT`, `BEST_SUPPORTED_ANSWER`, `CONSERVATIVE_ESTIMATE`, or `MATERIAL_UNKNOWN` with confidence, interpretation, and supporting evidence. Conservative estimates normally remain application-ready.
+
 ## Professional identity
 
 Jariel is a senior software engineer focused on AI-native product and platform engineering, agentic software-development systems, full-stack architecture, multi-tenant SaaS, production reliability, and end-to-end technical ownership.
@@ -97,10 +145,13 @@ Current confidential client work may be described only through the generic evide
 
 The following require Jariel's explicit answer when a form asks for them:
 
-- salary expectations or current salary
+- current salary when a legitimate non-disclosure option is unavailable
 - notice period or earliest start date
 - work authorization and visa status for a specific jurisdiction
 - relocation willingness
-- exact years with a specific technology when not directly supported by dated experience
+- current city and state or region
+- professional experience with a technology that has no actual implementation evidence
 - management scope or exact team size
 - degrees, certifications, clearance, or licenses not in the canonical CV
+
+Expected compensation is resolved by `docs/job-search/compensation-policy.md`; it is not grouped with unknown current salary.

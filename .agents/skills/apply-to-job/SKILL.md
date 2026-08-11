@@ -1,11 +1,11 @@
 ---
 name: apply-to-job
-description: Process one job through activity, employer eligibility, career-direction fit, application readiness, source policy, live-autonomy rules, submission authority, verification, persistence, and tracker sync. Use only when preparing or performing an application for a specific job; dry-run and disallowed sources must never submit.
+description: Process one job through employer, weekend, compensation, fit, canonical and best-supported answers, material-unknown readiness, source policy, submission authority, verification, persistence, and tracker sync. Use only for a specific application; dry-run and disallowed sources must never submit.
 ---
 
 # Apply to job
 
-Read `docs/job-search/application-policy.md` and the source entry in `docs/job-search/source-registry.yaml`. Invoke `$assess-job-fit` and `$prepare-job-application`; do not duplicate their logic.
+Read `docs/job-search/application-policy.md`, `docs/job-search/compensation-policy.md`, and the source entry in `docs/job-search/source-registry.yaml`. Invoke `$assess-job-fit` and `$prepare-job-application`; do not duplicate their logic.
 
 ## Pipeline
 
@@ -28,7 +28,9 @@ load job
 
 ## Hard stops
 
-Never submit when the employer is excluded, company origin is Philippine-local or ambiguous, remote-from-Philippines eligibility is unresolved, a consequential answer is unknown, the listing is inactive or duplicate, source policy forbids it, or run mode is `DRY_RUN`.
+Never submit when the employer is excluded, company origin is Philippine-local or ambiguous, remote-from-Philippines eligibility is unresolved, recurring weekend work is required, known compensation violates policy, a `MATERIAL_UNKNOWN` remains, the listing is inactive or duplicate, source policy forbids it, or run mode is `DRY_RUN`.
+
+`BEST_SUPPORTED_ANSWER` and `CONSERVATIVE_ESTIMATE` are resolved, truthful answers and do not block submission. Resolve expected compensation autonomously; current salary remains separate and may be material unknown.
 
 `DRY_RUN` must block the submission handler itself, not rely on operator restraint.
 

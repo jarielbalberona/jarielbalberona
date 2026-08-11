@@ -73,6 +73,17 @@ class Job:
     remote_from_ph: bool | None = None
     employment_type: str = ""
     compensation: str = ""
+    work_schedule: str = ""
+    recurring_weekend_work: bool | None = None
+    advertised_compensation_currency: str | None = None
+    advertised_compensation_min: int | None = None
+    advertised_compensation_max: int | None = None
+    advertised_compensation_basis: str | None = None
+    advertised_compensation_monthly_php_min: int | None = None
+    advertised_compensation_monthly_php_max: int | None = None
+    advertised_compensation_exchange_rate_to_php: float | None = None
+    advertised_compensation_conversion_date: str | None = None
+    strategically_exceptional: bool = False
     active: bool = True
     posted_at: str | None = None
     discovered_at: str = field(default_factory=utc_now)
@@ -191,6 +202,8 @@ class ApplicationPacket:
     unresolved_questions: list[str]
     gaps: list[str]
     reasons: list[str]
+    answer_metadata: dict[str, dict[str, Any]] = field(default_factory=dict)
+    compensation_decision: dict[str, Any] | None = None
     screening_questions_verified: bool = False
     screening_questions_source: str = ""
     cv_version: str = "portfolio/public/jariel-balberona-cv.pdf"

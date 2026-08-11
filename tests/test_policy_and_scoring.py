@@ -4,13 +4,21 @@ import json
 import unittest
 from pathlib import Path
 
-from job_search.models import CompanyOrigin, EligibilityResult, FitRubric, Job, Verdict
+from job_search.models import (
+    ApplicationPacket,
+    CompanyOrigin,
+    EligibilityResult,
+    FitRubric,
+    Job,
+    Verdict,
+)
 from job_search.normalization import fingerprint
 from job_search.policy import EmployerExclusionMatcher, ExclusionIdentity, evaluate_eligibility
 from job_search.scoring import (
     build_assessment,
     calibrate_application_readiness,
     calibrate_eligibility_confidence,
+    reconcile_assessment_with_answers,
     uncertainty_adjusted_score,
     verdict_from_score,
 )
@@ -162,14 +170,66 @@ class PolicyTests(unittest.TestCase):
         self.assertEqual(88, uncertainty_adjusted_score(96, 92))
 
     def test_material_unknowns_cap_optimistic_confidence_and_readiness(self) -> None:
-        reasons = ["TIMEZONE_REQUIREMENT_UNRESOLVED", "MATERIAL_REQUIREMENT_GAP"]
-        self.assertEqual(92, calibrate_eligibility_confidence(100, reasons))
+        reasons = ["WORK_AUTHORIZATION_UNRESOLVED", "MATERIAL_REQUIREMENT_GAP"]
+        self.assertEqual(85, calibrate_eligibility_confidence(100, reasons))
         self.assertEqual(55, calibrate_application_readiness(100, reasons))
 
     def test_unknown_compensation_alone_does_not_reduce_signals(self) -> None:
         reasons = ["COMPENSATION_EXPECTATION_UNRESOLVED"]
         self.assertEqual(100, calibrate_eligibility_confidence(100, reasons))
         self.assertEqual(100, calibrate_application_readiness(100, reasons))
+
+    def test_resolved_answers_remove_stale_readiness_penalties(self) -> None:
+        assessment = build_assessment(
+            job_id="job_answers",
+            eligibility=EligibilityResult(can_score=True),
+            rubric=FitRubric(24, 15, 20, 9, 10, 10, 8),
+            eligibility_confidence=92,
+            application_readiness=42,
+            readiness_reason_codes=[
+                "SCREENING_ANSWERS_UNRESOLVED",
+                "TIMEZONE_REQUIREMENT_UNRESOLVED",
+            ],
+            real_problem="Build a reliable AI product.",
+            strongest_matches=["Agent execution"],
+            relevant_projects=["Ordr.now"],
+            relevant_technologies=["TypeScript"],
+            legitimate_gaps=[],
+            dealbreakers=[],
+            narrative="AI-native / agentic engineering",
+            cv_emphasis="Agent delivery",
+            application_angle="Apply",
+            interview_risks=[],
+        )
+        packet = ApplicationPacket(
+            application_id="app_answers",
+            job_id="job_answers",
+            company="International Product Company",
+            role="AI Software Engineer",
+            narrative="AI-native / agentic engineering",
+            selected_evidence=["Ordr.now"],
+            letter="Truthful letter.",
+            screening_plan={"timezone": "Yes", "years_stack": "4"},
+            unresolved_questions=["Location (City, State, Country)"],
+            gaps=[],
+            reasons=[],
+            answer_metadata={
+                "timezone": {"status": "EXACT"},
+                "years_stack": {"status": "CONSERVATIVE_ESTIMATE"},
+                "location_city": {"status": "MATERIAL_UNKNOWN"},
+            },
+            compensation_decision={"submitted_amount": 275000},
+            screening_questions_verified=True,
+        )
+        reconcile_assessment_with_answers(
+            assessment,
+            packet,
+            proposed_eligibility_confidence=92,
+            proposed_application_readiness=95,
+        )
+        self.assertEqual(["MATERIAL_UNKNOWN"], assessment.readiness_reason_codes)
+        self.assertEqual(80, assessment.application_readiness)
+        self.assertEqual(88, assessment.fit_score)
 
     def test_verdict_boundaries(self) -> None:
         cases = {

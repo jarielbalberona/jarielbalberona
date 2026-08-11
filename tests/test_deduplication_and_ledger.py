@@ -5,7 +5,7 @@ import unittest
 from pathlib import Path
 
 from job_search.ledger import Ledger
-from job_search.models import CompanyOrigin, Job
+from job_search.models import ApplicationPacket, ApplicationStatus, CompanyOrigin, Job
 from job_search.normalization import canonicalize_url
 
 
@@ -46,6 +46,56 @@ class DeduplicationTests(unittest.TestCase):
                 self.assertEqual(first_id, second_id)
                 self.assertEqual(1, ledger.table_count("jobs"))
                 self.assertEqual(2, ledger.table_count("job_sources"))
+
+    def test_compensation_answer_metadata_and_schedule_are_persisted(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            db = Path(directory) / "ledger.sqlite"
+            with Ledger(db) as ledger:
+                ledger.initialize()
+                stored_job = fixture_job(
+                    "indeed_ph", "https://ph.indeed.com/viewjob?jk=comp", "comp"
+                )
+                stored_job.employment_type = "Full-time independent contractor"
+                stored_job.compensation = "Undisclosed"
+                stored_job.work_schedule = "Monday-Friday PST"
+                stored_job.recurring_weekend_work = False
+                job_id, _ = ledger.upsert_job(stored_job)
+                packet = ApplicationPacket(
+                    application_id=job_id,
+                    job_id=job_id,
+                    company=stored_job.company,
+                    role=stored_job.role,
+                    narrative="AI-native / agentic engineering",
+                    selected_evidence=["Ordr.now"],
+                    letter="A truthful letter.",
+                    screening_plan={"expected_pay": "275000"},
+                    unresolved_questions=[],
+                    gaps=[],
+                    reasons=[],
+                    answer_metadata={
+                        "expected_pay": {"status": "BEST_SUPPORTED_ANSWER"}
+                    },
+                    compensation_decision={
+                        "submitted_currency": "PHP",
+                        "submitted_amount": 275000,
+                        "requested_basis": "gross_monthly",
+                    },
+                )
+                ledger.upsert_application(packet, ApplicationStatus.PREPARED)
+
+                job_row = ledger.connection.execute(
+                    "SELECT work_schedule, recurring_weekend_work, compensation FROM jobs WHERE job_id = ?",
+                    (job_id,),
+                ).fetchone()
+                application_row = ledger.connection.execute(
+                    "SELECT answer_metadata_json, compensation_decision_json FROM applications WHERE application_id = ?",
+                    (job_id,),
+                ).fetchone()
+                self.assertEqual("Monday-Friday PST", job_row["work_schedule"])
+                self.assertEqual(0, job_row["recurring_weekend_work"])
+                self.assertEqual("Undisclosed", job_row["compensation"])
+                self.assertIn("BEST_SUPPORTED_ANSWER", application_row["answer_metadata_json"])
+                self.assertIn("275000", application_row["compensation_decision_json"])
 
 
 if __name__ == "__main__":

@@ -75,6 +75,26 @@ def _display(value: Any) -> Any:
     return value
 
 
+def format_compensation_for_tracker(
+    advertised: str,
+    compensation_decision: Mapping[str, Any] | None,
+) -> str:
+    parts = [f"Advertised: {advertised.strip() or 'undisclosed'}"]
+    if compensation_decision:
+        currency = str(compensation_decision.get("submitted_currency", "")).strip()
+        amount = compensation_decision.get("submitted_amount")
+        minimum = compensation_decision.get("submitted_min")
+        maximum = compensation_decision.get("submitted_max")
+        basis = str(compensation_decision.get("requested_basis", "")).replace("_", " ")
+        if currency and isinstance(amount, (int, float)):
+            parts.append(f"Expected/submitted: {currency} {amount:,.0f} {basis}".strip())
+        elif currency and isinstance(minimum, (int, float)) and isinstance(maximum, (int, float)):
+            parts.append(
+                f"Expected/submitted: {currency} {minimum:,.0f}-{maximum:,.0f} {basis}".strip()
+            )
+    return " | ".join(parts)
+
+
 def map_record_to_row(record: Mapping[str, Any]) -> list[Any]:
     return [_display(record.get(FIELD_MAP[header], "")) for header in HEADERS]
 

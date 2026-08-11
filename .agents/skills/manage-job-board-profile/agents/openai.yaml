@@ -1,4 +1,4 @@
 interface:
   display_name: "Manage Job Board Profile"
-  short_description: "Maintain truthful job-board profiles safely"
-  default_prompt: "Use $manage-job-board-profile to inspect or update a supported job-board profile safely."
+  short_description: "Reuse canonical profile answers safely"
+  default_prompt: "Use $manage-job-board-profile to apply canonical facts and best-supported answers to a job-board profile safely."

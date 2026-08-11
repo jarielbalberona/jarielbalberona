@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "employment_preferences": {
+    "full_time": true,
+    "accepted_engagement_types": [
+      "employee",
+      "contractor",
+      "consultant",
+      "independent_contractor",
+      "freelance",
+      "b2b",
+      "employer_of_record"
+    ],
+    "part_time_primary_target": false
+  },
+  "schedule": {
+    "timezone_flexible": true,
+    "allowed_days": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday"
+    ],
+    "recurring_weekend_work": false
+  },
+  "ai_experience": {
+    "broad_ai_experience": "2+ years",
+    "numeric_years_when_required": 2
+  },
+  "technology_experience": {
+    "professional_software_engineering": {
+      "broad_experience": "10+ years",
+      "numeric_years_when_required": 10
+    },
+    "python_fastapi": {
+      "experience": true,
+      "depth": "some_production_or_project_experience",
+      "default_numeric_years_when_required": 1
+    },
+    "omniflow_combined_stack": {
+      "default_numeric_years_when_required": 4,
+      "interpretation": "Conservative overall full-stack experience with the listed stack; Python and FastAPI depth is approximately one year and is not represented as equal to TypeScript depth."
+    }
+  },
+  "client_experience": {
+    "us_clients": true
+  },
+  "location": {
+    "country": "Philippines",
+    "city": null,
+    "state_or_region": null
+  },
+  "application_defaults": {
+    "remote_work": true
+  }
+}

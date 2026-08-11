@@ -1,4 +1,4 @@
 interface:
   display_name: "Sync Application Tracker"
-  short_description: "Sync application lifecycle rows idempotently"
-  default_prompt: "Use $sync-job-application-tracker to reconcile the local ledger with the Google Sheet."
+  short_description: "Sync lifecycle and compensation evidence"
+  default_prompt: "Use $sync-job-application-tracker to reconcile lifecycle and compensation evidence with the Google Sheet."

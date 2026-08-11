@@ -27,6 +27,7 @@ Optimize for truth, credibility, maintainability, and production judgment. Rejec
 - Follow `docs/job-search/source-registry.yaml` before any job-board write. Technical capability is not authorization.
 - Do not mark an application `APPLIED` without verified submission evidence.
 - Keep live autonomy in calibration until repository policy explicitly changes; readiness and source permission are mandatory even for `STRONG APPLY` roles.
+- Reuse canonical employment, schedule, AI-experience, technology-estimate, and compensation facts from repository policy. Do not repeatedly ask for resolved facts; distinguish conservative evidence-backed answers from material unknowns.
 - Keep Gmail access narrow, job-search-related, and read-only unless the user later authorizes a write.
 - Never commit passwords, OAuth material, cookies, MFA secrets, browser state, job-board credentials, or tokens.
 - `.job-search/` is ignored private runtime state. Do not move its contents into tracked files.

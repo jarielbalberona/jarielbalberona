@@ -11,7 +11,7 @@ from .ledger import DEFAULT_DB, Ledger
 from .models import ApplicationStatus, CompanyOrigin, FitRubric, Job, RunMode, Verdict, utc_now
 from .normalization import application_id, canonicalize_url
 from .policy import EmployerExclusionMatcher, evaluate_eligibility
-from .scoring import build_assessment
+from .scoring import build_assessment, reconcile_assessment_with_answers
 
 
 DEFAULT_STATE = Path(".job-search")
@@ -42,6 +42,17 @@ def _job_from_dict(item: dict[str, Any], source: str) -> Job:
         "remote_from_ph",
         "employment_type",
         "compensation",
+        "work_schedule",
+        "recurring_weekend_work",
+        "advertised_compensation_currency",
+        "advertised_compensation_min",
+        "advertised_compensation_max",
+        "advertised_compensation_basis",
+        "advertised_compensation_monthly_php_min",
+        "advertised_compensation_monthly_php_max",
+        "advertised_compensation_exchange_rate_to_php",
+        "advertised_compensation_conversion_date",
+        "strategically_exceptional",
         "active",
         "posted_at",
         "discovered_at",
@@ -66,6 +77,25 @@ def _job_from_dict(item: dict[str, Any], source: str) -> Job:
         remote_from_ph=item.get("remote_from_ph"),
         employment_type=item.get("employment_type", ""),
         compensation=item.get("compensation", ""),
+        work_schedule=item.get("work_schedule", ""),
+        recurring_weekend_work=item.get("recurring_weekend_work"),
+        advertised_compensation_currency=item.get("advertised_compensation_currency"),
+        advertised_compensation_min=item.get("advertised_compensation_min"),
+        advertised_compensation_max=item.get("advertised_compensation_max"),
+        advertised_compensation_basis=item.get("advertised_compensation_basis"),
+        advertised_compensation_monthly_php_min=item.get(
+            "advertised_compensation_monthly_php_min"
+        ),
+        advertised_compensation_monthly_php_max=item.get(
+            "advertised_compensation_monthly_php_max"
+        ),
+        advertised_compensation_exchange_rate_to_php=item.get(
+            "advertised_compensation_exchange_rate_to_php"
+        ),
+        advertised_compensation_conversion_date=item.get(
+            "advertised_compensation_conversion_date"
+        ),
+        strategically_exceptional=bool(item.get("strategically_exceptional", False)),
         active=bool(item.get("active", True)),
         posted_at=item.get("posted_at"),
         discovered_at=item.get("discovered_at", utc_now()),
@@ -152,6 +182,45 @@ def run_dry_run(
                     application_angle=analysis.get("application_angle", ""),
                     interview_risks=_list(analysis.get("interview_risks")),
                 )
+                packet_input = item.get("application_packet")
+                if packet_input and assessment.verdict != Verdict.SKIP:
+                    packet = prepare_application_packet(
+                        job,
+                        assessment,
+                        letter=packet_input.get("letter"),
+                        screening_questions=packet_input.get("screening_questions", {}),
+                        canonical_answers=packet_input.get("canonical_answers", {}),
+                        screening_questions_verified=bool(
+                            packet_input.get("screening_questions_verified", False)
+                        ),
+                        screening_questions_source=packet_input.get(
+                            "screening_questions_source", ""
+                        ),
+                        matcher=matcher,
+                    )
+                    reconcile_assessment_with_answers(
+                        assessment,
+                        packet,
+                        proposed_eligibility_confidence=int(
+                            analysis.get("eligibility_confidence", 100)
+                        ),
+                        proposed_application_readiness=int(
+                            analysis.get("application_readiness", 100)
+                        ),
+                    )
+                    ledger.save_draft(packet)
+                    ledger.upsert_application(
+                        packet,
+                        ApplicationStatus.PREPARED,
+                        application_method=packet_input.get("application_method", "Indeed"),
+                    )
+                    artifact_path = artifact_dir / f"{_artifact_slug(job.employer, job.role)}.json"
+                    artifact_path.write_text(
+                        json.dumps(packet.to_dict(), indent=2, sort_keys=True), encoding="utf-8"
+                    )
+                    counts["prepared_count"] += 1
+                    prepared.append({"job_id": job_id, "artifact": str(artifact_path)})
+
                 ledger.save_assessment(assessment)
 
                 count_key = {
@@ -182,34 +251,6 @@ def run_dry_run(
                 }
                 ranked.append(result)
 
-                packet_input = item.get("application_packet")
-                if packet_input and assessment.verdict != Verdict.SKIP:
-                    packet = prepare_application_packet(
-                        job,
-                        assessment,
-                        letter=packet_input.get("letter"),
-                        screening_questions=packet_input.get("screening_questions", {}),
-                        canonical_answers=packet_input.get("canonical_answers", {}),
-                        screening_questions_verified=bool(
-                            packet_input.get("screening_questions_verified", False)
-                        ),
-                        screening_questions_source=packet_input.get(
-                            "screening_questions_source", ""
-                        ),
-                        matcher=matcher,
-                    )
-                    ledger.save_draft(packet)
-                    ledger.upsert_application(
-                        packet,
-                        ApplicationStatus.PREPARED,
-                        application_method=packet_input.get("application_method", "Indeed"),
-                    )
-                    artifact_path = artifact_dir / f"{_artifact_slug(job.employer, job.role)}.json"
-                    artifact_path.write_text(
-                        json.dumps(packet.to_dict(), indent=2, sort_keys=True), encoding="utf-8"
-                    )
-                    counts["prepared_count"] += 1
-                    prepared.append({"job_id": job_id, "artifact": str(artifact_path)})
             except Exception as exc:  # Keep one bad listing from destroying calibration evidence.
                 errors.append(f"job {position}: {type(exc).__name__}: {exc}")
 

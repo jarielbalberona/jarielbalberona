@@ -3,6 +3,7 @@ from __future__ import annotations
 import re
 from typing import Mapping
 
+from .answers import resolve_questions
 from .evidence import EvidenceSelection, select_evidence
 from .models import ApplicationPacket, Assessment, Job, Verdict
 from .normalization import application_id
@@ -11,24 +12,6 @@ from .policy import EmployerExclusionMatcher
 
 class ConfidentialityError(ValueError):
     pass
-
-
-CONSEQUENTIAL_FIELDS = frozenset(
-    {
-        "salary_expectation",
-        "current_salary",
-        "notice_period",
-        "start_date",
-        "work_authorization",
-        "visa_status",
-        "relocation",
-        "team_size",
-        "management_scope",
-        "years_specific_technology",
-        "degree",
-        "certification",
-    }
-)
 
 
 def assert_public_safe(text: str, matcher: EmployerExclusionMatcher | None = None) -> None:
@@ -40,19 +23,34 @@ def assert_public_safe(text: str, matcher: EmployerExclusionMatcher | None = Non
 
 
 def resolve_application_answers(
-    questions: Mapping[str, str], canonical_answers: Mapping[str, str]
+    questions: Mapping[str, str],
+    canonical_answers: Mapping[str, str],
+    *,
+    job: Job | None = None,
+    assessment: Assessment | None = None,
 ) -> tuple[dict[str, str], list[str]]:
-    resolved: dict[str, str] = {}
-    unresolved: list[str] = []
-    for key, question in questions.items():
-        answer = canonical_answers.get(key, "").strip()
-        if answer:
-            resolved[key] = answer
-        elif key in CONSEQUENTIAL_FIELDS:
-            unresolved.append(question)
-        else:
-            unresolved.append(question)
+    resolved, unresolved, _, _ = resolve_questions(
+        questions,
+        canonical_answers,
+        job=job,
+        assessment=assessment,
+    )
     return resolved, unresolved
+
+
+def resolve_application_answers_with_metadata(
+    questions: Mapping[str, str],
+    canonical_answers: Mapping[str, str],
+    *,
+    job: Job | None = None,
+    assessment: Assessment | None = None,
+) -> tuple[dict[str, str], list[str], dict[str, dict[str, object]], dict[str, object] | None]:
+    return resolve_questions(
+        questions,
+        canonical_answers,
+        job=job,
+        assessment=assessment,
+    )
 
 
 def _default_letter(job: Job, assessment: Assessment, evidence: EvidenceSelection) -> str:
@@ -94,8 +92,11 @@ def prepare_application_packet(
     if re.search(r"\b(i am|i'm) (thrilled|incredibly excited)\b", final_letter, re.IGNORECASE):
         raise ValueError("application text uses prohibited generic enthusiasm")
 
-    resolved, unresolved = resolve_application_answers(
-        screening_questions or {}, canonical_answers or {}
+    resolved, unresolved, answer_metadata, compensation_decision = resolve_application_answers_with_metadata(
+        screening_questions or {},
+        canonical_answers or {},
+        job=job,
+        assessment=assessment,
     )
     return ApplicationPacket(
         application_id=application_id(job),
@@ -109,6 +110,8 @@ def prepare_application_packet(
         unresolved_questions=unresolved,
         gaps=list(assessment.legitimate_gaps),
         reasons=[assessment.real_problem, assessment.application_angle],
+        answer_metadata=answer_metadata,
+        compensation_decision=compensation_decision,
         screening_questions_verified=screening_questions_verified,
         screening_questions_source=screening_questions_source,
     )

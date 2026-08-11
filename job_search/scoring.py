@@ -1,13 +1,12 @@
 from __future__ import annotations
 
-from .models import Assessment, EligibilityResult, FitRubric, Verdict
+from .models import ApplicationPacket, Assessment, EligibilityResult, FitRubric, Verdict
 
 
 ELIGIBILITY_CONFIDENCE_CAPS = {
     "APPLICATION_ENTRY_UNAVAILABLE": 92,
     "MATERIAL_REQUIREMENT_GAP": 92,
     "SCREENING_QUESTIONS_UNVERIFIED": 92,
-    "TIMEZONE_REQUIREMENT_UNRESOLVED": 92,
     "WORK_AUTHORIZATION_UNRESOLVED": 85,
 }
 
@@ -15,9 +14,9 @@ APPLICATION_READINESS_CAPS = {
     "APPLICATION_ENTRY_UNAVAILABLE": 55,
     "CAREER_DIRECTION_MISMATCH": 55,
     "MATERIAL_REQUIREMENT_GAP": 55,
+    "MATERIAL_UNKNOWN": 80,
     "SCREENING_ANSWERS_UNRESOLVED": 60,
     "SCREENING_QUESTIONS_UNVERIFIED": 55,
-    "TIMEZONE_REQUIREMENT_UNRESOLVED": 60,
     "WORK_AUTHORIZATION_UNRESOLVED": 60,
 }
 
@@ -35,6 +34,50 @@ def calibrate_eligibility_confidence(proposed: int, reason_codes: list[str]) -> 
 
 def calibrate_application_readiness(proposed: int, reason_codes: list[str]) -> int:
     return _capped_signal(proposed, reason_codes, APPLICATION_READINESS_CAPS)
+
+
+def reconcile_assessment_with_answers(
+    assessment: Assessment,
+    packet: ApplicationPacket,
+    *,
+    proposed_eligibility_confidence: int,
+    proposed_application_readiness: int,
+) -> None:
+    codes = [
+        code
+        for code in assessment.readiness_reason_codes
+        if code not in {"SCREENING_ANSWERS_UNRESOLVED", "MATERIAL_UNKNOWN"}
+    ]
+    statuses = {
+        key: str(value.get("status", ""))
+        for key, value in packet.answer_metadata.items()
+    }
+    if any(status == "MATERIAL_UNKNOWN" for status in statuses.values()):
+        codes.append("MATERIAL_UNKNOWN")
+    if packet.screening_questions_verified:
+        codes = [code for code in codes if code != "SCREENING_QUESTIONS_UNVERIFIED"]
+    elif packet.answer_metadata:
+        codes.append("SCREENING_QUESTIONS_UNVERIFIED")
+    if any("timezone" in key and status != "MATERIAL_UNKNOWN" for key, status in statuses.items()):
+        codes = [code for code in codes if code != "TIMEZONE_REQUIREMENT_UNRESOLVED"]
+    if packet.compensation_decision:
+        codes = [code for code in codes if code != "COMPENSATION_EXPECTATION_UNRESOLVED"]
+
+    assessment.readiness_reason_codes = list(dict.fromkeys(codes))
+    assessment.eligibility_confidence = calibrate_eligibility_confidence(
+        proposed_eligibility_confidence,
+        assessment.readiness_reason_codes,
+    )
+    assessment.application_readiness = calibrate_application_readiness(
+        proposed_application_readiness,
+        assessment.readiness_reason_codes,
+    )
+    if assessment.base_fit_score is not None and assessment.eligibility_confidence is not None:
+        assessment.fit_score = uncertainty_adjusted_score(
+            assessment.base_fit_score,
+            assessment.eligibility_confidence,
+        )
+        assessment.verdict = verdict_from_score(assessment.fit_score)
 
 
 def verdict_from_score(score: int) -> Verdict:

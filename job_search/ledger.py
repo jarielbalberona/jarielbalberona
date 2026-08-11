@@ -32,12 +32,25 @@ class Ledger:
         self.close()
 
     def initialize(self) -> None:
-        migration = MIGRATIONS_DIR / "001_initial.sql"
-        self.connection.executescript(migration.read_text(encoding="utf-8"))
+        initial = MIGRATIONS_DIR / "001_initial.sql"
+        self.connection.executescript(initial.read_text(encoding="utf-8"))
         self.connection.execute(
             "INSERT OR IGNORE INTO schema_migrations(version, applied_at) VALUES (?, ?)",
             ("001_initial", utc_now()),
         )
+        applied = {
+            str(row[0])
+            for row in self.connection.execute("SELECT version FROM schema_migrations").fetchall()
+        }
+        for migration in sorted(MIGRATIONS_DIR.glob("*.sql")):
+            version = migration.stem
+            if version in applied or version == "001_initial":
+                continue
+            self.connection.executescript(migration.read_text(encoding="utf-8"))
+            self.connection.execute(
+                "INSERT INTO schema_migrations(version, applied_at) VALUES (?, ?)",
+                (version, utc_now()),
+            )
         self.connection.commit()
 
     def start_run(self, run_id: str, source: str, mode: RunMode, started_at: str | None = None) -> None:
@@ -89,6 +102,7 @@ class Ledger:
         eligibility_verdict: str | None = None,
         reason_codes: list[str] | tuple[str, ...] = (),
     ) -> tuple[str, bool]:
+        canonical_url = canonicalize_url(job.original_url)
         existing = self._find_existing_job(job)
         now = utc_now()
         if existing:
@@ -97,7 +111,72 @@ class Ledger:
                 "INSERT OR IGNORE INTO job_sources(source, source_posting_id, job_id, url, observed_at) VALUES (?, ?, ?, ?, ?)",
                 (job.source, job.source_posting_id or "", job_id, job.original_url, now),
             )
-            self.connection.execute("UPDATE jobs SET updated_at = ? WHERE job_id = ?", (now, job_id))
+            if str(existing["source"]) == job.source:
+                self.connection.execute(
+                    """
+                    UPDATE jobs SET
+                      original_url = ?, canonical_url = ?, company = ?, actual_employer = ?,
+                      destination_company = ?, company_domain = ?, destination_domain = ?,
+                      company_origin = ?, company_origin_evidence = ?, role = ?, location = ?,
+                      remote_policy = ?, remote_from_ph = ?, employment_type = ?, compensation = ?,
+                      work_schedule = ?, recurring_weekend_work = ?,
+                      advertised_compensation_currency = ?, advertised_compensation_min = ?,
+                      advertised_compensation_max = ?, advertised_compensation_basis = ?,
+                      advertised_compensation_monthly_php_min = ?,
+                      advertised_compensation_monthly_php_max = ?,
+                      advertised_compensation_exchange_rate_to_php = ?,
+                      advertised_compensation_conversion_date = ?, strategically_exceptional = ?,
+                      description = ?, description_hash = ?, content_fingerprint = ?, active = ?,
+                      posted_at = ?, eligibility_verdict = ?, reason_codes_json = ?, raw_json = ?,
+                      updated_at = ?
+                    WHERE job_id = ?
+                    """,
+                    (
+                        job.original_url,
+                        canonical_url,
+                        job.company,
+                        job.actual_employer,
+                        job.destination_company,
+                        job.company_domain,
+                        job.destination_domain,
+                        job.company_origin.value,
+                        job.company_origin_evidence,
+                        job.role,
+                        job.location,
+                        job.remote_policy,
+                        None if job.remote_from_ph is None else int(job.remote_from_ph),
+                        job.employment_type,
+                        job.compensation,
+                        job.work_schedule,
+                        None
+                        if job.recurring_weekend_work is None
+                        else int(job.recurring_weekend_work),
+                        job.advertised_compensation_currency,
+                        job.advertised_compensation_min,
+                        job.advertised_compensation_max,
+                        job.advertised_compensation_basis,
+                        job.advertised_compensation_monthly_php_min,
+                        job.advertised_compensation_monthly_php_max,
+                        job.advertised_compensation_exchange_rate_to_php,
+                        job.advertised_compensation_conversion_date,
+                        int(job.strategically_exceptional),
+                        job.description,
+                        description_hash(job.description),
+                        content_fingerprint(job),
+                        int(job.active),
+                        job.posted_at,
+                        eligibility_verdict,
+                        json.dumps(list(reason_codes)),
+                        json.dumps(job.raw, sort_keys=True),
+                        now,
+                        job_id,
+                    ),
+                )
+            else:
+                self.connection.execute(
+                    "UPDATE jobs SET updated_at = ? WHERE job_id = ?",
+                    (now, job_id),
+                )
             self.connection.commit()
             return job_id, True
 
@@ -121,6 +200,17 @@ class Ledger:
             None if job.remote_from_ph is None else int(job.remote_from_ph),
             job.employment_type,
             job.compensation,
+            job.work_schedule,
+            None if job.recurring_weekend_work is None else int(job.recurring_weekend_work),
+            job.advertised_compensation_currency,
+            job.advertised_compensation_min,
+            job.advertised_compensation_max,
+            job.advertised_compensation_basis,
+            job.advertised_compensation_monthly_php_min,
+            job.advertised_compensation_monthly_php_max,
+            job.advertised_compensation_exchange_rate_to_php,
+            job.advertised_compensation_conversion_date,
+            int(job.strategically_exceptional),
             job.description,
             description_hash(job.description),
             content_fingerprint(job),
@@ -139,10 +229,17 @@ class Ledger:
               job_id, source, source_posting_id, original_url, canonical_url,
               company, actual_employer, destination_company, company_domain, destination_domain,
               company_origin, company_origin_evidence, role, location, remote_policy, remote_from_ph,
-              employment_type, compensation, description, description_hash, content_fingerprint,
+              employment_type, compensation, work_schedule, recurring_weekend_work,
+              advertised_compensation_currency, advertised_compensation_min,
+              advertised_compensation_max, advertised_compensation_basis,
+              advertised_compensation_monthly_php_min,
+              advertised_compensation_monthly_php_max,
+              advertised_compensation_exchange_rate_to_php,
+              advertised_compensation_conversion_date, strategically_exceptional,
+              description, description_hash, content_fingerprint,
               active, posted_at, discovered_at, eligibility_verdict, reason_codes_json, raw_json,
               created_at, updated_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             values,
         )
@@ -215,11 +312,14 @@ class Ledger:
             """
             INSERT INTO applications(
               application_id, job_id, status, application_method, cv_version,
-              date_discovered, created_at, updated_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+              date_discovered, answer_metadata_json, compensation_decision_json,
+              created_at, updated_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(application_id) DO UPDATE SET
               application_method = excluded.application_method,
               cv_version = excluded.cv_version,
+              answer_metadata_json = excluded.answer_metadata_json,
+              compensation_decision_json = excluded.compensation_decision_json,
               updated_at = excluded.updated_at
             """,
             (
@@ -229,6 +329,10 @@ class Ledger:
                 application_method,
                 packet.cv_version,
                 packet.prepared_at[:10],
+                json.dumps(packet.answer_metadata, sort_keys=True),
+                json.dumps(packet.compensation_decision, sort_keys=True)
+                if packet.compensation_decision
+                else None,
                 now,
                 now,
             ),

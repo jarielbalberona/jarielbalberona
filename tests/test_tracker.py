@@ -2,7 +2,12 @@ from __future__ import annotations
 
 import unittest
 
-from job_search.tracker import HEADERS, map_record_to_row, plan_sheet_upsert
+from job_search.tracker import (
+    HEADERS,
+    format_compensation_for_tracker,
+    map_record_to_row,
+    plan_sheet_upsert,
+)
 
 
 def record(**overrides: object) -> dict[str, object]:
@@ -60,6 +65,20 @@ class TrackerTests(unittest.TestCase):
         plan = plan_sheet_upsert([], record())
         self.assertEqual("append", plan.action)
         self.assertIsNone(plan.row_number)
+
+    def test_compensation_summary_preserves_advertised_and_expected_values(self) -> None:
+        summary = format_compensation_for_tracker(
+            "Undisclosed",
+            {
+                "submitted_currency": "PHP",
+                "submitted_amount": 275000,
+                "requested_basis": "gross_monthly",
+            },
+        )
+        self.assertEqual(
+            "Advertised: Undisclosed | Expected/submitted: PHP 275,000 gross monthly",
+            summary,
+        )
 
 
 if __name__ == "__main__":

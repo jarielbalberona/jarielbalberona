@@ -17,7 +17,7 @@ AND consequential unknowns are resolved
 AND source execution policy permits the action
 ```
 
-Run gates in this order: actual employer, current-employer exclusion, company origin, remote-from-Philippines compatibility, role/seniority, engineering domain, deduplication, then fit scoring.
+Run gates in this order: actual employer, current-employer exclusion, company origin, remote-from-Philippines compatibility, required recurring weekend work, known compensation floors, role/seniority, engineering domain, deduplication, then fit scoring.
 
 Confirmed current employers and clients always produce `SKIP / CURRENT_EMPLOYER_EXCLUDED`, including a recruiter listing that names a blocked destination company. Confirmed Philippine-local employers produce `SKIP / PH_LOCAL_COMPANY`. Ambiguous company origin produces `REVIEW / COMPANY_ORIGIN_UNVERIFIED` and cannot proceed to submission.
 
@@ -34,10 +34,20 @@ Confirmed current employers and clients always produce `SKIP / CURRENT_EMPLOYER_
 - `DUPLICATE_JOB`
 - `SUSPECT_LISTING`
 - `UNRESOLVED_CONSEQUENTIAL_FACT`
+- `MATERIAL_UNKNOWN`
+- `BEST_SUPPORTED_ANSWER`
+- `CONSERVATIVE_ESTIMATE`
 - `APPLICATION_ENTRY_UNAVAILABLE`
 - `SCREENING_ANSWERS_UNRESOLVED`
 - `SCREENING_QUESTIONS_UNVERIFIED`
-- `TIMEZONE_REQUIREMENT_UNRESOLVED`
+- `REQUIRED_WEEKEND_WORK`
+- `WEEKEND_WORK_UNVERIFIED`
+- `COMPENSATION_BELOW_MINIMUM`
+- `COMPENSATION_REVIEW`
+- `COMPENSATION_TARGET_MATCH`
+- `COMPENSATION_ACCEPTABLE`
+- `COMPENSATION_UNDISCLOSED`
+- `COMPENSATION_CONVERSION_REQUIRED`
 - `MATERIAL_REQUIREMENT_GAP`
 - `CAREER_DIRECTION_MISMATCH`
 - `CALIBRATION_REVIEW_REQUIRED`
@@ -49,6 +59,10 @@ Confirmed current employers and clients always produce `SKIP / CURRENT_EMPLOYER_
 - `SUBMISSION_UNVERIFIED`
 
 Current-employer identities are represented by normalized fingerprints in tracked policy. Do not log or publish the private relationship.
+
+Timezone inconvenience is not a blocker. Full-time contractor, independent-contractor, consultant, freelance, B2B, and EOR structures are accepted. Required recurring weekend work is a hard incompatibility; ambiguous or rare on-call language requires evidence rather than an automatic skip.
+
+Uncertainty is not the same as unanswerable. `EXACT`, `BEST_SUPPORTED_ANSWER`, and `CONSERVATIVE_ESTIMATE` answers are truthful resolved answers. Only a genuine `MATERIAL_UNKNOWN` remains consequential. Compensation evaluation follows `compensation-policy.md`; undisclosed compensation is not a blocker and ordinary expected-compensation answers are autonomous.
 
 ## Lifecycle
 

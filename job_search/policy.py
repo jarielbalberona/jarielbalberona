@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable
 
+from .compensation import evaluate_compensation_range
 from .models import CompanyOrigin, EligibilityResult, Job, Verdict
 from .normalization import fingerprint, normalize_text
 
@@ -70,6 +71,15 @@ DEPRIORITIZED_ROLE_PATTERNS = (
 )
 
 
+REQUIRED_WEEKEND_PATTERNS = (
+    r"\btuesday\s*(?:-|to)\s*saturday\b",
+    r"\bwednesday\s*(?:-|to)\s*sunday\b",
+    r"\b(?:regular|required|recurring)\s+(?:saturday|sunday|weekend)",
+    r"\b(?:saturday|sunday)\s+shift\b",
+    r"\brequired recurring weekend coverage\b",
+)
+
+
 def evaluate_eligibility(job: Job, matcher: EmployerExclusionMatcher | None = None) -> EligibilityResult:
     matcher = matcher or EmployerExclusionMatcher.load()
     if matcher.matches(
@@ -114,6 +124,72 @@ def evaluate_eligibility(job: Job, matcher: EmployerExclusionMatcher | None = No
             reason_codes=("REMOTE_PH_UNVERIFIED",),
             explanation="Remote-from-Philippines compatibility is unresolved.",
         )
+
+    schedule_text = normalize_text(job.work_schedule)
+    if job.recurring_weekend_work is True or any(
+        re.search(pattern, schedule_text) for pattern in REQUIRED_WEEKEND_PATTERNS
+    ):
+        return EligibilityResult(
+            can_score=False,
+            verdict=Verdict.SKIP,
+            reason_codes=("REQUIRED_WEEKEND_WORK",),
+            explanation="The role requires recurring Saturday or Sunday work.",
+        )
+    if job.recurring_weekend_work is None and schedule_text and any(
+        term in schedule_text for term in ("weekend", "on call", "on-call")
+    ):
+        return EligibilityResult(
+            can_score=False,
+            verdict=Verdict.REVIEW,
+            reason_codes=("WEEKEND_WORK_UNVERIFIED",),
+            explanation="Weekend or on-call language is present but recurring coverage is unresolved.",
+        )
+
+    advertised_range_exists = (
+        job.advertised_compensation_min is not None
+        or job.advertised_compensation_max is not None
+    )
+    currency = (job.advertised_compensation_currency or "PHP").upper()
+    if currency != "PHP" and advertised_range_exists and (
+        job.advertised_compensation_monthly_php_min is None
+        and job.advertised_compensation_monthly_php_max is None
+        or job.advertised_compensation_exchange_rate_to_php is None
+        or job.advertised_compensation_conversion_date is None
+    ):
+        return EligibilityResult(
+            can_score=False,
+            verdict=Verdict.REVIEW,
+            reason_codes=("COMPENSATION_CONVERSION_REQUIRED",),
+            explanation="Foreign advertised compensation requires a current PHP normalization.",
+        )
+
+    if currency == "PHP" or (
+        job.advertised_compensation_monthly_php_min is not None
+        or job.advertised_compensation_monthly_php_max is not None
+    ):
+        minimum = (
+            job.advertised_compensation_min
+            if currency == "PHP"
+            else job.advertised_compensation_monthly_php_min
+        )
+        maximum = (
+            job.advertised_compensation_max
+            if currency == "PHP"
+            else job.advertised_compensation_monthly_php_max
+        )
+        compensation = evaluate_compensation_range(
+            minimum,
+            maximum,
+            job.employment_type,
+            strategically_exceptional=job.strategically_exceptional,
+        )
+        if compensation.verdict is not None:
+            return EligibilityResult(
+                can_score=False,
+                verdict=compensation.verdict,
+                reason_codes=(compensation.reason_code,),
+                explanation=compensation.explanation,
+            )
 
     role_text = normalize_text(job.role)
     if any(re.search(pattern, role_text) for pattern in DEPRIORITIZED_ROLE_PATTERNS):

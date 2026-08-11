@@ -1,4 +1,4 @@
 interface:
   display_name: "Discover Jobs"
-  short_description: "Discover and normalize job opportunities"
-  default_prompt: "Use $discover-jobs to discover and normalize eligible job opportunities."
+  short_description: "Capture jobs, schedules, and compensation"
+  default_prompt: "Use $discover-jobs to normalize roles with employer, schedule, engagement, and advertised compensation evidence."

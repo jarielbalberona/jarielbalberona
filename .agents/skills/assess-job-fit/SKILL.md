@@ -1,11 +1,11 @@
 ---
 name: assess-job-fit
-description: Evaluate a job against Jariel's hard employer rules, career direction, technical fit, eligibility confidence, and application readiness. Use to score a specific role, rank discovered jobs, separate infrastructure compatibility from target-role fit, select candidate evidence, or explain a skip/review/apply verdict.
+description: Evaluate a job against employer, weekend, compensation, career-direction, technical-fit, eligibility-confidence, and application-readiness policy. Use to score or rank roles, separate technical compatibility from direction, and distinguish conservative resolved answers from material unknowns.
 ---
 
 # Assess job fit
 
-Read `docs/job-search/candidate-context.md`, `docs/job-search/project-evidence.md`, `docs/job-search/target-roles.md`, and `docs/job-search/application-workflow.md`.
+Read `docs/job-search/candidate-context.md`, `docs/job-search/project-evidence.md`, `docs/job-search/target-roles.md`, `docs/job-search/application-workflow.md`, and `docs/job-search/compensation-policy.md`.
 
 ## Gate before scoring
 
@@ -14,6 +14,8 @@ Read `docs/job-search/candidate-context.md`, `docs/job-search/project-evidence.m
 3. Return `SKIP / PH_LOCAL_COMPANY` for a confirmed Philippine-headquartered employer.
 4. Return `REVIEW / COMPANY_ORIGIN_UNVERIFIED` when origin cannot be verified.
 5. Apply remote-from-Philippines, seniority, and engineering-domain blockers.
+6. Return `SKIP / REQUIRED_WEEKEND_WORK` for required recurring Saturday or Sunday work. Review unclear on-call wording.
+7. Evaluate known advertised compensation against employee or contractor thresholds. Undisclosed compensation is not a blocker.
 
 Do not calculate a flattering score for a hard-blocked job.
 
@@ -32,6 +34,8 @@ Score from the full description, not keyword overlap:
 Do not treat conventional DevOps or SRE as a target AI/software-platform role merely because AWS, Terraform, CI/CD, Kubernetes, or observability match. Score technical credibility and career direction separately.
 
 Multiply the base fit by eligibility confidence to produce the final fit score. Also return application readiness independently. Apply repository reason-code caps so optimistic inputs cannot hide material unknowns. Unknown compensation alone is not an eligibility penalty.
+
+Do not penalize legitimate full-time contractor, freelance, B2B, IC, or EOR structures. Do not reduce readiness for `BEST_SUPPORTED_ANSWER` or `CONSERVATIVE_ESTIMATE`; only genuine `MATERIAL_UNKNOWN` facts should block.
 
 Map 85-100 to `STRONG APPLY`, 75-84 to `APPLY`, 65-74 to `REVIEW`, and below 65 to `SKIP`.
 

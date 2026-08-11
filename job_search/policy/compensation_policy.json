@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "currency": "PHP",
+  "basis": "gross_monthly",
+  "employee": {
+    "hard_minimum_monthly_php": 160000,
+    "preferred_minimum_monthly_php": 180000,
+    "target_range_monthly_php": {
+      "min": 200000,
+      "max": 250000
+    }
+  },
+  "contractor": {
+    "hard_minimum_monthly_php": 200000,
+    "preferred_minimum_monthly_php": 220000,
+    "target_range_monthly_php": {
+      "min": 220000,
+      "max": 300000
+    }
+  },
+  "high_alignment": {
+    "preferred_minimum_monthly_php": 230000,
+    "stretch_target_monthly_php": 300000
+  },
+  "single_value_anchors_monthly_php": {
+    "standard_senior_employee": 220000,
+    "strong_ai_senior_employee": 240000,
+    "high_alignment_staff_employee": 275000,
+    "standard_strong_contractor": 250000,
+    "high_alignment_ai_contractor": 275000
+  },
+  "hourly_conversion": {
+    "default_full_time_monthly_hours": 173.33
+  }
+}
