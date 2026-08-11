@@ -43,6 +43,21 @@ Accept legitimate full-time employee and non-employee structures. Part-time work
 
 Required recurring Saturday or Sunday work is incompatible. Rare emergency or on-call language is not automatically recurring weekend work; use review when the actual obligation is unclear.
 
+## Employment and start availability
+
+```yaml
+availability:
+  notice_period_days: 0
+  notice_period: None
+  rendering_period: None
+  available_immediately: true
+  earliest_start: Immediately
+```
+
+For candidate-facing application questions, answer notice period as `None`, numeric notice or rendering days as `0`, immediate-start willingness as `Yes`, and ordinary earliest-start questions as `Immediately`. When an application requires an actual calendar date, use the earliest reasonable immediate date based on the application date.
+
+These candidate-facing availability answers do not change employer or client exclusion policy. Never disclose or infer a confidential relationship when answering an ordinary employment-status, notice-period, or start-date question.
+
 ## Canonical application answers
 
 - Location (city, state or region, country): `Dumaguete City, Negros Oriental, Philippines`.
@@ -50,6 +65,8 @@ Required recurring Saturday or Sunday work is incompatible. Rare emergency or on
 - US client experience: `Yes`.
 - Remote work: `Yes`.
 - Based in the Philippines: `Yes`.
+- Notice period: `None`; numeric notice or rendering period: `0` days.
+- Available to start immediately: `Yes`; earliest start: `Immediately`.
 - Python or FastAPI: real secondary production/project experience; use conservative numeric `1` when a whole year is required and stronger evidence is absent.
 - Professional software engineering: `10+ years`; use numeric `10` for whole-year fields.
 
@@ -147,7 +164,6 @@ Current confidential client work may be described only through the generic evide
 The following require Jariel's explicit answer when a form asks for them:
 
 - current salary when a legitimate non-disclosure option is unavailable
-- notice period or earliest start date
 - work authorization and visa status for a specific jurisdiction
 - relocation willingness
 - professional experience with a technology that has no actual implementation evidence

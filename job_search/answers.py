@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
+from datetime import datetime
 from enum import StrEnum
 from typing import Any, Mapping
+from zoneinfo import ZoneInfo
 
 from .candidate import canonical_country, canonical_location, load_candidate_facts
 from .compensation import (
@@ -65,6 +67,7 @@ def resolve_question(
     supplied_answer: str = "",
     job: Job | None = None,
     assessment: Assessment | None = None,
+    field_type: str = "",
 ) -> AnswerResolution:
     if supplied_answer.strip():
         return _exact(supplied_answer.strip(), "Explicit canonical or application-specific answer.")
@@ -94,6 +97,48 @@ def resolve_question(
     if any(term in text for term in legal_unknowns):
         return _unknown(
             "The question requires a personal legal or regulated fact not in canonical context."
+        )
+
+    availability = facts["availability"]
+    if "notice period" in text or "rendering period" in text or "rendering time" in text:
+        if "how many" in text or "days" in text or "numeric" in text:
+            return _exact(
+                str(availability["notice_period_days"]),
+                "Canonical zero-day notice or rendering period.",
+                "candidate_facts.availability",
+            )
+        return _exact(
+            str(availability["notice_period"]),
+            "Canonical notice and rendering period is none.",
+            "candidate_facts.availability",
+        )
+
+    if "available to start immediately" in text or "can you start immediately" in text:
+        return _exact(
+            "Yes" if availability["available_immediately"] else "No",
+            "Canonical immediate-start availability.",
+            "candidate_facts.availability",
+        )
+
+    start_availability_terms = (
+        "when can you start",
+        "when are you available to start",
+        "earliest start",
+        "earliest available",
+        "start date",
+        "available to begin",
+    )
+    if any(term in text for term in start_availability_terms):
+        if field_type.casefold() in {"date", "calendar"}:
+            return _exact(
+                datetime.now(ZoneInfo("Asia/Manila")).date().isoformat(),
+                "Earliest reasonable immediate calendar date for a required date field.",
+                "candidate_facts.availability",
+            )
+        return _exact(
+            str(availability["earliest_start"]),
+            "Canonical earliest start is immediate.",
+            "candidate_facts.availability",
         )
 
     if "city" in text and ("state" in text or "country" in text):
@@ -326,6 +371,7 @@ def resolve_questions(
     *,
     job: Job | None = None,
     assessment: Assessment | None = None,
+    field_types: Mapping[str, str] | None = None,
 ) -> tuple[
     dict[str, str],
     list[str],
@@ -344,6 +390,7 @@ def resolve_questions(
             supplied_answer=supplied_answers.get(key, ""),
             job=job,
             assessment=assessment,
+            field_type=(field_types or {}).get(key, ""),
         )
         metadata[key] = resolution.to_dict()
         if resolution.answer is not None:

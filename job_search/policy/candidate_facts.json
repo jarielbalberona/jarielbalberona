@@ -51,6 +51,13 @@
     "city": "Dumaguete City",
     "state_or_region": "Negros Oriental"
   },
+  "availability": {
+    "notice_period_days": 0,
+    "notice_period": "None",
+    "rendering_period": "None",
+    "available_immediately": true,
+    "earliest_start": "Immediately"
+  },
   "application_defaults": {
     "remote_work": true
   }

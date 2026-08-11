@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import unittest
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from job_search.answers import AnswerStatus, resolve_question
 from job_search.candidate import accepts_engagement_type
@@ -112,6 +114,34 @@ class CandidateAvailabilityTests(unittest.TestCase):
 
 
 class AnswerPolicyTests(unittest.TestCase):
+    def test_notice_and_rendering_period_use_canonical_zero_availability(self) -> None:
+        notice = resolve_question("notice_period", "What is your notice period?")
+        rendering_days = resolve_question(
+            "rendering_period_days", "How many days is your rendering period?"
+        )
+        self.assertEqual("None", notice.answer)
+        self.assertEqual("0", rendering_days.answer)
+        self.assertEqual(AnswerStatus.EXACT, notice.status)
+        self.assertEqual(AnswerStatus.EXACT, rendering_days.status)
+
+    def test_immediate_start_answers_are_canonical(self) -> None:
+        start = resolve_question("start_availability", "When can you start?")
+        immediate = resolve_question(
+            "available_immediately", "Are you available to start immediately?"
+        )
+        self.assertEqual("Immediately", start.answer)
+        self.assertEqual("Yes", immediate.answer)
+
+    def test_required_start_date_uses_application_day(self) -> None:
+        result = resolve_question(
+            "earliest_start",
+            "Earliest available start date?",
+            field_type="date",
+        )
+        expected = datetime.now(ZoneInfo("Asia/Manila")).date().isoformat()
+        self.assertEqual(expected, result.answer)
+        self.assertEqual(AnswerStatus.EXACT, result.status)
+
     def test_location_uses_exact_canonical_city_region_and_country(self) -> None:
         result = resolve_question(
             "location_city",
