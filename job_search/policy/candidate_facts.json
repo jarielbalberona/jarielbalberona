@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "employment_preferences": {
     "full_time": true,
     "accepted_engagement_types": [
@@ -125,6 +125,29 @@
     "rendering_period": "None",
     "available_immediately": true,
     "earliest_start": "Immediately"
+  },
+  "candidate_media": {
+    "photo": {
+      "available": true,
+      "reusable": true,
+      "private_asset_path": ".job-search/assets/candidate-photo.jpeg",
+      "mime_type": "image/jpeg",
+      "file_extension": ".jpeg",
+      "size_bytes": 29573,
+      "width_px": 400,
+      "height_px": 400,
+      "sha256": "4d1cc48cfb4fdf07b14d9a46d1ff5d492a3265e2859cf85fc39f72adfa8e289c",
+      "professional_application_approved": true,
+      "validated_at": "2026-08-12"
+    },
+    "introduction_video": {
+      "available": false,
+      "create_now": false
+    },
+    "required_video_behavior": {
+      "action": "HOLD",
+      "reason_code": "REQUIRED_VIDEO_INTRO"
+    }
   },
   "application_defaults": {
     "remote_work": true

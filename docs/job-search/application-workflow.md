@@ -60,6 +60,8 @@ Report these separately:
 
 Unknown advertised compensation does not reduce eligibility by itself. Expected compensation follows `compensation-policy.md`. Reduce readiness or require review for unresolved remote eligibility, recurring weekend obligations, work authorization, genuine material unknowns, unavailable application entry, or materially unsupported requirements.
 
+Required candidate media must be classified from the live application control when available. A missing required introduction video uses `REQUIRED_VIDEO_INTRO`, caps Application Readiness below the autonomous threshold, and holds the application without changing the job-fit dimensions. Do not infer `NOT_REQUIRED` from a job description that merely omits media; use `UNKNOWN_NOT_INSPECTED` until the form is inspected.
+
 The engine enforces upper bounds for these reason codes. Caller-supplied confidence or readiness cannot override a stricter cap. Unknown compensation has no automatic cap; if the live form requires an answer, the unanswered consequential question still blocks submission.
 
 ## Narrative selection

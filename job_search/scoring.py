@@ -15,6 +15,7 @@ APPLICATION_READINESS_CAPS = {
     "CAREER_DIRECTION_MISMATCH": 55,
     "MATERIAL_REQUIREMENT_GAP": 55,
     "MATERIAL_UNKNOWN": 80,
+    "REQUIRED_VIDEO_INTRO": 84,
     "SCREENING_ANSWERS_UNRESOLVED": 60,
     "SCREENING_QUESTIONS_UNVERIFIED": 55,
     "WORK_AUTHORIZATION_UNRESOLVED": 60,
@@ -46,7 +47,11 @@ def reconcile_assessment_with_answers(
     codes = [
         code
         for code in assessment.readiness_reason_codes
-        if code not in {"SCREENING_ANSWERS_UNRESOLVED", "MATERIAL_UNKNOWN"}
+        if code not in {
+            "SCREENING_ANSWERS_UNRESOLVED",
+            "MATERIAL_UNKNOWN",
+            "REQUIRED_VIDEO_INTRO",
+        }
     ]
     statuses = {
         key: str(value.get("status", ""))
@@ -54,6 +59,8 @@ def reconcile_assessment_with_answers(
     }
     if any(status == "MATERIAL_UNKNOWN" for status in statuses.values()):
         codes.append("MATERIAL_UNKNOWN")
+    if any(status == "REQUIRED_VIDEO_INTRO" for status in statuses.values()):
+        codes.append("REQUIRED_VIDEO_INTRO")
     if packet.screening_questions_verified:
         codes = [code for code in codes if code != "SCREENING_QUESTIONS_UNVERIFIED"]
     elif packet.answer_metadata:

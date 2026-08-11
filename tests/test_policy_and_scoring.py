@@ -179,6 +179,30 @@ class PolicyTests(unittest.TestCase):
         self.assertEqual(100, calibrate_eligibility_confidence(100, reasons))
         self.assertEqual(100, calibrate_application_readiness(100, reasons))
 
+    def test_required_video_caps_readiness_but_not_fit_signals(self) -> None:
+        assessment = build_assessment(
+            job_id="job_video",
+            eligibility=EligibilityResult(can_score=True),
+            rubric=FitRubric(23, 14, 18, 10, 9, 9, 10),
+            eligibility_confidence=98,
+            application_readiness=98,
+            readiness_reason_codes=["REQUIRED_VIDEO_INTRO"],
+            real_problem="Build a senior AI product.",
+            strongest_matches=["React", "AI-assisted delivery"],
+            relevant_projects=["PRIVV"],
+            relevant_technologies=["React", "TypeScript"],
+            legitimate_gaps=["Required introduction video is unavailable."],
+            dealbreakers=[],
+            narrative="AI product engineering",
+            cv_emphasis="React and AI delivery",
+            application_angle="Hold until the video exists.",
+            interview_risks=[],
+        )
+        self.assertEqual(93, assessment.technical_fit_score)
+        self.assertEqual(90, assessment.career_direction_fit_score)
+        self.assertEqual(91, assessment.fit_score)
+        self.assertEqual(84, assessment.application_readiness)
+
     def test_resolved_answers_remove_stale_readiness_penalties(self) -> None:
         assessment = build_assessment(
             job_id="job_answers",

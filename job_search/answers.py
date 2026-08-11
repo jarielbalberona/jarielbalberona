@@ -13,6 +13,7 @@ from .compensation import (
     engagement_category,
     select_expected_range_monthly_php,
 )
+from .media import MediaRequirement, resolve_candidate_media
 from .models import Assessment, Job
 
 
@@ -21,6 +22,7 @@ class AnswerStatus(StrEnum):
     BEST_SUPPORTED_ANSWER = "BEST_SUPPORTED_ANSWER"
     CONSERVATIVE_ESTIMATE = "CONSERVATIVE_ESTIMATE"
     MATERIAL_UNKNOWN = "MATERIAL_UNKNOWN"
+    REQUIRED_VIDEO_INTRO = "REQUIRED_VIDEO_INTRO"
 
 
 @dataclass(frozen=True, slots=True)
@@ -34,7 +36,10 @@ class AnswerResolution:
 
     @property
     def blocks_readiness(self) -> bool:
-        return self.status == AnswerStatus.MATERIAL_UNKNOWN
+        return self.status in {
+            AnswerStatus.MATERIAL_UNKNOWN,
+            AnswerStatus.REQUIRED_VIDEO_INTRO,
+        }
 
     def to_dict(self) -> dict[str, Any]:
         value = asdict(self)
@@ -211,6 +216,48 @@ def resolve_question(
 
     facts = load_candidate_facts()
     text = f"{key} {question}".casefold()
+
+    normalized_field_type = field_type.casefold().replace("-", "_").replace(" ", "_")
+    if normalized_field_type in {
+        "required_photo",
+        "optional_photo",
+        "optional_photo_approved",
+    }:
+        requirement = (
+            MediaRequirement.REQUIRED
+            if normalized_field_type == "required_photo"
+            else MediaRequirement.OPTIONAL
+        )
+        media = resolve_candidate_media(
+            "photo",
+            requirement,
+            optional_use_approved=normalized_field_type == "optional_photo_approved",
+        )
+        if media.action == "ATTACH" and media.asset_path:
+            return _exact(
+                str(media.asset_path),
+                "Canonical private candidate photo approved for legitimate job applications.",
+                "candidate_facts.candidate_media.photo",
+            )
+        if requirement == MediaRequirement.OPTIONAL:
+            return _exact(
+                "",
+                "Optional candidate photo omitted because application-specific benefit was not approved.",
+                "candidate_facts.candidate_media.photo",
+            )
+        return _unknown("A required candidate photo is not available in canonical assets.")
+
+    if normalized_field_type == "required_introduction_video":
+        media = resolve_candidate_media("introduction_video", MediaRequirement.REQUIRED)
+        if media.blocks_readiness:
+            return AnswerResolution(
+                None,
+                AnswerStatus.REQUIRED_VIDEO_INTRO,
+                1.0,
+                "A candidate-authored introduction video is required, but canonical policy holds the application until that asset exists.",
+                ("candidate_facts.candidate_media.required_video_behavior",),
+                {"action": media.action, "reason_code": media.reason_code},
+            )
 
     if "current salary" in text or "current compensation" in text:
         if "prefer not to disclose" in text or "decline to disclose" in text:

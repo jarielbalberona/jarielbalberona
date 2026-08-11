@@ -10,6 +10,11 @@ from .models import ApplicationPacket, ApplicationStatus, Assessment, Job, RunMo
 from .normalization import application_id, canonicalize_url, content_fingerprint, description_hash
 
 
+MEDIA_REQUIREMENT_VALUES = frozenset(
+    {"REQUIRED", "OPTIONAL", "NOT_REQUIRED", "UNKNOWN_NOT_INSPECTED", "INACCESSIBLE"}
+)
+
+
 DEFAULT_DB = Path(".job-search/job-search.sqlite")
 MIGRATIONS_DIR = Path(__file__).parent / "migrations"
 
@@ -373,6 +378,71 @@ class Ledger:
         self.connection.commit()
         return cursor.rowcount == 1
 
+    def upsert_application_media_requirement(
+        self,
+        *,
+        job_id: str,
+        video_requirement: str,
+        photo_requirement: str,
+        application_url: str = "",
+        ats: str = "",
+        video_prompt: str = "",
+        video_duration: str = "",
+        video_method: str = "",
+        evidence: Mapping[str, Any] | None = None,
+        inspected_at: str | None = None,
+    ) -> None:
+        if video_requirement not in MEDIA_REQUIREMENT_VALUES:
+            raise ValueError("unsupported video requirement classification")
+        if photo_requirement not in MEDIA_REQUIREMENT_VALUES:
+            raise ValueError("unsupported photo requirement classification")
+        now = utc_now()
+        self.connection.execute(
+            """
+            INSERT INTO application_media_requirements(
+              job_id, application_url, ats, video_requirement, photo_requirement,
+              video_prompt, video_duration, video_method, evidence_json, inspected_at, updated_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(job_id) DO UPDATE SET
+              application_url = excluded.application_url,
+              ats = excluded.ats,
+              video_requirement = excluded.video_requirement,
+              photo_requirement = excluded.photo_requirement,
+              video_prompt = excluded.video_prompt,
+              video_duration = excluded.video_duration,
+              video_method = excluded.video_method,
+              evidence_json = excluded.evidence_json,
+              inspected_at = excluded.inspected_at,
+              updated_at = excluded.updated_at
+            """,
+            (
+                job_id,
+                application_url,
+                ats,
+                video_requirement,
+                photo_requirement,
+                video_prompt,
+                video_duration,
+                video_method,
+                json.dumps(dict(evidence or {}), sort_keys=True),
+                inspected_at,
+                now,
+            ),
+        )
+        self.connection.commit()
+
+    def list_application_media_requirements(self) -> list[dict[str, Any]]:
+        rows = self.connection.execute(
+            """
+            SELECT m.*, j.company, j.role, j.source, a.status AS application_status
+            FROM application_media_requirements m
+            JOIN jobs j ON j.job_id = m.job_id
+            LEFT JOIN applications a ON a.job_id = m.job_id
+            ORDER BY j.created_at, j.job_id
+            """
+        ).fetchall()
+        return [dict(row) for row in rows]
+
     def table_count(self, table: str) -> int:
         if table not in {
             "runs",
@@ -383,6 +453,7 @@ class Ledger:
             "applications",
             "application_events",
             "email_events",
+            "application_media_requirements",
         }:
             raise ValueError("unsupported table")
         return int(self.connection.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0])

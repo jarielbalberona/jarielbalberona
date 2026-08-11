@@ -15,6 +15,7 @@ from job_search.compensation import (
     select_expected_monthly_php,
     select_expected_range_monthly_php,
 )
+from job_search.media import MediaRequirement, resolve_candidate_media
 from job_search.models import CompanyOrigin, Job, Verdict
 from job_search.policy import EmployerExclusionMatcher, evaluate_eligibility
 from job_search.scoring import calibrate_application_readiness
@@ -116,6 +117,41 @@ class CandidateAvailabilityTests(unittest.TestCase):
 
 
 class AnswerPolicyTests(unittest.TestCase):
+    def test_canonical_candidate_photo_is_reused_for_required_upload(self) -> None:
+        result = resolve_question(
+            "candidate_photo",
+            "Photo",
+            field_type="required_photo",
+        )
+        self.assertEqual(".job-search/assets/candidate-photo.jpeg", result.answer)
+        self.assertEqual(AnswerStatus.EXACT, result.status)
+        self.assertFalse(result.blocks_readiness)
+
+    def test_required_introduction_video_holds_without_changing_fit(self) -> None:
+        media = resolve_candidate_media(
+            "introduction_video", MediaRequirement.REQUIRED
+        )
+        result = resolve_question(
+            "english_introduction_video",
+            "Please record a short video to introduce yourself in English",
+            field_type="required_introduction_video",
+        )
+        self.assertEqual("HOLD", media.action)
+        self.assertEqual("REQUIRED_VIDEO_INTRO", media.reason_code)
+        self.assertIsNone(result.answer)
+        self.assertEqual(AnswerStatus.REQUIRED_VIDEO_INTRO, result.status)
+        self.assertTrue(result.blocks_readiness)
+
+    def test_optional_photo_requires_application_specific_approval(self) -> None:
+        omitted = resolve_candidate_media("photo", MediaRequirement.OPTIONAL)
+        approved = resolve_candidate_media(
+            "photo",
+            MediaRequirement.OPTIONAL,
+            optional_use_approved=True,
+        )
+        self.assertEqual("NONE", omitted.action)
+        self.assertEqual("ATTACH", approved.action)
+
     def test_notice_and_rendering_period_use_canonical_zero_availability(self) -> None:
         notice = resolve_question("notice_period", "What is your notice period?")
         rendering_days = resolve_question(
@@ -242,6 +278,7 @@ class AnswerPolicyTests(unittest.TestCase):
             100, calibrate_application_readiness(100, ["TIMEZONE_REQUIREMENT_UNRESOLVED"])
         )
         self.assertEqual(80, calibrate_application_readiness(100, ["MATERIAL_UNKNOWN"]))
+        self.assertEqual(84, calibrate_application_readiness(100, ["REQUIRED_VIDEO_INTRO"]))
 
     def test_self_ratings_are_conservative_and_evidence_based(self) -> None:
         core = resolve_question("typescript_rating", "Rate your TypeScript proficiency from 1-10")

@@ -97,6 +97,34 @@ class DeduplicationTests(unittest.TestCase):
                 self.assertIn("BEST_SUPPORTED_ANSWER", application_row["answer_metadata_json"])
                 self.assertIn("275000", application_row["compensation_decision_json"])
 
+    def test_media_requirement_audit_is_persisted_and_queryable(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            db = Path(directory) / "ledger.sqlite"
+            with Ledger(db) as ledger:
+                ledger.initialize()
+                stored_job = fixture_job(
+                    "direct", "https://jobs.example.com/media", "media"
+                )
+                job_id, _ = ledger.upsert_job(stored_job)
+                ledger.upsert_application_media_requirement(
+                    job_id=job_id,
+                    application_url="https://jobs.example.com/media/apply",
+                    ats="Fixture ATS",
+                    video_requirement="REQUIRED",
+                    photo_requirement="OPTIONAL",
+                    video_prompt="Introduce yourself.",
+                    video_method="upload_or_record",
+                    evidence={"form_inspected": True},
+                    inspected_at="2026-08-12T00:00:00+08:00",
+                )
+
+                self.assertEqual(1, ledger.table_count("application_media_requirements"))
+                row = ledger.list_application_media_requirements()[0]
+                self.assertEqual("REQUIRED", row["video_requirement"])
+                self.assertEqual("OPTIONAL", row["photo_requirement"])
+                self.assertEqual("Fixture ATS", row["ats"])
+                self.assertIn("form_inspected", row["evidence_json"])
+
 
 if __name__ == "__main__":
     unittest.main()

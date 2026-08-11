@@ -14,10 +14,31 @@ This is the authoritative, public-safe candidate profile for job-search operatio
 - LinkedIn: `https://www.linkedin.com/in/jarielbalberona/`
 - Canonical generated CV: `portfolio/public/jariel-balberona-cv.pdf`
 - Canonical structured CV source: `portfolio/src/data/cv.json`
+- Canonical candidate photo: private gitignored asset at `.job-search/assets/candidate-photo.jpeg`
 
 Do not create a replacement CV during routine job-search work. If a form requires facts not present here or in the canonical CV source, record them as unresolved.
 
 Machine-readable canonical applicant facts live in `job_search/policy/candidate_facts.json`. Reuse them automatically and do not ask Jariel again unless the specific application materially differs.
+
+## Candidate media
+
+```yaml
+candidate_media:
+  photo:
+    available: true
+    reusable: true
+    private_asset_path: .job-search/assets/candidate-photo.jpeg
+  introduction_video:
+    available: false
+    create_now: false
+  required_video_behavior:
+    action: HOLD
+    reason_code: REQUIRED_VIDEO_INTRO
+```
+
+The photo is a validated 400 by 400 RGB JPEG and is suitable for legitimate professional applications. Its exact checksum, size, and MIME metadata live in the machine-readable candidate facts. The image itself stays private and gitignored. Do not ask for another photo unless a destination has materially different requirements that the canonical image cannot satisfy.
+
+Do not create or submit an introduction video yet. When a live form proves that a video is required, keep the application `PREPARED`, apply `REQUIRED_VIDEO_INTRO`, and hold before submission. Optional video controls may be omitted. Media availability changes Application Readiness only; it does not change Technical Fit or Career Direction Fit.
 
 ## Employment and availability
 

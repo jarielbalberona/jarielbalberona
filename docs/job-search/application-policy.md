@@ -35,6 +35,8 @@ Confirmed current employers and clients always produce `SKIP / CURRENT_EMPLOYER_
 - `SUSPECT_LISTING`
 - `UNRESOLVED_CONSEQUENTIAL_FACT`
 - `MATERIAL_UNKNOWN`
+- `REQUIRED_CANDIDATE_PHOTO`
+- `REQUIRED_VIDEO_INTRO`
 - `BEST_SUPPORTED_ANSWER`
 - `CONSERVATIVE_ESTIMATE`
 - `APPLICATION_ENTRY_UNAVAILABLE`
@@ -63,6 +65,12 @@ Current-employer identities are represented by normalized fingerprints in tracke
 Timezone inconvenience is not a blocker. Full-time contractor, independent-contractor, consultant, freelance, B2B, and EOR structures are accepted. Required recurring weekend work is a hard incompatibility; ambiguous or rare on-call language requires evidence rather than an automatic skip.
 
 Uncertainty is not the same as unanswerable. `EXACT`, `BEST_SUPPORTED_ANSWER`, and `CONSERVATIVE_ESTIMATE` answers are truthful resolved answers. Only a genuine `MATERIAL_UNKNOWN` remains consequential. Compensation evaluation follows `compensation-policy.md`; undisclosed compensation is not a blocker and ordinary expected-compensation answers are autonomous.
+
+## Candidate media
+
+The canonical candidate photo is a reusable private asset under the gitignored `.job-search/assets/` directory. Attach it automatically only when a legitimate application requires a photo, or when an optional photo is clearly beneficial under the source policy. Never commit the image to the public repository.
+
+No canonical introduction video currently exists, and the system must not generate, fabricate, substitute, or reuse unrelated footage. A live form that proves an introduction video is required produces `REQUIRED_VIDEO_INTRO` and action `HOLD`. This is an application-readiness constraint, not a permanent global eligibility blocker, and it must not reduce Technical Fit or Career Direction Fit.
 
 ## Lifecycle
 
