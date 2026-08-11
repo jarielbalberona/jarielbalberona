@@ -112,6 +112,15 @@ class CandidateAvailabilityTests(unittest.TestCase):
 
 
 class AnswerPolicyTests(unittest.TestCase):
+    def test_location_uses_exact_canonical_city_region_and_country(self) -> None:
+        result = resolve_question(
+            "location_city",
+            "Location (City, State/Region, Country)",
+        )
+        self.assertEqual("Dumaguete City, Negros Oriental, Philippines", result.answer)
+        self.assertEqual(AnswerStatus.EXACT, result.status)
+        self.assertFalse(result.blocks_readiness)
+
     def test_generic_ai_numeric_and_free_text_answers(self) -> None:
         numeric = resolve_question("years_ai", "How many years of AI experience do you have?")
         free_text = resolve_question("ai_summary", "Describe your AI experience")

@@ -7,7 +7,7 @@ This is the authoritative, public-safe candidate profile for job-search operatio
 - Name: Jariel Balberona
 - Job-search email: `jarielbalb@gmail.com`
 - Phone: `+63 917 657 0260`
-- Location: Philippines
+- Location: Dumaguete City, Negros Oriental, Philippines
 - Working model: Remote
 - Portfolio: `https://jarielbalberona.dev`
 - GitHub: `https://github.com/jarielbalberona`
@@ -45,6 +45,7 @@ Required recurring Saturday or Sunday work is incompatible. Rare emergency or on
 
 ## Canonical application answers
 
+- Location (city, state or region, country): `Dumaguete City, Negros Oriental, Philippines`.
 - Broad AI experience: `2+ years`; use numeric `2` for whole-year fields.
 - US client experience: `Yes`.
 - Remote work: `Yes`.
@@ -149,7 +150,6 @@ The following require Jariel's explicit answer when a form asks for them:
 - notice period or earliest start date
 - work authorization and visa status for a specific jurisdiction
 - relocation willingness
-- current city and state or region
 - professional experience with a technology that has no actual implementation evidence
 - management scope or exact team size
 - degrees, certifications, clearance, or licenses not in the canonical CV

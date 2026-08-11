@@ -48,8 +48,8 @@
   },
   "location": {
     "country": "Philippines",
-    "city": null,
-    "state_or_region": null
+    "city": "Dumaguete City",
+    "state_or_region": "Negros Oriental"
   },
   "application_defaults": {
     "remote_work": true

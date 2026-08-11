@@ -26,3 +26,13 @@ def accepts_engagement_type(employment_type: str, *, full_time: bool = True) -> 
 
 def canonical_country() -> str:
     return str(load_candidate_facts()["location"]["country"])
+
+
+def canonical_location() -> str:
+    location = load_candidate_facts()["location"]
+    parts = (
+        location.get("city"),
+        location.get("state_or_region"),
+        location.get("country"),
+    )
+    return ", ".join(str(part) for part in parts if part)

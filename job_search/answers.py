@@ -4,7 +4,7 @@ from dataclasses import asdict, dataclass, field
 from enum import StrEnum
 from typing import Any, Mapping
 
-from .candidate import canonical_country, load_candidate_facts
+from .candidate import canonical_country, canonical_location, load_candidate_facts
 from .compensation import (
     build_compensation_decision,
     engagement_category,
@@ -97,7 +97,11 @@ def resolve_question(
         )
 
     if "city" in text and ("state" in text or "country" in text):
-        return _unknown("Country is known, but current city and state or region are not canonical facts.")
+        return _exact(
+            canonical_location(),
+            "Canonical city, state or region, and country of residence.",
+            "candidate_facts.location",
+        )
     if "country" in text and "based" not in text:
         return _exact(canonical_country(), "Canonical country of residence.", "candidate_facts.location")
 
