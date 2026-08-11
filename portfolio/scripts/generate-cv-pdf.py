@@ -203,9 +203,10 @@ def main():
     for entry in data["experience"]:
         story.append(entry_block(entry, styles))
 
-    story.append(section_header("Selected Work", styles))
-    for entry in data["selectedWork"]:
-        story.append(work_block(entry, styles))
+    if data["selectedWork"]:
+        story.append(section_header("Selected Work", styles))
+        for entry in data["selectedWork"]:
+            story.append(work_block(entry, styles))
 
     story.append(section_header("Earlier Experience", styles))
     for entry in data["earlierExperience"]:
