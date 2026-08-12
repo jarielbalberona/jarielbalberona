@@ -5,7 +5,7 @@ description: Process one job through employer, schedule, compensation, fit, stro
 
 # Apply to job
 
-Read `docs/job-search/application-policy.md`, `docs/job-search/compensation-policy.md`, and the source entry in `docs/job-search/source-registry.yaml`. Invoke `$assess-job-fit` and `$prepare-job-application`; do not duplicate their logic.
+Read `docs/job-search/application-policy.md`, `docs/job-search/application-answer-bank.md`, `docs/job-search/compensation-policy.md`, and the source entry in `docs/job-search/source-registry.yaml`. Invoke `$assess-job-fit` and `$prepare-job-application`; do not duplicate their logic.
 
 ## Pipeline
 
@@ -32,7 +32,7 @@ Never submit when the employer is excluded, company origin is Philippine-local o
 
 Before finalizing form answers, verify that forced-choice selections are fully supported and that source-of-discovery answers come from ledger provenance rather than the ATS host. A higher option containing an unsupported scale or specialization claim fails truthfulness even when part of the option matches.
 
-`BEST_SUPPORTED_ANSWER` and `CONSERVATIVE_ESTIMATE` are resolved, truthful answers and do not block submission. Resolve expected compensation autonomously; current salary remains separate and may be material unknown.
+`BEST_SUPPORTED_ANSWER` and `CONSERVATIVE_ESTIMATE` are resolved, truthful answers and do not block submission. Resolve expected compensation autonomously. Current salary is separately resolved from canonical not-currently-employed status, while previous salary uses its own canonical value.
 
 `STRONGEST_SUPPORTED_ANSWER`, `DIRECT_DEEP`, `DIRECT_WORKING`, and `TRANSFERABLE_STRONG` are also resolved when their evidence is recorded. Before the submission boundary, require a passing `SENIOR_POSITIONING_REVIEW`. Revise `UNNECESSARY_UNDERSELL`; never submit `UNSUPPORTED_OVERCLAIM`. A missing vendor keyword must not erase an underlying senior capability, and transferable capability must not become a fabricated vendor claim.
 

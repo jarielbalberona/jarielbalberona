@@ -74,7 +74,7 @@ Current-employer identities are represented by normalized fingerprints in tracke
 
 Timezone inconvenience is not a blocker. Full-time contractor, independent-contractor, consultant, freelance, B2B, and EOR structures are accepted. Required recurring weekend work is a hard incompatibility; ambiguous or rare on-call language requires evidence rather than an automatic skip.
 
-Uncertainty is not the same as unanswerable. Resolve in this order: `EXACT`, `STRONGEST_SUPPORTED_ANSWER`, capability-depth classifications such as `DIRECT_DEEP`, `DIRECT_WORKING`, and `TRANSFERABLE_STRONG`, then `BEST_SUPPORTED_ANSWER`, `CONSERVATIVE_ESTIMATE`, and finally `MATERIAL_UNKNOWN`. All positive evidence-backed statuses are truthful resolved answers. Only a genuine `MATERIAL_UNKNOWN` remains consequential. Compensation evaluation follows `compensation-policy.md`; undisclosed compensation is not a blocker and ordinary expected-compensation answers are autonomous.
+Uncertainty is not the same as unanswerable. Search the canonical application answer bank first, then candidate and project evidence, then derive the strongest-supported answer. Within that process use `EXACT`, `STRONGEST_SUPPORTED_ANSWER`, capability-depth classifications such as `DIRECT_DEEP`, `DIRECT_WORKING`, and `TRANSFERABLE_STRONG`, then `BEST_SUPPORTED_ANSWER`, `CONSERVATIVE_ESTIMATE`, and finally `MATERIAL_UNKNOWN`. All positive evidence-backed statuses are truthful resolved answers. Only a genuine `MATERIAL_UNKNOWN` remains consequential. Compensation evaluation follows `compensation-policy.md`; undisclosed compensation is not a blocker and ordinary expected-compensation answers are autonomous.
 
 ## Senior candidate positioning
 

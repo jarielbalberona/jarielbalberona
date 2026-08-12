@@ -7,7 +7,12 @@ import re
 from typing import Any, Mapping
 from zoneinfo import ZoneInfo
 
-from .candidate import canonical_country, canonical_location, load_candidate_facts
+from .candidate import (
+    canonical_country,
+    canonical_location,
+    load_application_answer_bank,
+    load_candidate_facts,
+)
 from .compensation import (
     build_compensation_decision,
     engagement_category,
@@ -111,6 +116,135 @@ def _unknown(interpretation: str) -> AnswerResolution:
     return AnswerResolution(None, AnswerStatus.MATERIAL_UNKNOWN, 0.0, interpretation)
 
 
+def _fact_at(facts: Mapping[str, Any], path: str) -> Any:
+    value: Any = facts
+    for part in path.split("."):
+        if not isinstance(value, Mapping) or part not in value:
+            raise KeyError(f"unknown candidate fact path: {path}")
+        value = value[part]
+    return value
+
+
+def _bank_entry_matches(text: str, entry: Mapping[str, Any]) -> bool:
+    matches = tuple(str(value).casefold() for value in entry.get("match_any", ()))
+    if not matches or not any(value in text for value in matches):
+        return False
+    exclusions = tuple(str(value).casefold() for value in entry.get("exclude_any", ()))
+    if any(value in text for value in exclusions):
+        return False
+    context = tuple(
+        str(value).casefold() for value in entry.get("match_any_context", ())
+    )
+    return not context or any(value in text for value in context)
+
+
+def _answer_bank_answer(
+    text: str,
+    *,
+    field_type: str,
+    facts: Mapping[str, Any],
+) -> AnswerResolution | None:
+    bank = load_application_answer_bank()
+    normalized_field_type = field_type.casefold().replace("-", "_").replace(" ", "_")
+    numeric_control = normalized_field_type in {
+        "number",
+        "numeric",
+        "integer",
+        "currency",
+    }
+
+    for entry in bank.get("exact_answers", ()):
+        if not _bank_entry_matches(text, entry):
+            continue
+        entry_id = str(entry["id"])
+        answer_kind = str(entry.get("answer_kind", "scalar"))
+        fact_path = str(entry.get("fact_path", ""))
+        evidence = f"application_answer_bank.{entry_id} -> candidate_facts.{fact_path}"
+        if answer_kind == "current_salary":
+            currently_employed = bool(_fact_at(facts, fact_path))
+            if currently_employed:
+                return _unknown(
+                    "Current salary requires a current-employment compensation fact that is not canonicalized."
+                )
+            answer = "0" if numeric_control else "Not currently applicable / not currently employed"
+            return _exact(
+                answer,
+                "Current salary is not applicable because canonical application status is not currently employed.",
+                evidence,
+            )
+        if answer_kind == "previous_salary":
+            monthly_php = int(_fact_at(facts, fact_path))
+            answer = str(monthly_php) if numeric_control else f"PHP {monthly_php:,}/month"
+            return _exact(
+                answer,
+                "Canonical previous or most-recent monthly compensation.",
+                evidence,
+            )
+        if answer_kind == "all_boolean":
+            paths = tuple(str(path) for path in entry.get("fact_paths", ()))
+            answer = "Yes" if all(bool(_fact_at(facts, path)) for path in paths) else "No"
+            return _exact(
+                answer,
+                "All requested canonical remote-work capabilities are available.",
+                *(f"candidate_facts.{path}" for path in paths),
+            )
+        if answer_kind == "backup_internet":
+            available = bool(_fact_at(facts, fact_path))
+            answer = (
+                "Yes - secondary internet provider and mobile data"
+                if available
+                else "No"
+            )
+            return _exact(
+                answer,
+                "Canonical backup internet uses a secondary provider and mobile data.",
+                evidence,
+                "candidate_facts.remote_setup.backup_internet_types",
+            )
+        if answer_kind == "literal":
+            if fact_path and not bool(_fact_at(facts, fact_path)):
+                return _unknown(f"Canonical fact for {entry_id} is not affirmative.")
+            return _exact(
+                str(entry["answer"]),
+                "Canonical reusable application answer.",
+                evidence,
+            )
+        value = _fact_at(facts, fact_path)
+        if answer_kind == "boolean":
+            answer = "Yes" if bool(value) else "No"
+        else:
+            answer = str(value)
+        return _exact(
+            answer,
+            "Resolved from the canonical application answer bank.",
+            evidence,
+        )
+
+    for entry in bank.get("free_text_templates", ()):
+        if _bank_entry_matches(text, entry):
+            return _strongest_supported(
+                str(entry["template"]),
+                "Canonical senior-positioning template selected for this semantic question; adapt only when the live job context adds relevant specifics.",
+                f"application_answer_bank.{entry['id']}",
+                "candidate_facts.technology_experience.professional_software_engineering",
+                confidence=0.98,
+            )
+
+    for entry in bank.get("capability_answers", ()):
+        if not _bank_entry_matches(text, entry):
+            continue
+        fact_path = str(entry["fact_path"])
+        if not bool(_fact_at(facts, fact_path)):
+            return _unknown(f"Canonical evidence does not affirm {entry['id']}.")
+        answer = "Yes" if _is_boolean_question(text) else str(entry["summary"])
+        return _strongest_supported(
+            answer,
+            "Senior capability resolved from the canonical answer bank and its underlying evidence-backed fact.",
+            f"application_answer_bank.{entry['id']} -> candidate_facts.{fact_path}",
+        )
+    return None
+
+
 def _legal_work_answer(
     text: str,
     facts: Mapping[str, Any],
@@ -187,6 +321,22 @@ def _legal_work_answer(
             "Canonical United States work authorization is not applicable because the candidate is located outside the US and is not authorized to work there.",
             "candidate_facts.work_authorization.united_states",
             "candidate_facts.residence.country",
+        )
+
+    if (
+        job is not None
+        and job.remote_from_ph is True
+        and any(term in text for term in sponsorship_terms)
+    ):
+        boolean_form = any(
+            term in text
+            for term in ("are you", "do you", "will you", "yes/no", "yes or no")
+        )
+        return _best_supported(
+            "No" if boolean_form else "Not applicable",
+            "The role is verified for remote work from the Philippines; canonical Philippine work authorization requires no sponsorship and the candidate accepts contractor, B2B, or EOR structures.",
+            "candidate_facts.work_authorization.philippines.sponsorship_required",
+            "candidate_facts.employment_preferences.accepted_engagement_types",
         )
 
     return None
@@ -492,6 +642,10 @@ def resolve_question(
     facts = load_candidate_facts()
     text = f"{key} {question}".casefold()
 
+    bank_answer = _answer_bank_answer(text, field_type=field_type, facts=facts)
+    if bank_answer is not None:
+        return bank_answer
+
     cms_answer = _cms_answer(text, facts)
     if cms_answer is not None:
         return cms_answer
@@ -538,14 +692,6 @@ def resolve_question(
                 {"action": media.action, "reason_code": media.reason_code},
             )
 
-    if "current salary" in text or "current compensation" in text:
-        if "prefer not to disclose" in text or "decline to disclose" in text:
-            return _exact(
-                "Prefer not to disclose",
-                "The form provides a legitimate non-disclosure answer.",
-            )
-        return _unknown("Current compensation has no canonical value and must never be inferred.")
-
     legal_work_answer = _legal_work_answer(text, facts, job)
     if legal_work_answer is not None:
         return legal_work_answer
@@ -579,7 +725,7 @@ def resolve_question(
         "anything affecting availability",
     )
     if any(term in text for term in commitments_terms):
-        no_commitments = not availability["upcoming_commitments_affecting_work_next_3_months"]
+        no_commitments = not availability["upcoming_commitments_affecting_work"]
         free_text_types = {"text", "textbox", "textarea", "free_text", "long_text"}
         answer = (
             "No, I don't have any upcoming commitments that would affect my work schedule or availability."
@@ -589,7 +735,7 @@ def resolve_question(
         return _exact(
             answer,
             "Canonical next-three-month work availability has no affecting commitments.",
-            "candidate_facts.availability.upcoming_commitments_affecting_work_next_3_months",
+            "candidate_facts.availability.upcoming_commitments_affecting_work",
         )
 
     if "fully available" in text and "schedule" in text:
@@ -650,11 +796,14 @@ def resolve_question(
         return _exact(canonical_country(), "Canonical country of residence.", "candidate_facts.location")
 
     engagement_terms = (
+        "employee",
         "independent contractor",
         "contractor",
         "freelance",
         "b2b",
         "consultant",
+        "employer of record",
+        "eor",
     )
     if any(term in text for term in engagement_terms):
         if "part-time" in text or (job and "part-time" in job.employment_type.casefold()):
@@ -667,9 +816,26 @@ def resolve_question(
 
     weekend_terms = ("saturday", "sunday", "weekend")
     if any(term in text for term in weekend_terms) and any(
+        term in text for term in ("occasional", "emergency", "on-call", "on call")
+    ):
+        return _exact(
+            "Yes",
+            "Canonical schedule accepts occasional emergency or on-call weekend support.",
+            "candidate_facts.schedule.occasional_emergency_or_oncall_weekend",
+        )
+    if any(term in text for term in weekend_terms) and any(
         term in text for term in ("regular", "recurring", "required", "shift")
     ):
         return _exact("No", "Recurring weekend work is outside the canonical schedule.")
+    if any(
+        term in text
+        for term in ("monday-friday", "monday to friday", "monday through friday")
+    ):
+        return _exact(
+            "Yes",
+            "Canonical schedule is Monday-Friday.",
+            "candidate_facts.schedule.monday_to_friday",
+        )
     timezone_terms = (
         "pst",
         "pdt",
@@ -680,6 +846,9 @@ def resolve_question(
         "uk hours",
         "european",
         "australian",
+        "aest",
+        "us hours",
+        "night shift",
         "timezone",
     )
     if any(term in text for term in timezone_terms):

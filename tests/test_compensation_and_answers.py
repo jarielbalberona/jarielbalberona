@@ -309,7 +309,8 @@ class AnswerPolicyTests(unittest.TestCase):
         free_text = resolve_question("ai_summary", "Describe your AI experience")
         self.assertEqual("2", numeric.answer)
         self.assertEqual(AnswerStatus.EXACT, numeric.status)
-        self.assertEqual("2+ years", free_text.answer)
+        self.assertIn("2+ years of practical AI-product", free_text.answer or "")
+        self.assertEqual(AnswerStatus.STRONGEST_SUPPORTED_ANSWER, free_text.status)
 
     def test_cms_capability_is_strong_without_vendor_overclaim(self) -> None:
         general = resolve_question("cms", "Do you have CMS experience?")
@@ -449,14 +450,127 @@ class AnswerPolicyTests(unittest.TestCase):
         self.assertEqual("No", result.answer)
         self.assertEqual(AnswerStatus.EXACT, result.status)
 
-    def test_current_salary_is_unknown_unless_non_disclosure_exists(self) -> None:
-        unknown = resolve_question("current_salary", "What is your current salary?")
-        non_disclosure = resolve_question(
-            "current_salary", "Current salary (you may select Prefer not to disclose)"
+    def test_current_and_previous_salary_use_distinct_canonical_facts(self) -> None:
+        current = resolve_question("current_salary", "What is your current salary?")
+        numeric_current = resolve_question(
+            "current_salary", "What is your current salary?", field_type="number"
         )
-        self.assertIsNone(unknown.answer)
-        self.assertEqual(AnswerStatus.MATERIAL_UNKNOWN, unknown.status)
-        self.assertEqual("Prefer not to disclose", non_disclosure.answer)
+        previous = resolve_question(
+            "previous_salary", "What was your most recent monthly salary?"
+        )
+        numeric_previous = resolve_question(
+            "previous_salary",
+            "What was your most recent monthly salary?",
+            field_type="number",
+        )
+        self.assertEqual("Not currently applicable / not currently employed", current.answer)
+        self.assertEqual("0", numeric_current.answer)
+        self.assertEqual("PHP 200,000/month", previous.answer)
+        self.assertEqual("200000", numeric_previous.answer)
+        self.assertTrue(
+            all(
+                result.status == AnswerStatus.EXACT
+                for result in (current, numeric_current, previous, numeric_previous)
+            )
+        )
+
+    def test_answer_bank_is_loaded_before_generated_fallbacks(self) -> None:
+        result = resolve_question(
+            "background_check", "Are you willing to undergo a background check?"
+        )
+        self.assertEqual("Yes", result.answer)
+        self.assertEqual(AnswerStatus.EXACT, result.status)
+        self.assertIn("application_answer_bank.background_check", result.supporting_evidence[0])
+
+    def test_employment_engagement_and_external_commitments_are_canonical(self) -> None:
+        questions = (
+            ("currently_employed", "Are you currently employed?", "No"),
+            ("seeking", "Are you actively seeking full-time employment?", "Yes"),
+            ("full_time", "Are you available to work full time?", "Yes"),
+            ("hours", "Can you commit 40 hours per week?", "Yes"),
+            (
+                "outside_work",
+                "Do you have outside projects that would interfere with your responsibilities?",
+                "No",
+            ),
+            (
+                "exclusivity",
+                "Can you comply with an exclusivity requirement?",
+                "Yes",
+            ),
+            (
+                "side_business",
+                "Would you cease a side business if exclusivity is required?",
+                "Yes",
+            ),
+        )
+        for key, question, answer in questions:
+            with self.subTest(key=key):
+                result = resolve_question(key, question)
+                self.assertEqual(answer, result.answer)
+                self.assertEqual(AnswerStatus.EXACT, result.status)
+
+    def test_schedule_and_remote_setup_defaults_do_not_invent_specs(self) -> None:
+        self.assertEqual(
+            "Yes",
+            resolve_question("schedule", "Can you work Monday-Friday AEST?").answer,
+        )
+        self.assertEqual(
+            "Yes",
+            resolve_question(
+                "on_call", "Can you provide occasional emergency weekend on-call support?"
+            ).answer,
+        )
+        self.assertEqual(
+            "Yes - secondary internet provider and mobile data",
+            resolve_question("backup_internet", "Do you have backup internet?").answer,
+        )
+        exact_speed = resolve_question(
+            "internet_speed", "Do you have at least 25 Mbps backup internet?"
+        )
+        exact_runtime = resolve_question(
+            "power_runtime", "How many hours of backup power runtime do you have?"
+        )
+        self.assertEqual(AnswerStatus.MATERIAL_UNKNOWN, exact_speed.status)
+        self.assertEqual(AnswerStatus.MATERIAL_UNKNOWN, exact_runtime.status)
+
+    def test_communication_screening_and_free_text_templates_are_reusable(self) -> None:
+        self.assertEqual(
+            "9",
+            resolve_question("english", "Rate your English proficiency 1-10").answer,
+        )
+        self.assertEqual(
+            "Yes, upon request",
+            resolve_question("references", "Are professional references available?").answer,
+        )
+        self.assertEqual(
+            "Yes",
+            resolve_question(
+                "marketing", "Do you consent to marketing communications?"
+            ).answer,
+        )
+        why_hire = resolve_question("why_hire", "Why should we hire you?")
+        self.assertIn("10+ years", why_hire.answer or "")
+        self.assertEqual(AnswerStatus.STRONGEST_SUPPORTED_ANSWER, why_hire.status)
+
+    def test_updated_react_and_typescript_years_are_exact(self) -> None:
+        react = resolve_question("react_years", "How many years of React experience?")
+        typescript = resolve_question(
+            "typescript_years", "How many years of TypeScript experience?"
+        )
+        self.assertEqual("10", react.answer)
+        self.assertEqual("8", typescript.answer)
+        self.assertEqual(AnswerStatus.EXACT, react.status)
+        self.assertEqual(AnswerStatus.EXACT, typescript.status)
+
+    def test_remote_ph_sponsorship_is_best_supported_when_job_is_verified(self) -> None:
+        result = resolve_question(
+            "visa_sponsorship",
+            "Will you now or in the future require visa sponsorship?",
+            job=job(location="Remote worldwide", remote_from_ph=True),
+        )
+        self.assertEqual("No", result.answer)
+        self.assertEqual(AnswerStatus.BEST_SUPPORTED_ANSWER, result.status)
 
     def test_conservative_estimate_does_not_reduce_readiness(self) -> None:
         self.assertEqual(100, calibrate_application_readiness(100, ["CONSERVATIVE_ESTIMATE"]))

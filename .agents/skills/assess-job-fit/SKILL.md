@@ -5,7 +5,7 @@ description: Evaluate a job against employer, weekend, compensation, career dire
 
 # Assess job fit
 
-Read `docs/job-search/candidate-context.md`, `docs/job-search/project-evidence.md`, `docs/job-search/target-roles.md`, `docs/job-search/application-workflow.md`, and `docs/job-search/compensation-policy.md`.
+Read `docs/job-search/application-answer-bank.md`, `docs/job-search/candidate-context.md`, `docs/job-search/project-evidence.md`, `docs/job-search/target-roles.md`, `docs/job-search/application-workflow.md`, and `docs/job-search/compensation-policy.md`.
 
 ## Gate before scoring
 
@@ -37,7 +37,7 @@ Do not treat conventional DevOps or SRE as a target AI/software-platform role me
 
 Multiply the base fit by eligibility confidence to produce the final fit score. Also return application readiness independently. Apply repository reason-code caps so optimistic inputs cannot hide material unknowns. Unknown compensation alone is not an eligibility penalty.
 
-Do not penalize legitimate full-time contractor, freelance, B2B, IC, or EOR structures. Do not reduce readiness for `BEST_SUPPORTED_ANSWER` or `CONSERVATIVE_ESTIMATE`; only genuine `MATERIAL_UNKNOWN` facts should block.
+Do not penalize legitimate full-time contractor, freelance, B2B, IC, or EOR structures. Search the canonical answer bank before classifying an application fact as unresolved. Do not reduce readiness for `BEST_SUPPORTED_ANSWER` or `CONSERVATIVE_ESTIMATE`; only genuine `MATERIAL_UNKNOWN` facts should block.
 
 Apply senior-experience calibration before calling a capability a gap. Infer API design from documented backend and REST ownership, database design from relational product systems, architecture from multi-tenant and production ownership, leadership from lead and hands-on CTO work, and CMS engineering from custom CMS, WordPress, Shopify, content models, administration, publishing, and API-backed content. Distinguish strong underlying capability from unsupported vendor specialization. Missing AEM, Sitecore, or another vendor keyword must not erase general CMS depth, but it also must not become a false vendor claim.
 

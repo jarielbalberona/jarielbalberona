@@ -83,7 +83,7 @@ Timezone is not an eligibility penalty. Permanent overnight Philippine hours or 
 
 ## Current salary
 
-Current salary is not expected compensation. Use a legitimate non-disclosure option when available. Otherwise record `MATERIAL_UNKNOWN`. Never derive or fabricate current salary from target ranges.
+Current salary is not expected compensation. Canonical application status is not currently employed, so answer `Not currently applicable / not currently employed`; use numeric `0` only for a strictly numeric required current-salary field. Previous or most-recent salary is separately canonicalized as PHP 200,000 monthly. Never derive either value from target ranges.
 
 ## Omniflow
 

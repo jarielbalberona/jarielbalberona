@@ -11,7 +11,7 @@ Every application starts from the complete current job description. Never reuse 
 5. Assess the employer's real problem, responsibilities, seniority, architecture, career direction, stack, AI/product/platform relevance, and remote compatibility.
 6. Choose one candidate narrative and the strongest two or three evidence sources.
 7. Prepare a concise job-specific letter and direct screening-answer plan.
-8. Inspect every live form control; resolve exact, strongest-supported, capability-depth, best-supported, and conservative answers. Surface only genuine material unknowns.
+8. Inspect every live form control; search the canonical answer bank first, then resolve exact, strongest-supported, capability-depth, best-supported, and conservative answers. Surface only genuine material unknowns.
 9. Run `SENIOR_POSITIONING_REVIEW` across the complete live payload.
 10. Check the dated source execution policy and any employer-specific declarations.
 11. Submit only when the source, run mode, readiness, and campaign cap permit it.
@@ -87,7 +87,7 @@ Use concise, direct, engineering-focused language. Lead with supported ownership
 
 ## Questions
 
-Answer questions directly. Do not turn each answer into a cover letter. Use exact facts first, then the strongest supported interpretation, direct or transferable capability classifications, best-supported answers, and conservative floor-style estimates grounded in the candidate context, CV, and project evidence. Record answer, interpretation, confidence, and supporting evidence. Positive evidence-backed statuses and conservative estimates are resolved and normally do not reduce readiness.
+Answer questions directly. Do not turn each answer into a cover letter. Search `application-answer-bank.md` and its machine-readable index first, then use candidate and project evidence, the strongest supported interpretation, direct or transferable capability classifications, best-supported answers, and conservative floor-style estimates. Record answer, interpretation, confidence, and supporting evidence. Positive evidence-backed statuses and conservative estimates are resolved and normally do not reduce readiness.
 
 Recognize senior engineering equivalence. Custom CMS development, WordPress, Shopify, and content administration are substantial CMS capability; REST and full-stack ownership support API design; relational product systems support database design; multi-tenant SaaS and production ownership support architecture; lead and consulting roles support technical leadership and client-facing delivery. Do not turn missing vendor keywords into missing capability. Conversely, do not claim a vendor specialization, exact duration, legal fact, credential, or metric without evidence.
 
@@ -97,7 +97,7 @@ Resolve `How did you hear about us?` from original discovery evidence, not the c
 
 Before reaching the submission boundary, run `SENIOR_POSITIONING_REVIEW` and ask whether every substantive answer is truthful, the strongest defensible answer, senior in tone, free of irrelevant weakness framing, and free of overclaim. Automatically replace known evidence-backed weak CMS framing. Any remaining `UNNECESSARY_UNDERSELL` must be revised; `UNSUPPORTED_OVERCLAIM` blocks readiness.
 
-Never invent current salary, authorization, visa, relocation, team size, management scope, revenue, user counts, metrics, technology experience with no real implementation evidence, degrees, or certifications. Record those as `MATERIAL_UNKNOWN` when no legitimate non-disclosure option exists. Expected compensation, contractor willingness, weekday timezone availability, broad AI experience, and ordinary defensible technology estimates should not remain unresolved.
+Never invent authorization, visa, relocation, team size, management scope, revenue, user counts, metrics, technology experience with no real implementation evidence, degrees, or certifications. Record those as `MATERIAL_UNKNOWN` when unsupported. Current salary uses canonical not-currently-employed status; previous salary uses the separate canonical PHP 200,000 monthly value. Expected compensation, contractor willingness, weekday timezone availability, broad AI experience, and ordinary defensible technology estimates should not remain unresolved.
 
 Philippine citizenship and work authorization are canonical facts, not unresolved legal questions. Answer Filipino citizenship and legal authorization to work in the Philippines `Yes`, Philippine employment sponsorship `No`, and United States authorization `No` or `Not Applicable / located outside the US` according to the live control. Keep every other jurisdiction unresolved unless it is added explicitly to candidate facts.
 

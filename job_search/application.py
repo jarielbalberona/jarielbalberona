@@ -29,12 +29,14 @@ def resolve_application_answers(
     *,
     job: Job | None = None,
     assessment: Assessment | None = None,
+    field_types: Mapping[str, str] | None = None,
 ) -> tuple[dict[str, str], list[str]]:
     resolved, unresolved, _, _ = resolve_questions(
         questions,
         canonical_answers,
         job=job,
         assessment=assessment,
+        field_types=field_types,
     )
     return resolved, unresolved
 
@@ -45,12 +47,14 @@ def resolve_application_answers_with_metadata(
     *,
     job: Job | None = None,
     assessment: Assessment | None = None,
+    field_types: Mapping[str, str] | None = None,
 ) -> tuple[dict[str, str], list[str], dict[str, dict[str, object]], dict[str, object] | None]:
     return resolve_questions(
         questions,
         canonical_answers,
         job=job,
         assessment=assessment,
+        field_types=field_types,
     )
 
 
@@ -80,6 +84,7 @@ def prepare_application_packet(
     canonical_answers: Mapping[str, str] | None = None,
     screening_questions_verified: bool = False,
     screening_questions_source: str = "",
+    screening_field_types: Mapping[str, str] | None = None,
     matcher: EmployerExclusionMatcher | None = None,
 ) -> ApplicationPacket:
     if assessment.verdict not in {Verdict.STRONG_APPLY, Verdict.APPLY, Verdict.REVIEW}:
@@ -101,6 +106,7 @@ def prepare_application_packet(
         canonical_answers or {},
         job=job,
         assessment=assessment,
+        field_types=screening_field_types,
     )
     return ApplicationPacket(
         application_id=application_id(job),

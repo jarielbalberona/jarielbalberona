@@ -1,5 +1,9 @@
 {
-  "schema_version": 4,
+  "schema_version": 5,
+  "employment_status": {
+    "currently_employed_for_application_purposes": false,
+    "actively_seeking_full_time": true
+  },
   "employment_preferences": {
     "full_time": true,
     "accepted_engagement_types": [
@@ -11,10 +15,12 @@
       "b2b",
       "employer_of_record"
     ],
-    "part_time_primary_target": false
+    "part_time_primary_target": false,
+    "can_commit_40_hours_weekly": true
   },
   "schedule": {
     "timezone_flexible": true,
+    "monday_to_friday": true,
     "weekday_availability": "Monday-Friday",
     "allowed_days": [
       "Monday",
@@ -23,7 +29,8 @@
       "Thursday",
       "Friday"
     ],
-    "recurring_weekend_work": false
+    "recurring_weekend_work": false,
+    "occasional_emergency_or_oncall_weekend": true
   },
   "ai_experience": {
     "broad_ai_experience": "2+ years",
@@ -44,14 +51,14 @@
         "aliases": ["react"],
         "used": true,
         "depth": "core",
-        "numeric_years_floor": 7,
+        "numeric_years_floor": 10,
         "individual_answer_status": "EXACT"
       },
       "typescript": {
         "aliases": ["typescript", "ts"],
         "used": true,
         "depth": "core",
-        "numeric_years_floor": 5,
+        "numeric_years_floor": 8,
         "individual_answer_status": "EXACT"
       },
       "next_js": {
@@ -157,7 +164,11 @@
     "final_review": "SENIOR_POSITIONING_REVIEW"
   },
   "client_experience": {
-    "us_clients": true
+    "us_clients": true,
+    "international_clients": true,
+    "consulting_or_agency": true,
+    "client_facing_engineering": true,
+    "distributed_or_async_teams": true
   },
   "location": {
     "country": "Philippines",
@@ -190,7 +201,78 @@
     "rendering_period": "None",
     "available_immediately": true,
     "earliest_start": "Immediately",
-    "upcoming_commitments_affecting_work_next_3_months": false
+    "upcoming_commitments_affecting_work": false,
+    "available_for_screening_this_week": true
+  },
+  "external_commitments": {
+    "interfere_with_full_time_work": false,
+    "willing_to_prioritize_employer_role": true,
+    "willing_to_accept_exclusivity_when_required": true
+  },
+  "remote_setup": {
+    "professional_workspace": true,
+    "suitable_development_computer": true,
+    "webcam": true,
+    "microphone": true,
+    "screen_sharing": true,
+    "high_speed_internet": true,
+    "backup_internet": true,
+    "backup_internet_types": [
+      "secondary_internet_provider",
+      "mobile_data"
+    ],
+    "backup_power": true
+  },
+  "previous_salary": {
+    "monthly_php": 200000
+  },
+  "communication": {
+    "english": {
+      "professional": true,
+      "numeric_rating_10": 9
+    },
+    "international_client_communication": true,
+    "written_async_communication": true,
+    "technical_decision_presentation": true
+  },
+  "standard_screening": {
+    "background_check": true,
+    "professional_references_available": true,
+    "nda_or_confidentiality": true,
+    "standard_role_ip_assignment": true,
+    "standard_security_policies": true,
+    "technical_assessment": true,
+    "take_home_coding_exercise": true,
+    "live_technical_interview": true,
+    "pair_programming_interview": true,
+    "recruitment_communications": true,
+    "marketing_or_promotional_communications": true
+  },
+  "senior_capabilities": {
+    "full_stack_product_engineering": true,
+    "frontend_architecture": true,
+    "backend_api_development": true,
+    "rest_apis": true,
+    "relational_database_design": true,
+    "postgresql": true,
+    "next_js": true,
+    "node_js": true,
+    "multi_tenant_saas": true,
+    "cloud_engineering": true,
+    "aws": true,
+    "azure": true,
+    "terraform": true,
+    "docker": true,
+    "ci_cd": true,
+    "observability_monitoring": true,
+    "automated_testing": true,
+    "integration_testing": true,
+    "browser_runtime_verification": true,
+    "technical_architecture": true,
+    "end_to_end_feature_ownership": true,
+    "technical_leadership": true,
+    "working_independently": true,
+    "startup_or_ambiguous_environments": true
   },
   "candidate_media": {
     "photo": {

@@ -1,0 +1,290 @@
+{
+  "schema_version": 1,
+  "candidate_facts": "candidate_facts.json",
+  "resolution_order": [
+    "canonical_answer_bank",
+    "candidate_and_project_evidence",
+    "strongest_supported_derivation",
+    "material_unknown"
+  ],
+  "exact_answers": [
+    {
+      "id": "current_salary",
+      "match_any": ["current salary", "current compensation"],
+      "exclude_any": ["previous", "most recent"],
+      "answer_kind": "current_salary",
+      "fact_path": "employment_status.currently_employed_for_application_purposes"
+    },
+    {
+      "id": "previous_salary",
+      "match_any": ["previous salary", "previous monthly salary", "most recent salary", "most recent monthly salary", "previous compensation", "most recent compensation"],
+      "answer_kind": "previous_salary",
+      "fact_path": "previous_salary.monthly_php"
+    },
+    {
+      "id": "currently_employed",
+      "match_any": ["currently employed", "are you employed", "current employment status"],
+      "answer_kind": "boolean",
+      "fact_path": "employment_status.currently_employed_for_application_purposes"
+    },
+    {
+      "id": "actively_seeking_full_time",
+      "match_any": ["actively seeking full-time", "actively seeking full time", "looking for full-time employment", "looking for full time employment"],
+      "answer_kind": "boolean",
+      "fact_path": "employment_status.actively_seeking_full_time"
+    },
+    {
+      "id": "full_time",
+      "match_any": ["available full-time", "available full time", "work full-time", "work full time", "full-time role", "full time role"],
+      "answer_kind": "boolean",
+      "fact_path": "employment_preferences.full_time"
+    },
+    {
+      "id": "permanent_employee",
+      "match_any": ["permanent employee", "permanent employment"],
+      "answer_kind": "boolean",
+      "fact_path": "employment_preferences.full_time"
+    },
+    {
+      "id": "forty_hours",
+      "match_any": ["40 hours", "forty hours"],
+      "answer_kind": "boolean",
+      "fact_path": "employment_preferences.can_commit_40_hours_weekly"
+    },
+    {
+      "id": "screening_this_week",
+      "match_any": ["free this week for an initial screening", "available for screening this week", "available for an interview this week", "available for interview this week"],
+      "answer_kind": "boolean",
+      "fact_path": "availability.available_for_screening_this_week"
+    },
+    {
+      "id": "external_commitments_interference",
+      "match_any": ["outside commitments", "external commitments", "outside projects", "side business", "freelance commitments"],
+      "match_any_context": ["interfere", "affect", "conflict", "prevent", "responsibilities"],
+      "exclude_any": ["cease", "stop", "discontinue", "give up"],
+      "answer_kind": "boolean",
+      "fact_path": "external_commitments.interfere_with_full_time_work"
+    },
+    {
+      "id": "side_business_exclusivity",
+      "match_any": ["side business", "freelance", "outside projects"],
+      "match_any_context": ["cease", "stop", "discontinue", "give up"],
+      "answer_kind": "boolean",
+      "fact_path": "external_commitments.willing_to_accept_exclusivity_when_required"
+    },
+    {
+      "id": "prioritize_role",
+      "match_any": ["fully commit to this role", "fully commit to the role", "prioritize this role", "prioritize the employer"],
+      "answer_kind": "boolean",
+      "fact_path": "external_commitments.willing_to_prioritize_employer_role"
+    },
+    {
+      "id": "exclusivity",
+      "match_any": ["exclusivity requirement", "work exclusively", "exclusive employment", "exclusive engagement"],
+      "answer_kind": "boolean",
+      "fact_path": "external_commitments.willing_to_accept_exclusivity_when_required"
+    },
+    {
+      "id": "professional_workspace",
+      "match_any": ["dedicated workspace", "professional workspace", "home office", "remote workspace"],
+      "answer_kind": "boolean",
+      "fact_path": "remote_setup.professional_workspace"
+    },
+    {
+      "id": "development_computer",
+      "match_any": ["suitable development computer", "suitable computer", "required hardware", "development machine"],
+      "exclude_any": ["specification", "processor", "ram", "memory", "operating system"],
+      "answer_kind": "boolean",
+      "fact_path": "remote_setup.suitable_development_computer"
+    },
+    {
+      "id": "high_speed_internet",
+      "match_any": ["high-speed internet", "high speed internet", "reliable internet"],
+      "exclude_any": ["mbps", "provider", "speed test"],
+      "answer_kind": "boolean",
+      "fact_path": "remote_setup.high_speed_internet"
+    },
+    {
+      "id": "backup_internet",
+      "match_any": ["backup internet", "secondary internet"],
+      "exclude_any": ["provider name", "exact provider", "mbps"],
+      "answer_kind": "backup_internet",
+      "fact_path": "remote_setup.backup_internet"
+    },
+    {
+      "id": "backup_power",
+      "match_any": ["backup power", "power backup"],
+      "exclude_any": ["hours", "runtime", "capacity", "ups", "generator"],
+      "answer_kind": "boolean",
+      "fact_path": "remote_setup.backup_power"
+    },
+    {
+      "id": "webcam_microphone_screen_share",
+      "match_any": ["webcam", "microphone", "screen sharing", "screensharing"],
+      "answer_kind": "all_boolean",
+      "fact_paths": ["remote_setup.webcam", "remote_setup.microphone", "remote_setup.screen_sharing"]
+    },
+    {
+      "id": "english_rating",
+      "match_any": ["english rating", "rate your english", "english level 1-10", "english proficiency 1-10"],
+      "answer_kind": "scalar",
+      "fact_path": "communication.english.numeric_rating_10"
+    },
+    {
+      "id": "professional_english",
+      "match_any": ["professional english", "communicate professionally in english", "fluent in english"],
+      "answer_kind": "boolean",
+      "fact_path": "communication.english.professional"
+    },
+    {
+      "id": "international_client_communication",
+      "match_any": ["communicating directly with international clients", "international client communication"],
+      "answer_kind": "boolean",
+      "fact_path": "communication.international_client_communication"
+    },
+    {
+      "id": "written_async_communication",
+      "match_any": ["written async communication", "asynchronous written communication", "async communication"],
+      "answer_kind": "boolean",
+      "fact_path": "communication.written_async_communication"
+    },
+    {
+      "id": "technical_decision_presentation",
+      "match_any": ["presenting technical decisions", "present technical decisions", "communicate technical decisions"],
+      "answer_kind": "boolean",
+      "fact_path": "communication.technical_decision_presentation"
+    },
+    {
+      "id": "professional_references",
+      "match_any": ["professional references", "references available"],
+      "answer_kind": "literal",
+      "answer": "Yes, upon request",
+      "fact_path": "standard_screening.professional_references_available"
+    },
+    {
+      "id": "background_check",
+      "match_any": ["background check"],
+      "answer_kind": "boolean",
+      "fact_path": "standard_screening.background_check"
+    },
+    {
+      "id": "nda",
+      "match_any": ["nda", "confidentiality agreement"],
+      "answer_kind": "boolean",
+      "fact_path": "standard_screening.nda_or_confidentiality"
+    },
+    {
+      "id": "standard_ip_assignment",
+      "match_any": ["standard employer ip assignment", "standard intellectual property assignment", "ip created in this role"],
+      "exclude_any": ["pre-existing", "preexisting", "prior invention", "all inventions"],
+      "answer_kind": "boolean",
+      "fact_path": "standard_screening.standard_role_ip_assignment"
+    },
+    {
+      "id": "security_policies",
+      "match_any": ["company security policies", "standard security policies", "information security policies"],
+      "exclude_any": ["surveillance", "monitoring software"],
+      "answer_kind": "boolean",
+      "fact_path": "standard_screening.standard_security_policies"
+    },
+    {
+      "id": "technical_assessment",
+      "match_any": ["technical assessment", "coding assessment"],
+      "answer_kind": "boolean",
+      "fact_path": "standard_screening.technical_assessment"
+    },
+    {
+      "id": "take_home",
+      "match_any": ["take-home coding exercise", "take home coding exercise", "take-home assignment", "take home assignment"],
+      "answer_kind": "boolean",
+      "fact_path": "standard_screening.take_home_coding_exercise"
+    },
+    {
+      "id": "live_technical_interview",
+      "match_any": ["live technical interview"],
+      "answer_kind": "boolean",
+      "fact_path": "standard_screening.live_technical_interview"
+    },
+    {
+      "id": "pair_programming",
+      "match_any": ["pair-programming interview", "pair programming interview"],
+      "answer_kind": "boolean",
+      "fact_path": "standard_screening.pair_programming_interview"
+    },
+    {
+      "id": "recruitment_communications",
+      "match_any": ["recruitment-related communications", "recruitment communications"],
+      "answer_kind": "boolean",
+      "fact_path": "standard_screening.recruitment_communications"
+    },
+    {
+      "id": "marketing_communications",
+      "match_any": ["marketing communications", "promotional communications", "business updates consent"],
+      "answer_kind": "boolean",
+      "fact_path": "standard_screening.marketing_or_promotional_communications"
+    }
+  ],
+  "capability_answers": [
+    {"id": "full_stack_product_engineering", "match_any": ["full-stack product engineering", "full stack product engineering"], "fact_path": "senior_capabilities.full_stack_product_engineering", "summary": "Substantial end-to-end full-stack product-engineering experience."},
+    {"id": "frontend_architecture", "match_any": ["frontend architecture"], "fact_path": "senior_capabilities.frontend_architecture", "summary": "Substantial hands-on frontend architecture and production UI-system experience."},
+    {"id": "backend_api_development", "match_any": ["backend development", "api development"], "fact_path": "senior_capabilities.backend_api_development", "summary": "Substantial backend and API implementation experience."},
+    {"id": "rest_apis", "match_any": ["rest api", "restful api"], "fact_path": "senior_capabilities.rest_apis", "summary": "Substantial production REST API design and implementation experience."},
+    {"id": "relational_database_design", "match_any": ["relational database design", "relational data modeling"], "fact_path": "senior_capabilities.relational_database_design", "summary": "Substantial relational database design and data-modeling experience."},
+    {"id": "postgresql", "match_any": ["postgresql experience", "postgres experience"], "exclude_any": ["years"], "fact_path": "senior_capabilities.postgresql", "summary": "Substantial multi-year production PostgreSQL experience."},
+    {"id": "next_js", "match_any": ["next.js experience", "nextjs experience"], "exclude_any": ["years"], "fact_path": "senior_capabilities.next_js", "summary": "Substantial multi-year production Next.js experience."},
+    {"id": "node_js", "match_any": ["node.js experience", "nodejs experience"], "exclude_any": ["years"], "fact_path": "senior_capabilities.node_js", "summary": "Substantial production Node.js experience."},
+    {"id": "multi_tenant_saas", "match_any": ["multi-tenant saas", "multi tenant saas"], "fact_path": "senior_capabilities.multi_tenant_saas", "summary": "Substantial architecture and implementation experience with multi-tenant SaaS systems."},
+    {"id": "cloud_engineering", "match_any": ["cloud engineering"], "fact_path": "senior_capabilities.cloud_engineering", "summary": "Substantial cloud engineering experience across AWS and Azure."},
+    {"id": "aws", "match_any": ["aws experience", "amazon web services experience"], "exclude_any": ["years", "certification", "certified"], "fact_path": "senior_capabilities.aws", "summary": "Substantial production AWS experience."},
+    {"id": "azure", "match_any": ["azure experience", "microsoft azure experience"], "exclude_any": ["years", "certification", "certified"], "fact_path": "senior_capabilities.azure", "summary": "Substantial production Azure experience."},
+    {"id": "infrastructure_as_code", "match_any": ["infrastructure as code", "terraform experience"], "exclude_any": ["years"], "fact_path": "senior_capabilities.terraform", "summary": "Substantial infrastructure-as-code experience using Terraform."},
+    {"id": "docker", "match_any": ["docker experience"], "exclude_any": ["years"], "fact_path": "senior_capabilities.docker", "summary": "Substantial production container and Docker experience."},
+    {"id": "ci_cd", "match_any": ["ci/cd experience", "continuous integration", "continuous delivery"], "fact_path": "senior_capabilities.ci_cd", "summary": "Substantial CI/CD and production-delivery automation experience."},
+    {"id": "observability", "match_any": ["observability", "production monitoring"], "fact_path": "senior_capabilities.observability_monitoring", "summary": "Substantial production observability, monitoring, logging, and diagnostics experience."},
+    {"id": "automated_testing", "match_any": ["automated testing"], "fact_path": "senior_capabilities.automated_testing", "summary": "Substantial automated testing and quality-gate experience."},
+    {"id": "integration_testing", "match_any": ["integration testing"], "fact_path": "senior_capabilities.integration_testing", "summary": "Substantial integration testing experience across APIs, databases, and product workflows."},
+    {"id": "browser_runtime_verification", "match_any": ["browser verification", "runtime verification", "browser qa"], "fact_path": "senior_capabilities.browser_runtime_verification", "summary": "Substantial browser and runtime verification experience for production behavior."},
+    {"id": "technical_architecture", "match_any": ["technical architecture", "system architecture", "software architecture"], "fact_path": "senior_capabilities.technical_architecture", "summary": "Substantial hands-on system, technical, and product architecture experience."},
+    {"id": "end_to_end_ownership", "match_any": ["end-to-end feature ownership", "end to end feature ownership", "end-to-end ownership", "end to end ownership"], "fact_path": "senior_capabilities.end_to_end_feature_ownership", "summary": "Substantial end-to-end ownership from product requirements through production operation."},
+    {"id": "technical_leadership", "match_any": ["technical leadership", "tech lead"], "fact_path": "senior_capabilities.technical_leadership", "summary": "Substantial hands-on technical leadership and architecture ownership."},
+    {"id": "international_clients", "match_any": ["international client experience"], "fact_path": "client_experience.international_clients", "summary": "Substantial international client-delivery experience."},
+    {"id": "us_clients", "match_any": ["us-client experience", "us client experience", "u.s. client experience", "american client experience"], "fact_path": "client_experience.us_clients", "summary": "Substantial US-client delivery experience."},
+    {"id": "consulting_agency", "match_any": ["consulting experience", "agency experience", "consulting/agency"], "fact_path": "client_experience.consulting_or_agency", "summary": "Substantial consulting and agency-environment experience."},
+    {"id": "client_facing", "match_any": ["client-facing engineering", "client facing engineering"], "fact_path": "client_experience.client_facing_engineering", "summary": "Substantial direct client-facing engineering experience."},
+    {"id": "distributed_async", "match_any": ["distributed team", "async team", "asynchronous team"], "fact_path": "client_experience.distributed_or_async_teams", "summary": "Substantial distributed and asynchronous team experience."},
+    {"id": "independent_work", "match_any": ["working independently", "work independently"], "fact_path": "senior_capabilities.working_independently", "summary": "Substantial experience independently owning ambiguous engineering work."},
+    {"id": "startup_ambiguity", "match_any": ["startup environment", "ambiguous environment"], "fact_path": "senior_capabilities.startup_or_ambiguous_environments", "summary": "Substantial experience delivering in startup and ambiguous product environments."}
+  ],
+  "free_text_templates": [
+    {
+      "id": "why_new_role",
+      "match_any": ["why are you looking for a new role", "why are you seeking a new role"],
+      "template": "I'm looking for a senior hands-on engineering role where I can apply my full-stack and platform experience while working more deeply on AI-native products and agentic engineering systems."
+    },
+    {
+      "id": "next_role",
+      "match_any": ["what are you looking for in your next role", "what do you want in your next role"],
+      "template": "A senior hands-on product or platform engineering role with meaningful technical ownership, ideally involving AI-native products, agentic systems, developer tooling, or complex SaaS engineering."
+    },
+    {
+      "id": "why_hire",
+      "match_any": ["why should we hire you", "why are you a good fit", "why should you be considered"],
+      "template": "I bring 10+ years of production software engineering experience across product, frontend, backend, data, cloud, and delivery, with recent hands-on work building AI-native and agentic systems. I can own engineering problems end to end rather than operating within a narrow layer of the stack."
+    },
+    {
+      "id": "biggest_strength",
+      "match_any": ["biggest strength", "greatest strength"],
+      "template": "End-to-end technical ownership. I can take ambiguous product requirements through architecture, implementation, verification, deployment, and production operation."
+    },
+    {
+      "id": "ai_experience_detail",
+      "match_any": ["describe your ai experience", "tell us about your ai experience", "summarize your ai experience"],
+      "template": "I have 2+ years of practical AI-product and AI-native engineering experience, including AI analytics interfaces, agent workflows, repository-grounded coding agents, tool-enabled execution, automated verification, and controlled release systems."
+    },
+    {
+      "id": "leaving_current_employer",
+      "match_any": ["why are you leaving your current employer", "reason for leaving your current employer", "reason for leaving your current role"],
+      "template": "I'm currently available for a new full-time engagement and am focusing on senior engineering roles that align strongly with my product/platform and AI-native engineering experience."
+    }
+  ]
+}

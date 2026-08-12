@@ -18,7 +18,7 @@ This is the authoritative, public-safe candidate profile for job-search operatio
 
 Do not create a replacement CV during routine job-search work. If a form requires facts not present here or in the canonical CV source, record them as unresolved.
 
-Machine-readable canonical applicant facts live in `job_search/policy/candidate_facts.json`. Reuse them automatically and do not ask Jariel again unless the specific application materially differs.
+Machine-readable canonical applicant facts live in `job_search/policy/candidate_facts.json`. The reusable semantic index lives in `job_search/policy/application_answer_bank.json`, with human guidance in `docs/job-search/application-answer-bank.md`. Search the answer bank first, reuse these facts automatically, and do not ask Jariel again unless the specific application materially differs.
 
 ## Candidate media
 
@@ -45,6 +45,7 @@ Do not create or submit an introduction video yet. When a live form proves that 
 ```yaml
 employment_preferences:
   full_time: true
+  can_commit_40_hours_weekly: true
   accepted_engagement_types:
     - employee
     - contractor
@@ -56,8 +57,10 @@ employment_preferences:
 
 schedule:
   timezone_flexible: true
+  monday_to_friday: true
   allowed_days: [Monday, Tuesday, Wednesday, Thursday, Friday]
   recurring_weekend_work: false
+  occasional_emergency_or_oncall_weekend: true
 ```
 
 Accept legitimate full-time employee and non-employee structures. Part-time work is not the primary target. Answer full-time contractor, consultant, freelance, IC, B2B, and weekday international-timezone willingness positively. PST, PDT, EST, EDT, CST, MST, UK, European, Australian, Philippine, and other international weekday hours are acceptable.
@@ -73,7 +76,8 @@ availability:
   rendering_period: None
   available_immediately: true
   earliest_start: Immediately
-  upcoming_commitments_affecting_work_next_3_months: false
+  upcoming_commitments_affecting_work: false
+  available_for_screening_this_week: true
 ```
 
 For candidate-facing application questions, answer notice period as `None`, numeric notice or rendering days as `0`, immediate-start willingness as `Yes`, and ordinary earliest-start questions as `Immediately`. When an application requires an actual calendar date, use the earliest reasonable immediate date based on the application date.
@@ -81,6 +85,12 @@ For candidate-facing application questions, answer notice period as `None`, nume
 Answer questions about upcoming commitments, planned leave, or travel affecting work during the next three months as `No`. For required free text, use `No, I don't have any upcoming commitments that would affect my work schedule or availability.` Equivalent weekday-schedule restriction questions should also resolve without review.
 
 These candidate-facing availability answers do not change employer or client exclusion policy. Never disclose or infer a confidential relationship when answering an ordinary employment-status, notice-period, or start-date question.
+
+Canonical application employment status is `not currently employed`, actively seeking full-time work, and available for screening this week. Current salary is therefore `Not currently applicable / not currently employed`, or numeric `0` only when a required control is strictly numeric. Previous or most-recent salary is `PHP 200,000/month`.
+
+Outside commitments do not interfere with full-time work. Jariel will prioritize the employer role and can accept an exclusivity requirement. Treat a materially broader IP or pre-existing-asset clause as a separate legal question.
+
+The remote setup includes a professional workspace, suitable development computer, webcam, microphone, screen sharing, high-speed internet, backup internet through a secondary provider and mobile data, and backup power. Exact providers, speeds, equipment specifications, capacity, and runtime require actual evidence rather than invention.
 
 ## Canonical application answers
 
@@ -93,6 +103,7 @@ These candidate-facing availability answers do not change employer or client exc
 - Available to start immediately: `Yes`; earliest start: `Immediately`.
 - Python or FastAPI: real secondary production/project experience; use conservative numeric `1` when a whole year is required and stronger evidence is absent.
 - Professional software engineering: `10+ years`; use numeric `10` for whole-year fields.
+- React: `10 years`; TypeScript: `8 years`.
 - CMS experience: `Yes`; represent substantial custom CMS development, WordPress, Shopify, and content-platform engineering confidently.
 
 Do not reuse broad AI tenure for PyTorch, model training, ML research, MLOps, or another narrower specialty.
@@ -131,11 +142,12 @@ Forced-choice answers are conjunctive: every material claim in the selected opti
 
 Resolve application questions in this order:
 
-1. Use an exact canonical fact.
-2. Use the strongest truthful interpretation supported by career and project evidence.
-3. Use a best-supported answer when the application requires interpretation.
-4. When real experience exists but duration is imprecise, use a conservative floor-style estimate.
-5. Use `MATERIAL_UNKNOWN` only when an answer would invent experience, credentials, legal status, compensation history, or another unsupported material fact.
+1. Search the canonical application answer bank.
+2. Use an exact canonical fact.
+3. Use the strongest truthful interpretation supported by career and project evidence.
+4. Use a best-supported answer when the application requires interpretation.
+5. When real experience exists but duration is imprecise, use a conservative floor-style estimate.
+6. Use `MATERIAL_UNKNOWN` only when an answer would invent experience, credentials, legal status, or another unsupported material fact.
 
 Store `EXACT`, `STRONGEST_SUPPORTED_ANSWER`, `DIRECT_DEEP`, `DIRECT_WORKING`, `TRANSFERABLE_STRONG`, `BEST_SUPPORTED_ANSWER`, `CONSERVATIVE_ESTIMATE`, or `MATERIAL_UNKNOWN` with confidence, interpretation, and supporting evidence. Positive evidence-backed statuses are resolved and application-ready.
 
@@ -225,12 +237,12 @@ Current confidential client work may be described only through the generic evide
 
 The following require Jariel's explicit answer when a form asks for them:
 
-- current salary when a legitimate non-disclosure option is unavailable
 - work authorization and visa status for a jurisdiction not covered by the canonical facts below
 - relocation willingness
 - professional experience with a technology that has no actual implementation evidence
 - management scope or exact team size
 - degrees, certifications, clearance, or licenses not in the canonical CV
+- exact internet speed or provider, computer specifications, and backup-power runtime or capacity
 
 Expected compensation is resolved by `docs/job-search/compensation-policy.md`; it is not grouped with unknown current salary.
 

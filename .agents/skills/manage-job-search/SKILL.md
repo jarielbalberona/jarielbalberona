@@ -8,6 +8,7 @@ description: Orchestrate Jariel Balberona's selective job search from discovery 
 Treat the repository as the control plane. Read these sources before a run:
 
 - `docs/job-search/candidate-context.md`
+- `docs/job-search/application-answer-bank.md`
 - `docs/job-search/target-roles.md`
 - `docs/job-search/project-evidence.md`
 - `docs/job-search/application-policy.md`
@@ -15,6 +16,7 @@ Treat the repository as the control plane. Read these sources before a run:
 - `docs/job-search/compensation-policy.md`
 - `docs/job-search/source-registry.yaml`
 - `job_search/policy/candidate_facts.json`
+- `job_search/policy/application_answer_bank.json`
 
 Use the smaller skills for their stages. Do not restate their policy from memory.
 
@@ -27,7 +29,7 @@ Use the smaller skills for their stages. Do not restate their policy from memory
 5. Deduplicate eligible jobs before fit scoring.
 6. Invoke `$assess-job-fit` for viable jobs. Separate technical fit, career direction, eligibility confidence, and application readiness. Do not keyword-score without reading responsibilities.
 7. Rank `STRONG APPLY`, `APPLY`, and `REVIEW` jobs. Keep hard-blocked roles out regardless of technical fit.
-8. Invoke `$prepare-job-application` for the best real candidates. Resolve exact facts, strongest-supported senior interpretations, direct and transferable capabilities, best-supported answers, conservative estimates, and compensation policy automatically. Preserve advertised ranges and classify Philippines-targeted versus direct-international compensation context before choosing an expectation; escalate only genuine material unknowns.
+8. Invoke `$prepare-job-application` for the best real candidates. Search the canonical answer bank first, then use candidate and project evidence, strongest-supported senior interpretations, direct and transferable capabilities, best-supported answers, conservative estimates, and compensation policy automatically. Preserve advertised ranges and classify Philippines-targeted versus direct-international compensation context before choosing an expectation; escalate only genuine material unknowns.
 9. Run `SENIOR_POSITIONING_REVIEW`; revise `UNNECESSARY_UNDERSELL`, block `UNSUPPORTED_OVERCLAIM`, and keep capability evidence distinct from specific vendor claims.
 10. Invoke `$apply-to-job` only when explicitly in scope. In `AUTONOMOUS_CAMPAIGN`, use source-specific live policy, the 8/10/13 targets, the hard cap, and verified-submission counting. A held or failed job must not stop the campaign.
 11. Persist worthwhile held, prepared, or review-only jobs to Review Queue with exact blocking reason, prepared answers, role-specific cover letter, media state, source policy, next action, and re-review date. Never queue hard `SKIP` jobs.
