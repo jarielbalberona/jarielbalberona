@@ -87,7 +87,7 @@ def queue_record(**overrides: object) -> dict[str, object]:
 class TrackerTests(unittest.TestCase):
     def test_queue_classifier_separates_authorization_policy_and_role_blockers(self) -> None:
         self.assertEqual(
-            "AUTO_READY",
+            "READY_FOR_BROWSER_PREP",
             classify_review_queue_status(
                 applicant_automation_policy="PERMITTED",
                 auto_readiness_passes=True,
@@ -121,6 +121,14 @@ class TrackerTests(unittest.TestCase):
                 applicant_automation_policy="PERMITTED",
                 auto_readiness_passes=True,
                 video_required=True,
+            ),
+        )
+        self.assertEqual(
+            "HUMAN_SUBMIT_READY",
+            classify_review_queue_status(
+                applicant_automation_policy="UNCLEAR",
+                auto_readiness_passes=True,
+                human_submit_ready=True,
             ),
         )
 
@@ -187,13 +195,15 @@ class TrackerTests(unittest.TestCase):
 
     def test_new_review_queue_taxonomy_is_accepted_and_legacy_values_are_rejected(self) -> None:
         for queue_status in (
-            "AUTO_READY",
+            "HUMAN_SUBMIT_READY",
+            "READY_FOR_BROWSER_PREP",
             "SOURCE_RESTRICTED",
             "POLICY_UNCLEAR",
             "HOLD",
             "VIDEO_REQUIRED",
             "READY_TO_RETRY",
             "FORM_INACCESSIBLE",
+            "SUBMISSION_UNVERIFIED",
             "CLOSED",
         ):
             with self.subTest(queue_status=queue_status):

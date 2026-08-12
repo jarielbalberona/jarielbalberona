@@ -104,6 +104,14 @@ class Ledger:
             "assessed_count",
             "held_count",
             "verified_submitted_count",
+            "auto_submitted_count",
+            "auto_verified_submitted_count",
+            "human_submit_ready_count",
+            "ready_for_browser_prep_count",
+            "human_clicked_count",
+            "human_verified_submitted_count",
+            "submission_unverified_count",
+            "video_required_count",
         )
         assignments = ", ".join(f"{name} = ?" for name in columns)
         values = [int(counts.get(name, 0)) for name in columns]
@@ -394,6 +402,35 @@ class Ledger:
                 (packet.application_id, now, packet.job_id),
             )
         self.connection.commit()
+
+    def record_application_event(
+        self,
+        *,
+        application_id_value: str,
+        event_type: str,
+        external_key: str,
+        payload: Mapping[str, Any] | None = None,
+        created_at: str | None = None,
+    ) -> bool:
+        seed = f"{application_id_value}|{event_type}|{external_key}"
+        event_id = "event_" + hashlib.blake2b(seed.encode(), digest_size=10).hexdigest()
+        cursor = self.connection.execute(
+            """
+            INSERT OR IGNORE INTO application_events(
+              event_id, application_id, event_type, external_key, payload_json, created_at
+            ) VALUES (?, ?, ?, ?, ?, ?)
+            """,
+            (
+                event_id,
+                application_id_value,
+                event_type,
+                external_key,
+                json.dumps(dict(payload or {}), sort_keys=True),
+                created_at or utc_now(),
+            ),
+        )
+        self.connection.commit()
+        return cursor.rowcount == 1
 
     def upsert_review_queue(self, record: Mapping[str, Any]) -> None:
         if not should_sync_review_queue(record):

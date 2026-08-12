@@ -73,6 +73,8 @@ Confirmed current employers and clients always produce `SKIP / CURRENT_EMPLOYER_
 - `POSTING_DATE_UNVERIFIED`
 - `STALE_JOB`
 - `HUMAN_ONLY_ACTION`
+- `HUMAN_VERIFICATION_REQUIRED`
+- `TECHNICAL_FINAL_CLICK_RESTRICTED`
 
 Current-employer identities are represented by normalized fingerprints in tracked policy. Do not log or publish the private relationship.
 
@@ -105,6 +107,7 @@ Local jobs may be `DISCOVERED`, `SKIPPED`, `REVIEW`, or `CANDIDATE`. Human-facin
 - `SHORTLISTED`
 - `PREPARED`
 - `HELD`
+- `HUMAN_SUBMIT_READY`
 - `APPLIED`
 - `SUBMISSION_UNVERIFIED`
 - `ASSESSMENT`
@@ -120,13 +123,15 @@ An automated receipt remains `APPLIED`; it is not recruiter interest.
 
 Clicking an Apply control is not success. Mark `APPLIED` only after a confirmation page, ATS success state, employer confirmation, or appropriate acknowledgement proves submission. Persist the evidence type and timestamp.
 
+`HUMAN_SUBMIT_READY` means every live field and document has been prepared and verified and the only remaining action is Jariel's final submission control. It is not `APPLIED`, `HOLD`, `VIDEO_REQUIRED`, `POLICY_UNCLEAR`, or `SOURCE_RESTRICTED`. A later statement that Jariel clicked Submit must be reconciled as `VERIFIED_SUBMITTED`, `SUBMISSION_UNVERIFIED`, `NOT_SUBMITTED`, `FAILED`, or `DUPLICATE_RISK`; never assume success or click again blindly.
+
 ## Execution modes
 
 - `DRY_RUN`: discovery, normalization, eligibility, assessment, drafting, local persistence, safe tracker schema work, and read-only Gmail checks only. Submission handlers must not execute.
 - `DISCOVERY_ONLY`: discover and inspect; never submit.
 - `ASSISTED`: prepare and navigate only to the documented human boundary; do not claim submission without evidence.
 - `AUTONOMOUS`: allowed only after current platform policy is verified and `source-registry.yaml` explicitly permits live submission.
-- `AUTONOMOUS_CAMPAIGN`: apply the same per-application autonomy gate inside a persisted campaign with freshness priority, hold-and-continue behavior, separate verified-submission counting, and a hard submission cap.
+- `AUTONOMOUS_CAMPAIGN`: apply the hybrid execution gate inside a persisted campaign with freshness priority, hold-and-continue behavior, separate autonomous and human-ready metrics, and a hard outcome cap.
 - `DISABLED`: do not access the source.
 
 Initial calibration is complete for the control plane, but source permission remains ATS-specific. A proven assisted submission does not promote that ATS to autonomous use. Indeed, LinkedIn, and Greenhouse remain non-autonomous under their verified current policies. Workable is the first autonomous source because its candidate terms permit applying and its current documentation explicitly recognizes AI-assisted and automated applications. Employer-specific declarations on each form still override source-level permission.
@@ -134,6 +139,23 @@ Initial calibration is complete for the control plane, but source permission rem
 Jariel has granted standing candidate-side authorization for truthful job applications across all sources. Individual application approval is no longer required. This answers only whether the candidate permits submission; it never grants platform permission and never overrides source terms, employer declarations, CAPTCHA, identity verification, security controls, truthfulness, or application-readiness gates.
 
 Model applicant-side platform policy separately as `PERMITTED`, `RESTRICTED`, or `UNCLEAR`. Silence is `UNCLEAR`, not permission. An explicit restriction is `RESTRICTED`, not a generic manual handoff. Only `PERMITTED` can enable autonomous submission.
+
+## Hybrid execution model
+
+Standing candidate authorization applies globally, but source permission and technical capability still determine who performs the final click:
+
+```text
+eligible + complete + ready
+-> source permits autonomous submission and no human-only control
+   -> AUTO_SUBMIT -> verify -> APPLIED
+-> source is restricted/unclear, CAPTCHA or human verification is required,
+   or the final control cannot legitimately be automated
+   -> fully populate and verify -> HUMAN_SUBMIT_READY
+-> required video, inaccessible form, or genuine candidate fact/requirement gap
+   -> VIDEO_REQUIRED, FORM_INACCESSIBLE, or HOLD
+```
+
+The human-final-click branch authorizes preparation only. It never authorizes the agent to bypass CAPTCHA, identity/security verification, source restrictions, or a technically protected final control. Keep at most 5-10 fully prepared browser tabs open; overflow becomes `READY_FOR_BROWSER_PREP`.
 
 ## Live-autonomy policy
 
@@ -169,22 +191,24 @@ submission_authorization:
 
 Do not enable autonomy by changing run mode alone. The source must be explicitly verified for live submission, `live_submit` must be enabled, the calibration flag must be cleared, and the current assessment plus actual screening questions must pass the policy.
 
-## Bounded autonomous campaigns
+## Bounded hybrid campaigns
 
 `AUTONOMOUS_CAMPAIGN` uses these repository-owned limits:
 
 ```text
-minimum desired new verified submissions: 8
-normal target:                            10
-absolute maximum:                        13
-P0 freshness:                            0-7 days
-P1 freshness:                            8-14 days
+minimum desired new outcomes:        8
+normal target:                       10
+absolute maximum:                    13
+plausible raw/normalized inventory:  50 minimum, 100 target when available
+human-final-click browser batch:      5-10 tabs
+P0 freshness:                         0-7 days
+P1 freshness:                         8-14 days
 ```
 
-Only a submission backed by confirmation evidence increments `verified_submitted`. Prepared, held, failed, duplicate, and unverified attempts do not count. Stop immediately at 13 verified submissions. At 8 or more, stop when fresh high-quality inventory has been reasonably exhausted. Below 8, stop rather than weakening eligibility, fit, readiness, truthfulness, source, schedule, or compensation policy.
+An outcome is either an autonomous submission backed by confirmation evidence or a fully verified `HUMAN_SUBMIT_READY` application. Keep those metrics separate: human-ready never increments `APPLIED` or verified-submission counts. Stop immediately at 13 combined outcomes. At 8 or more, stop when fresh high-quality inventory has been reasonably exhausted. Below 8, stop rather than weakening eligibility, fit, readiness, truthfulness, source, schedule, or compensation policy.
 
 One blocked job never blocks the campaign. Persist its exact application and queue outcomes, then continue. Required video, inaccessible forms, human-only actions, unsupported consequential declarations, source restrictions, unclear policies, failed verification, inactive listings, and source-policy failures are per-job outcomes.
 
-Review Queue statuses are `AUTO_READY`, `SOURCE_RESTRICTED`, `POLICY_UNCLEAR`, `HOLD`, `VIDEO_REQUIRED`, `READY_TO_RETRY`, `FORM_INACCESSIBLE`, and `CLOSED`. `MANUAL_APPLY` and the generic queue-level `PREPARED` status are retired. Candidate authorization is global, so neither can represent an authorization boundary.
+Review Queue statuses are `HUMAN_SUBMIT_READY`, `READY_FOR_BROWSER_PREP`, `VIDEO_REQUIRED`, `HOLD`, `READY_TO_RETRY`, `SOURCE_RESTRICTED`, `POLICY_UNCLEAR`, `FORM_INACCESSIBLE`, `SUBMISSION_UNVERIFIED`, and `CLOSED`. `SOURCE_RESTRICTED` and `POLICY_UNCLEAR` describe applications that have not yet been fully prepared; once complete, their actionable status is `HUMAN_SUBMIT_READY` and source-policy detail remains in its dedicated column.
 
 Before every submission, query the SQLite ledger and Google Sheet for the canonical URL, employer, role, posting ID, description fingerprint, and previous events. Run `SENIOR_POSITIONING_REVIEW` on the complete live payload. Do not retry an unverified submission blindly.

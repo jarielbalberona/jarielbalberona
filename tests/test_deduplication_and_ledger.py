@@ -154,6 +154,51 @@ class DeduplicationTests(unittest.TestCase):
                 ).fetchone()["status"]
                 self.assertEqual(ApplicationStatus.HELD.value, updated_status)
 
+    def test_human_submit_ready_is_not_applied_and_event_is_idempotent(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            db = Path(directory) / "ledger.sqlite"
+            with Ledger(db) as ledger:
+                ledger.initialize()
+                stored_job = fixture_job(
+                    "greenhouse", "https://jobs.example.com/human-ready", "human-ready"
+                )
+                job_id, _ = ledger.upsert_job(stored_job)
+                packet = ApplicationPacket(
+                    application_id=job_id,
+                    job_id=job_id,
+                    company=stored_job.company,
+                    role=stored_job.role,
+                    narrative="Senior product engineering",
+                    selected_evidence=["Ordr.now"],
+                    letter="A role-specific letter.",
+                    screening_plan={"required_answer": "Resolved"},
+                    unresolved_questions=[],
+                    gaps=[],
+                    reasons=["POLICY_UNCLEAR"],
+                )
+                ledger.upsert_application(packet, ApplicationStatus.HUMAN_SUBMIT_READY)
+                first = ledger.record_application_event(
+                    application_id_value=job_id,
+                    event_type="HUMAN_SUBMIT_READY",
+                    external_key="campaign-1",
+                    payload={"final_control_clicked": False},
+                )
+                second = ledger.record_application_event(
+                    application_id_value=job_id,
+                    event_type="HUMAN_SUBMIT_READY",
+                    external_key="campaign-1",
+                    payload={"final_control_clicked": False},
+                )
+                status = ledger.connection.execute(
+                    "SELECT status, date_applied FROM applications WHERE application_id = ?",
+                    (job_id,),
+                ).fetchone()
+                self.assertEqual("HUMAN_SUBMIT_READY", status["status"])
+                self.assertIsNone(status["date_applied"])
+                self.assertTrue(first)
+                self.assertFalse(second)
+                self.assertEqual(1, ledger.table_count("application_events"))
+
     def test_media_requirement_audit_is_persisted_and_queryable(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             db = Path(directory) / "ledger.sqlite"

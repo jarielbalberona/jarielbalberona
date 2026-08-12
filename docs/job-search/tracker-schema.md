@@ -42,7 +42,7 @@ The original `Sheet1` tab is renamed to `Applications` without recreating it so 
 | Y | Follow-up Date |
 | Z | Notes |
 
-Create or update a row only for `SHORTLISTED`, `PREPARED`, `APPLIED`, or later states. Skip-only and dry-run discovery records stay local. A dry run may initialize the schema but must not create fake `APPLIED` rows.
+For the hybrid campaign, create or update an `Applications` row only after submission is independently verified (`APPLIED` or a later lifecycle state). `SHORTLISTED`, `PREPARED`, `HUMAN_SUBMIT_READY`, discovery, skip, and dry-run records stay local or in `Review Queue`. Existing legacy pre-application rows may remain, but new hybrid runs must not add more of them.
 
 ## Review Queue tab
 
@@ -79,25 +79,27 @@ Create or update a row only for `SHORTLISTED`, `PREPARED`, `APPLIED`, or later s
 | Y | Re-review After |
 | Z | Notes |
 
-Queue statuses are `AUTO_READY`, `SOURCE_RESTRICTED`, `POLICY_UNCLEAR`, `HOLD`, `VIDEO_REQUIRED`, `READY_TO_RETRY`, `FORM_INACCESSIBLE`, and `CLOSED`.
+Queue statuses are `HUMAN_SUBMIT_READY`, `READY_FOR_BROWSER_PREP`, `VIDEO_REQUIRED`, `HOLD`, `READY_TO_RETRY`, `SOURCE_RESTRICTED`, `POLICY_UNCLEAR`, `FORM_INACCESSIBLE`, `SUBMISSION_UNVERIFIED`, and `CLOSED`.
 
-- `AUTO_READY`: listing, payload, eligibility, source permission, and readiness gates all pass; no per-application approval is required.
+- `HUMAN_SUBMIT_READY`: the live form is fully populated and verified; Jariel's final click is the only remaining action. This is not an application submission.
+- `READY_FOR_BROWSER_PREP`: the packet is complete but has not been loaded into a live browser form, normally because the 5-10 tab human batch is full.
 - `SOURCE_RESTRICTED`: current applicant-side terms expressly prohibit the required automated or third-party submission action.
 - `POLICY_UNCLEAR`: current official applicant-side material is silent or ambiguous, so autonomous submission is not permitted.
 - `READY_TO_RETRY`: no candidate-fact blocker remains; re-open or re-inspect the live flow because a temporary access/form condition prevented final preparation.
 - `HOLD`: a genuine role requirement, candidate decision, or unsupported material fact remains.
 - `VIDEO_REQUIRED`: the only or primary candidate-owned blocker is a required introduction/recorded video.
 - `FORM_INACCESSIBLE`: the live application form cannot currently be inspected or prepared.
+- `SUBMISSION_UNVERIFIED`: a click or attempt occurred but independent confirmation evidence is absent; do not retry blindly or mark `APPLIED`.
 - `CLOSED`: inactive, submitted, rejected, withdrawn, or otherwise no longer active.
 
-Every active queue item must include a role-specific cover letter, even when the current form does not expose a cover-letter field. `Re-review After` is an input to future `$manage-job-search` runs: due non-closed rows are rechecked before fresh discovery inventory at the same priority.
+Every active queue item must include a role-specific cover letter, even when the current form does not expose a cover-letter field. If the employer expressly requires candidate-authored, non-AI application prose, that source rule overrides generation: store a source-restriction note plus candidate-writing prompts, leave the live narrative fields blank, and use `READY_FOR_BROWSER_PREP` until Jariel authors them. `Re-review After` is an input to future `$manage-job-search` runs: due non-closed rows are rechecked before fresh discovery inventory at the same priority.
 
 ## Controlled values
 
 - Verdict: `STRONG APPLY`, `APPLY`, `REVIEW`, `SKIP`
-- Application Status: `SHORTLISTED`, `PREPARED`, `APPLIED`, `ASSESSMENT`, `INTERVIEW`, `REJECTED`, `OFFER`, `WITHDRAWN`, `CLOSED`
+- Application Status: `APPLIED`, `SUBMISSION_UNVERIFIED`, `ASSESSMENT`, `INTERVIEW`, `REJECTED`, `OFFER`, `WITHDRAWN`, `CLOSED` (legacy rows may still contain `SHORTLISTED` or `PREPARED`; `HUMAN_SUBMIT_READY` belongs in Review Queue)
 - Response Type: `ACKNOWLEDGEMENT`, `RECRUITER CONTACT`, `REQUEST FOR INFORMATION`, `ASSESSMENT`, `INTERVIEW`, `REJECTION`, `OFFER`, `OTHER`
-- Queue Status: `AUTO_READY`, `SOURCE_RESTRICTED`, `POLICY_UNCLEAR`, `HOLD`, `VIDEO_REQUIRED`, `READY_TO_RETRY`, `FORM_INACCESSIBLE`, `CLOSED`
+- Queue Status: `HUMAN_SUBMIT_READY`, `READY_FOR_BROWSER_PREP`, `VIDEO_REQUIRED`, `HOLD`, `READY_TO_RETRY`, `SOURCE_RESTRICTED`, `POLICY_UNCLEAR`, `FORM_INACCESSIBLE`, `SUBMISSION_UNVERIFIED`, `CLOSED`
 
 ## Idempotency and transitions
 

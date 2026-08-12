@@ -14,10 +14,11 @@ Every application starts from the complete current job description. Never reuse 
 8. Inspect every live form control; search the canonical answer bank first, then resolve exact, strongest-supported, capability-depth, best-supported, and conservative answers. Surface only genuine material unknowns.
 9. Run `SENIOR_POSITIONING_REVIEW` across the complete live payload.
 10. Check the dated source execution policy and any employer-specific declarations.
-11. Submit only when the source, run mode, readiness, and campaign cap permit it.
-12. Require submission evidence before recording `APPLIED`.
-13. Persist the local event, sync the human tracker, and later reconcile inbound Gmail evidence.
-14. On a per-job blocker, hold or skip that application and continue the campaign.
+11. Choose the hybrid path: submit autonomously only when source, run mode, readiness, and campaign cap permit it; otherwise fully prepare a legitimate human-final-click fallback.
+12. For `HUMAN_FINAL_CLICK`, populate every field, attach every document, verify the payload, stop before the final control, and record `HUMAN_SUBMIT_READY`.
+13. Require submission evidence before recording `APPLIED`.
+14. Persist the local event, sync the human tracker, and later reconcile inbound Gmail evidence.
+15. On a per-job blocker, hold or skip that application and continue the campaign.
 
 ## Required assessment output
 

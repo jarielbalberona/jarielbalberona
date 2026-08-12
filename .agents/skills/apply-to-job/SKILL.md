@@ -20,7 +20,8 @@ load job
 -> prepare application
 -> resolve questions
 -> verify source policy and run mode
--> submit only if permitted
+-> choose AUTO_SUBMIT, HUMAN_FINAL_CLICK, or BLOCKED
+-> submit only if autonomously permitted; otherwise populate and stop at final click
 -> verify submission
 -> persist application and event
 -> sync tracker
@@ -49,12 +50,14 @@ Permit autonomy only when repository policy allows it:
 - `REVIEW`: Jariel review required.
 - `SKIP`: never apply.
 
-Do not enable live submission in this skill. Source policy and the calibration flag remain authoritative.
+For a complete application on a source that is `RESTRICTED` or `UNCLEAR`, or when CAPTCHA, human verification, or a technical final-click restriction applies, use `HUMAN_FINAL_CLICK`: populate every field, attach all documents, verify the payload, stop before the final control, and record `HUMAN_SUBMIT_READY`. Do not leave it as `SOURCE_RESTRICTED`, `POLICY_UNCLEAR`, or `HOLD` once only Jariel's click remains.
 
-For `AUTONOMOUS_CAMPAIGN`, also enforce the persisted campaign maximum before entering the submission handler. Count only verified submissions. If one application needs a video, human-only action, unsupported consequential declaration, inaccessible form, non-autonomous source, or unresolved verification, record `HELD`, `PREPARED`, `SKIP`, or `SUBMISSION_UNVERIFIED` and continue to the next job.
+For `AUTONOMOUS_CAMPAIGN`, also enforce the persisted campaign maximum before entering the submission handler. A campaign outcome is either an auto-verified submission or `HUMAN_SUBMIT_READY`, but keep those metrics separate. Required video, unsupported consequential declarations, inaccessible forms, and failed verification remain `VIDEO_REQUIRED`, `HOLD`, `FORM_INACCESSIBLE`, or `SUBMISSION_UNVERIFIED`; continue to the next job.
 
 ## Verification
 
 Do not equate clicking Apply with success. Require a confirmation page, ATS success state, employer confirmation, or appropriate acknowledgement. Record evidence type and time. Without evidence, use `SUBMISSION_UNVERIFIED` and do not mark `APPLIED`.
 
 Never send recruiter messages unless separately authorized. Never store browser or authentication state in Git.
+
+If Jariel later reports clicking Submit, independently reconcile the live page or acknowledgement as `VERIFIED_SUBMITTED`, `SUBMISSION_UNVERIFIED`, `NOT_SUBMITTED`, `FAILED`, or `DUPLICATE_RISK`. Only verified evidence may transition the application to `APPLIED`, exactly once.

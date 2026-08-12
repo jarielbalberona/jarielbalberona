@@ -149,6 +149,14 @@ def run_dry_run(
         "assessed_count": 0,
         "held_count": 0,
         "verified_submitted_count": 0,
+        "auto_submitted_count": 0,
+        "auto_verified_submitted_count": 0,
+        "human_submit_ready_count": 0,
+        "ready_for_browser_prep_count": 0,
+        "human_clicked_count": 0,
+        "human_verified_submitted_count": 0,
+        "submission_unverified_count": 0,
+        "video_required_count": 0,
     }
     errors: list[str] = []
     ranked: list[dict[str, Any]] = []

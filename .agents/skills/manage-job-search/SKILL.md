@@ -31,12 +31,12 @@ Use the smaller skills for their stages. Do not restate their policy from memory
 7. Rank `STRONG APPLY`, `APPLY`, and `REVIEW` jobs. Keep hard-blocked roles out regardless of technical fit.
 8. Invoke `$prepare-job-application` for the best real candidates. Search the canonical answer bank first, then use candidate and project evidence, strongest-supported senior interpretations, direct and transferable capabilities, best-supported answers, conservative estimates, and compensation policy automatically. Preserve advertised ranges and classify Philippines-targeted versus direct-international compensation context before choosing an expectation; escalate only genuine material unknowns.
 9. Run `SENIOR_POSITIONING_REVIEW`; revise `UNNECESSARY_UNDERSELL`, block `UNSUPPORTED_OVERCLAIM`, and keep capability evidence distinct from specific vendor claims.
-10. Invoke `$apply-to-job` only when explicitly in scope. In `AUTONOMOUS_CAMPAIGN`, use source-specific live policy, the 8/10/13 targets, the hard cap, and verified-submission counting. A held or failed job must not stop the campaign.
-11. Persist worthwhile held, prepared, or review-only jobs to Review Queue with exact blocking reason, prepared answers, role-specific cover letter, media state, source policy, next action, and re-review date. Never queue hard `SKIP` jobs.
+10. Invoke `$apply-to-job` only when explicitly in scope. In `AUTONOMOUS_CAMPAIGN`, use the hybrid `AUTO_SUBMIT` / `HUMAN_FINAL_CLICK` decision, source-specific live policy, the 8/10/13 combined-outcome targets, separate metrics, and hard cap. A held or failed job must not stop the campaign.
+11. Fully populate and verify legitimate human-final-click applications, stop before the final control, and record `HUMAN_SUBMIT_READY`. Keep only 5-10 such tabs open; overflow is `READY_FOR_BROWSER_PREP`. Persist genuine holds and review-only jobs with exact reason, prepared answers, role-specific cover letter, media state, source policy, next action, and re-review date. Never queue hard `SKIP` jobs.
 12. Persist per-job outcome, evidence, errors, and every external action.
 13. Invoke `$sync-job-application-tracker` only for meaningful lifecycle rows and Review Queue transitions.
 14. Invoke `$check-job-application-responses` narrowly and read-only when follow-up is requested.
-15. Finish the run with discovered, eligible, assessed, verdict, prepared, held, skipped, submitted, and verified-submitted counts; external writes; errors; and zero-submission confirmation when dry-running.
+15. Finish the run with discovered, eligible, assessed, verdict, prepared, auto-submitted, auto-verified-submitted, human-submit-ready, ready-for-browser-prep, human-clicked, human-verified-submitted, submission-unverified, video-required, held, and skipped counts; external writes; errors; and zero-submission confirmation when dry-running.
 
 ## Eligibility gate
 

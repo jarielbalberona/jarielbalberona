@@ -17,6 +17,21 @@ class ApplicantAutomationPolicy(StrEnum):
     UNCLEAR = "UNCLEAR"
 
 
+class HybridExecutionPath(StrEnum):
+    AUTO_SUBMIT = "AUTO_SUBMIT"
+    HUMAN_FINAL_CLICK = "HUMAN_FINAL_CLICK"
+    HUMAN_BROWSER_PREP = "HUMAN_BROWSER_PREP"
+    BLOCKED = "BLOCKED"
+
+
+class HumanSubmissionReconciliation(StrEnum):
+    VERIFIED_SUBMITTED = "VERIFIED_SUBMITTED"
+    SUBMISSION_UNVERIFIED = "SUBMISSION_UNVERIFIED"
+    NOT_SUBMITTED = "NOT_SUBMITTED"
+    FAILED = "FAILED"
+    DUPLICATE_RISK = "DUPLICATE_RISK"
+
+
 @dataclass(frozen=True, slots=True)
 class SubmissionAuthorization:
     user_authorized_globally: bool = False
@@ -49,6 +64,32 @@ class AutonomyDecision:
     permitted: bool
     requires_review: bool
     reason_codes: tuple[str, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class HybridExecutionDecision:
+    path: HybridExecutionPath
+    queue_status: str | None
+    reason_codes: tuple[str, ...]
+
+
+def reconcile_human_submission(
+    *,
+    human_click_reported: bool,
+    confirmation_verified: bool,
+    failure_observed: bool = False,
+    duplicate_risk: bool = False,
+) -> HumanSubmissionReconciliation:
+    """Classify a reported human click without treating the report as submission proof."""
+    if duplicate_risk:
+        return HumanSubmissionReconciliation.DUPLICATE_RISK
+    if confirmation_verified:
+        return HumanSubmissionReconciliation.VERIFIED_SUBMITTED
+    if failure_observed:
+        return HumanSubmissionReconciliation.FAILED
+    if human_click_reported:
+        return HumanSubmissionReconciliation.SUBMISSION_UNVERIFIED
+    return HumanSubmissionReconciliation.NOT_SUBMITTED
 
 
 def evaluate_live_autonomy(
@@ -106,6 +147,91 @@ def evaluate_live_autonomy(
         permitted=not unique_reasons,
         requires_review=requires_review,
         reason_codes=unique_reasons,
+    )
+
+
+def evaluate_hybrid_execution(
+    *,
+    assessment: Assessment,
+    source_policy: SourcePolicy,
+    unresolved_questions: list[str],
+    calibration_stage: bool,
+    submission_authorization: SubmissionAuthorization = SubmissionAuthorization(),
+    policy: LiveAutonomyPolicy = LiveAutonomyPolicy(),
+    required_video: bool = False,
+    genuine_candidate_blocker: bool = False,
+    form_accessible: bool = True,
+    human_verification_required: bool = False,
+    technical_final_click_restricted: bool = False,
+    candidate_authored_prose_required: bool = False,
+) -> HybridExecutionDecision:
+    """Choose autonomous submission, human final click, or a genuine hold.
+
+    Applicant-side policy uncertainty may forbid agent submission, but it does not
+    forbid preparing an otherwise complete application for Jariel's final click.
+    """
+    if required_video:
+        return HybridExecutionDecision(
+            HybridExecutionPath.BLOCKED,
+            "VIDEO_REQUIRED",
+            ("REQUIRED_VIDEO_INTRO",),
+        )
+    if not form_accessible:
+        return HybridExecutionDecision(
+            HybridExecutionPath.BLOCKED,
+            "FORM_INACCESSIBLE",
+            ("FORM_INACCESSIBLE",),
+        )
+    if genuine_candidate_blocker:
+        return HybridExecutionDecision(
+            HybridExecutionPath.BLOCKED,
+            "HOLD",
+            ("GENUINE_CANDIDATE_BLOCKER",),
+        )
+    if candidate_authored_prose_required:
+        return HybridExecutionDecision(
+            HybridExecutionPath.HUMAN_BROWSER_PREP,
+            "READY_FOR_BROWSER_PREP",
+            ("SOURCE_REQUIRES_CANDIDATE_AUTHORED_PROSE",),
+        )
+
+    autonomy = evaluate_live_autonomy(
+        assessment=assessment,
+        source_policy=source_policy,
+        unresolved_questions=unresolved_questions,
+        calibration_stage=calibration_stage,
+        submission_authorization=submission_authorization,
+        policy=policy,
+    )
+    if autonomy.permitted and not human_verification_required and not technical_final_click_restricted:
+        return HybridExecutionDecision(HybridExecutionPath.AUTO_SUBMIT, None, ())
+
+    human_fallback_reasons = {
+        "SOURCE_RESTRICTED",
+        "POLICY_UNCLEAR",
+        "SOURCE_NOT_AUTONOMOUS",
+        "SOURCE_EXECUTION_FORBIDDEN",
+    }
+    reasons = list(autonomy.reason_codes)
+    if human_verification_required:
+        reasons.append("HUMAN_VERIFICATION_REQUIRED")
+    if technical_final_click_restricted:
+        reasons.append("TECHNICAL_FINAL_CLICK_RESTRICTED")
+    unique_reasons = tuple(dict.fromkeys(reasons))
+    non_fallback_reasons = set(unique_reasons) - human_fallback_reasons - {
+        "HUMAN_VERIFICATION_REQUIRED",
+        "TECHNICAL_FINAL_CLICK_RESTRICTED",
+    }
+    if not non_fallback_reasons:
+        return HybridExecutionDecision(
+            HybridExecutionPath.HUMAN_FINAL_CLICK,
+            "HUMAN_SUBMIT_READY",
+            unique_reasons,
+        )
+    return HybridExecutionDecision(
+        HybridExecutionPath.BLOCKED,
+        "HOLD",
+        unique_reasons,
     )
 
 

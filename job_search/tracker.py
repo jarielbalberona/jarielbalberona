@@ -130,13 +130,15 @@ REVIEW_QUEUE_FIELD_MAP = {
 }
 
 REVIEW_QUEUE_STATUSES = (
-    "AUTO_READY",
+    "HUMAN_SUBMIT_READY",
+    "READY_FOR_BROWSER_PREP",
+    "VIDEO_REQUIRED",
+    "HOLD",
+    "READY_TO_RETRY",
     "SOURCE_RESTRICTED",
     "POLICY_UNCLEAR",
-    "HOLD",
-    "VIDEO_REQUIRED",
-    "READY_TO_RETRY",
     "FORM_INACCESSIBLE",
+    "SUBMISSION_UNVERIFIED",
     "CLOSED",
 )
 
@@ -154,6 +156,9 @@ def classify_review_queue_status(
     video_required: bool = False,
     form_accessible: bool = True,
     retry_ready: bool = False,
+    human_submit_ready: bool = False,
+    ready_for_browser_prep: bool = False,
+    submission_unverified: bool = False,
 ) -> str:
     """Return the primary actionable queue state without inventing a manual-approval gate."""
     policy_status = applicant_automation_policy.strip().upper()
@@ -167,11 +172,19 @@ def classify_review_queue_status(
         return "READY_TO_RETRY" if retry_ready else "FORM_INACCESSIBLE"
     if role_or_candidate_hold:
         return "HOLD"
+    if submission_unverified:
+        return "SUBMISSION_UNVERIFIED"
+    if human_submit_ready:
+        return "HUMAN_SUBMIT_READY"
+    if ready_for_browser_prep:
+        return "READY_FOR_BROWSER_PREP"
     if policy_status == "RESTRICTED":
         return "SOURCE_RESTRICTED"
     if policy_status == "UNCLEAR":
         return "POLICY_UNCLEAR"
-    return "AUTO_READY" if auto_readiness_passes else "HOLD"
+    # A permitted, ready application normally exits the queue via autonomous
+    # submission. If it remains queued, the browser preparation is still pending.
+    return "READY_FOR_BROWSER_PREP" if auto_readiness_passes else "HOLD"
 
 
 def _display(value: Any) -> Any:

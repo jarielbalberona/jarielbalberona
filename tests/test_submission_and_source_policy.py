@@ -17,12 +17,16 @@ from job_search.source_registry import (
 )
 from job_search.submission import (
     ApplicantAutomationPolicy,
+    HumanSubmissionReconciliation,
+    HybridExecutionPath,
     SourcePolicy,
     SubmissionAuthorization,
     SubmissionBlocked,
     SubmissionController,
     SubmissionEvidence,
+    evaluate_hybrid_execution,
     evaluate_live_autonomy,
+    reconcile_human_submission,
 )
 
 
@@ -247,6 +251,118 @@ class SubmissionTests(unittest.TestCase):
                 self.assertFalse(decision.permitted)
                 self.assertIn(reason, decision.reason_codes)
 
+    def test_permitted_workable_routes_to_auto_submit(self) -> None:
+        decision = evaluate_hybrid_execution(
+            assessment=assessment(Verdict.STRONG_APPLY, 98),
+            source_policy=SourcePolicy(
+                RunMode.AUTONOMOUS,
+                True,
+                "2026-08-12",
+                ApplicantAutomationPolicy.PERMITTED,
+            ),
+            unresolved_questions=[],
+            calibration_stage=False,
+            submission_authorization=GLOBAL_AUTHORIZATION,
+        )
+        self.assertEqual(HybridExecutionPath.AUTO_SUBMIT, decision.path)
+
+    def test_candidate_authored_prose_routes_to_browser_prep_without_hold(self) -> None:
+        decision = evaluate_hybrid_execution(
+            assessment=assessment(Verdict.STRONG_APPLY, 98),
+            source_policy=SourcePolicy(
+                RunMode.DISCOVERY_ONLY,
+                False,
+                "2026-08-12",
+                ApplicantAutomationPolicy.UNCLEAR,
+            ),
+            unresolved_questions=[],
+            calibration_stage=False,
+            submission_authorization=GLOBAL_AUTHORIZATION,
+            candidate_authored_prose_required=True,
+        )
+        self.assertEqual(HybridExecutionPath.HUMAN_BROWSER_PREP, decision.path)
+        self.assertEqual("READY_FOR_BROWSER_PREP", decision.queue_status)
+        self.assertEqual(
+            ("SOURCE_REQUIRES_CANDIDATE_AUTHORED_PROSE",), decision.reason_codes
+        )
+
+    def test_unclear_greenhouse_and_ashby_route_to_human_final_click(self) -> None:
+        for ats in ("Greenhouse", "Ashby"):
+            with self.subTest(ats=ats):
+                decision = evaluate_hybrid_execution(
+                    assessment=assessment(Verdict.STRONG_APPLY, 98),
+                    source_policy=SourcePolicy(
+                        RunMode.DISCOVERY_ONLY,
+                        False,
+                        "2026-08-12",
+                        ApplicantAutomationPolicy.UNCLEAR,
+                    ),
+                    unresolved_questions=[],
+                    calibration_stage=False,
+                    submission_authorization=GLOBAL_AUTHORIZATION,
+                )
+                self.assertEqual(HybridExecutionPath.HUMAN_FINAL_CLICK, decision.path)
+                self.assertEqual("HUMAN_SUBMIT_READY", decision.queue_status)
+                self.assertIn("POLICY_UNCLEAR", decision.reason_codes)
+
+    def test_required_video_remains_video_required(self) -> None:
+        decision = evaluate_hybrid_execution(
+            assessment=assessment(Verdict.STRONG_APPLY, 98),
+            source_policy=SourcePolicy(
+                RunMode.AUTONOMOUS,
+                True,
+                "2026-08-12",
+                ApplicantAutomationPolicy.PERMITTED,
+            ),
+            unresolved_questions=[],
+            calibration_stage=False,
+            submission_authorization=GLOBAL_AUTHORIZATION,
+            required_video=True,
+        )
+        self.assertEqual(HybridExecutionPath.BLOCKED, decision.path)
+        self.assertEqual("VIDEO_REQUIRED", decision.queue_status)
+
+    def test_genuine_candidate_gap_remains_hold(self) -> None:
+        decision = evaluate_hybrid_execution(
+            assessment=assessment(Verdict.STRONG_APPLY, 98),
+            source_policy=SourcePolicy(
+                RunMode.AUTONOMOUS,
+                True,
+                "2026-08-12",
+                ApplicantAutomationPolicy.PERMITTED,
+            ),
+            unresolved_questions=[],
+            calibration_stage=False,
+            submission_authorization=GLOBAL_AUTHORIZATION,
+            genuine_candidate_blocker=True,
+        )
+        self.assertEqual(HybridExecutionPath.BLOCKED, decision.path)
+        self.assertEqual("HOLD", decision.queue_status)
+
+    def test_human_submit_report_needs_independent_confirmation(self) -> None:
+        self.assertEqual(
+            HumanSubmissionReconciliation.SUBMISSION_UNVERIFIED,
+            reconcile_human_submission(
+                human_click_reported=True,
+                confirmation_verified=False,
+            ),
+        )
+        self.assertEqual(
+            HumanSubmissionReconciliation.VERIFIED_SUBMITTED,
+            reconcile_human_submission(
+                human_click_reported=True,
+                confirmation_verified=True,
+            ),
+        )
+        self.assertEqual(
+            HumanSubmissionReconciliation.DUPLICATE_RISK,
+            reconcile_human_submission(
+                human_click_reported=True,
+                confirmation_verified=False,
+                duplicate_risk=True,
+            ),
+        )
+
     def test_autonomous_controller_enforces_current_assessment(self) -> None:
         controller = SubmissionController()
         result = controller.submit(
@@ -301,9 +417,10 @@ class SubmissionTests(unittest.TestCase):
             ).stop_reason,
         )
         self.assertEqual(
-            CampaignStopReason.MAXIMUM_VERIFIED_SUBMISSIONS,
+            CampaignStopReason.MAXIMUM_APPLICATION_OUTCOMES,
             evaluate_campaign_progress(
-                verified_submitted=CampaignPolicy().maximum_new_submissions,
+                verified_submitted=3,
+                human_submit_ready=CampaignPolicy().maximum_new_submissions - 3,
                 quality_inventory_exhausted=False,
             ).stop_reason,
         )

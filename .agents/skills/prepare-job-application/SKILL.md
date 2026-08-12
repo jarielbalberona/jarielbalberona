@@ -20,7 +20,8 @@ Read `docs/job-search/application-workflow.md`, `docs/job-search/application-ans
 9. Treat every forced-choice option as a complete claim. Select the strongest option for which every material scale, vendor, environment, migration, traffic, or scope assertion is supported; preserve more precise depth in free text when available.
 10. Resolve discovery-source questions from original provenance. Keep discovery channel, destination page, and ATS host separate; an ATS is not the discovery channel merely because it hosts the form.
 11. Scan public text for confidential client names, unrelated employer names, fabricated metrics, generic flattery, keyword dumps, and em dashes.
-12. Persist the packet, answer metadata, positioning review, and compensation decision under ignored `.job-search/artifacts/` and in SQLite.
+12. Persist the packet, answer metadata, positioning review, compensation decision, and intended execution path under ignored `.job-search/artifacts/` and in SQLite. A complete human-final-click packet remains `HUMAN_SUBMIT_READY`, never `APPLIED`.
+13. If the employer expressly prohibits AI-generated application prose, do not generate or enter it. Store a source-policy note and candidate-writing prompts instead, prepare only exact user-supplied facts, and keep the application at `READY_FOR_BROWSER_PREP` until Jariel authors the required responses.
 
 Avoid `I am thrilled to apply`, exaggerated mission praise, `unique blend`, generic autobiographies, and CV repetition. Rewrite for every role.
 

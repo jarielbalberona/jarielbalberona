@@ -18,7 +18,7 @@ Read `docs/job-search/tracker-schema.md`. Use the Google Sheets connector, not b
 
 ## Upsert
 
-1. Sync only `SHORTLISTED`, `PREPARED`, `APPLIED`, or later records.
+1. Sync only independently verified `APPLIED` or later lifecycle records to `Applications`. Keep `HUMAN_SUBMIT_READY` in `Review Queue`; do not add pre-submission hybrid records to `Applications`.
 2. Search by Application ID and canonical URL before appending.
 3. Update the existing row when found; never append a duplicate.
 4. Preserve non-empty manual Sheet status, next action, follow-up date, and notes unless an explicitly authorized newer state wins.
@@ -29,9 +29,9 @@ Log the spreadsheet, tab, range, row action, and fields changed without exposing
 
 ## Review Queue
 
-1. Sync only worthwhile `PREPARED`, `HELD`, `REVIEW`, or `READY TO APPLY` records plus explicit `CLOSED` transitions. Never queue `SKIP`.
+1. Sync only records using the canonical queue taxonomy: `HUMAN_SUBMIT_READY`, `READY_FOR_BROWSER_PREP`, `VIDEO_REQUIRED`, `HOLD`, `READY_TO_RETRY`, `SOURCE_RESTRICTED`, `POLICY_UNCLEAR`, `FORM_INACCESSIBLE`, `SUBMISSION_UNVERIFIED`, or explicit `CLOSED`. Never queue `SKIP`.
 2. Match by Queue ID, canonical job URL, then normalized employer plus role. Queue ID remains bound in SQLite to posting ID and description hash.
-3. Require a role-specific cover letter and prepared screening summary for every active row, even when the live form lacks a cover-letter field.
+3. Require a role-specific cover letter and prepared screening summary for every active row, even when the live form lacks a cover-letter field. When the source expressly prohibits AI-generated application prose, accept a source-restriction note plus candidate-writing prompts instead and keep the row `READY_FOR_BROWSER_PREP`.
 4. Preserve non-empty manual queue status, next action, re-review date, and notes unless an explicitly authorized or proven lifecycle transition is newer.
 5. When submission is verified, upsert `Applications` once, close the matching queue row, clear its re-review date, and direct future monitoring to `Applications`.
 6. Treat due non-closed `Re-review After` dates as inputs to future `$manage-job-search` runs.
