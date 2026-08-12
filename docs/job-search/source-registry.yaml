@@ -1,4 +1,4 @@
-version: 2
+version: 3
 default_run_mode: AUTONOMOUS_CAMPAIGN
 autonomy_calibration_stage: false
 strong_apply_readiness_threshold: 85
@@ -9,6 +9,10 @@ campaign_maximum_new_submissions: 13
 p0_max_age_days: 7
 p1_max_age_days: 14
 
+submission_authorization:
+  user_authorized_globally: true
+  individual_application_approval_required: false
+
 sources:
   indeed_ph:
     url: "https://ph.indeed.com/?from=gnav-jobseeker-profile--profile-one-frontend"
@@ -17,6 +21,7 @@ sources:
     discovery: true
     execution_mode: DISCOVERY_ONLY
     live_submit: false
+    applicant_automation_policy: RESTRICTED
     policy_verified_at: "2026-08-12"
     policy_evidence: "https://www.indeed.com/legal?hl=en_US"
     note: "Indeed prohibits third-party automation of Indeed Apply. Never submit autonomously on Indeed; use a legitimate external employer destination only under that destination's own policy."
@@ -27,6 +32,7 @@ sources:
     discovery: false
     execution_mode: DISCOVERY_ONLY
     live_submit: false
+    applicant_automation_policy: RESTRICTED
     policy_verified_at: "2026-08-12"
     policy_evidence: "https://www.linkedin.com/legal/user-agreement"
     note: "LinkedIn prohibits unauthorized automated access and activity. Do not automate discovery or submission on LinkedIn."
@@ -38,6 +44,7 @@ sources:
     discovery: true
     execution_mode: AUTONOMOUS
     live_submit: true
+    applicant_automation_policy: PERMITTED
     policy_verified_at: "2026-08-12"
     policy_evidence: "https://jobs.workable.com/terms"
     supporting_evidence: "https://help.workable.com/hc/en-us/articles/35293126257815-Managing-AI-assisted-and-automated-job-applications"
@@ -50,9 +57,11 @@ sources:
     discovery: true
     execution_mode: DISCOVERY_ONLY
     live_submit: false
+    applicant_automation_policy: UNCLEAR
     policy_verified_at: "2026-08-12"
     policy_evidence: "https://my.greenhouse.io/users/agreement"
-    note: "Greenhouse's job-seeker user agreement prohibits automated means. Fueled proved the assisted flow only; autonomous Greenhouse submission remains disabled."
+    supporting_evidence: "https://www.greenhouse.com/privacy-policy"
+    note: "The MyGreenhouse account route expressly prohibits automated means, but that agreement defines its Services as MyGreenhouse. Current official material for unauthenticated public Greenhouse-hosted job-board forms does not affirmatively permit third-party applicant submission, so the direct form route is POLICY_UNCLEAR and live submission remains disabled."
 
   ashby:
     url: "https://jobs.ashbyhq.com/"
@@ -61,8 +70,10 @@ sources:
     discovery: true
     execution_mode: DISCOVERY_ONLY
     live_submit: false
+    applicant_automation_policy: UNCLEAR
     policy_verified_at: "2026-08-12"
     policy_evidence: "https://www.ashbyhq.com/resources/terms"
+    supporting_evidence: "https://www.ashbyhq.com/resources/privacy"
     note: "Ashby's public terms are customer-facing and do not establish applicant-side autonomous submission permission. Keep discovery-only."
 
   recruitee:
@@ -71,6 +82,7 @@ sources:
     discovery: true
     execution_mode: DISCOVERY_ONLY
     live_submit: false
+    applicant_automation_policy: UNCLEAR
     policy_verified_at: null
     note: "ShortPoint proved the form semantics but not autonomous submission permission."
 
@@ -80,6 +92,7 @@ sources:
     discovery: true
     execution_mode: DISCOVERY_ONLY
     live_submit: false
+    applicant_automation_policy: UNCLEAR
     policy_verified_at: "2026-08-12"
     policy_evidence: "https://www.lever.co/terms-of-service/"
     note: "Lever's public terms are customer-facing and do not establish applicant-side autonomous submission permission. Keep discovery-only."
@@ -91,6 +104,7 @@ sources:
     discovery: true
     execution_mode: DISCOVERY_ONLY
     live_submit: false
+    applicant_automation_policy: UNCLEAR
     policy_verified_at: "2026-08-12"
     policy_evidence: "https://www.teamtailor.com/en/privacy-policy/"
     note: "Public career sites may be discovered. Teamtailor's current public privacy material does not establish applicant-side autonomous submission permission, so live submission remains disabled."
@@ -102,6 +116,7 @@ sources:
     discovery: true
     execution_mode: DISCOVERY_ONLY
     live_submit: false
+    applicant_automation_policy: UNCLEAR
     policy_verified_at: null
     note: "Public career sites may be discovered, but no current official applicant-side automation permission was found. Keep discovery-only."
 
@@ -111,6 +126,7 @@ sources:
     discovery: true
     execution_mode: ASSISTED
     live_submit: false
+    applicant_automation_policy: UNCLEAR
     policy_verified_at: null
     note: "No blanket permission. Promote an employer-specific form only after its current terms and submission behavior are verified."
 
@@ -120,6 +136,7 @@ sources:
     discovery: false
     execution_mode: DISCOVERY_ONLY
     live_submit: false
+    applicant_automation_policy: UNCLEAR
     policy_verified_at: null
 
   outsourced:
@@ -128,6 +145,7 @@ sources:
     discovery: false
     execution_mode: DISCOVERY_ONLY
     live_submit: false
+    applicant_automation_policy: UNCLEAR
     policy_verified_at: null
 
   cloudstaff:
@@ -136,6 +154,7 @@ sources:
     discovery: false
     execution_mode: DISCOVERY_ONLY
     live_submit: false
+    applicant_automation_policy: UNCLEAR
     policy_verified_at: null
 
   remote_staff:
@@ -144,6 +163,7 @@ sources:
     discovery: false
     execution_mode: DISCOVERY_ONLY
     live_submit: false
+    applicant_automation_policy: UNCLEAR
     policy_verified_at: null
 
   reddit_pinoyprogrammer:
@@ -152,6 +172,7 @@ sources:
     discovery: false
     execution_mode: DISCOVERY_ONLY
     live_submit: false
+    applicant_automation_policy: UNCLEAR
     policy_verified_at: null
 
   reddit_forhire:
@@ -160,6 +181,7 @@ sources:
     discovery: false
     execution_mode: DISCOVERY_ONLY
     live_submit: false
+    applicant_automation_policy: UNCLEAR
     policy_verified_at: null
 
   kalibrr:
@@ -168,6 +190,7 @@ sources:
     discovery: false
     execution_mode: DISCOVERY_ONLY
     live_submit: false
+    applicant_automation_policy: UNCLEAR
     policy_verified_at: null
 
   virtualstaff_ph:
@@ -176,6 +199,7 @@ sources:
     discovery: false
     execution_mode: DISCOVERY_ONLY
     live_submit: false
+    applicant_automation_policy: UNCLEAR
     policy_verified_at: null
 
   bossjob:
@@ -184,6 +208,7 @@ sources:
     discovery: false
     execution_mode: DISCOVERY_ONLY
     live_submit: false
+    applicant_automation_policy: UNCLEAR
     policy_verified_at: null
 
 # Browser capability never grants submission authority. Before promoting any

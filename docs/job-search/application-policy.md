@@ -64,6 +64,10 @@ Confirmed current employers and clients always produce `SKIP / CURRENT_EMPLOYER_
 - `VERDICT_SKIP`
 - `SOURCE_NOT_AUTONOMOUS`
 - `SOURCE_EXECUTION_FORBIDDEN`
+- `SOURCE_RESTRICTED`
+- `POLICY_UNCLEAR`
+- `GLOBAL_USER_AUTHORIZATION_MISSING`
+- `INDIVIDUAL_APPLICATION_APPROVAL_REQUIRED`
 - `SUBMISSION_UNVERIFIED`
 - `CAMPAIGN_MAXIMUM_REACHED`
 - `POSTING_DATE_UNVERIFIED`
@@ -127,6 +131,10 @@ Clicking an Apply control is not success. Mark `APPLIED` only after a confirmati
 
 Initial calibration is complete for the control plane, but source permission remains ATS-specific. A proven assisted submission does not promote that ATS to autonomous use. Indeed, LinkedIn, and Greenhouse remain non-autonomous under their verified current policies. Workable is the first autonomous source because its candidate terms permit applying and its current documentation explicitly recognizes AI-assisted and automated applications. Employer-specific declarations on each form still override source-level permission.
 
+Jariel has granted standing candidate-side authorization for truthful job applications across all sources. Individual application approval is no longer required. This answers only whether the candidate permits submission; it never grants platform permission and never overrides source terms, employer declarations, CAPTCHA, identity verification, security controls, truthfulness, or application-readiness gates.
+
+Model applicant-side platform policy separately as `PERMITTED`, `RESTRICTED`, or `UNCLEAR`. Silence is `UNCLEAR`, not permission. An explicit restriction is `RESTRICTED`, not a generic manual handoff. Only `PERMITTED` can enable autonomous submission.
+
 ## Live-autonomy policy
 
 The bounded live policy is:
@@ -151,7 +159,13 @@ SKIP
 -> never apply
 ```
 
-The higher `APPLY` threshold prevents a merely acceptable fit from becoming autonomous without unusually strong readiness evidence. Individual approval for every strong application is a calibration-stage rule, not the intended permanent operating model.
+The higher `APPLY` threshold prevents a merely acceptable fit from becoming autonomous without unusually strong readiness evidence. The candidate-side authorization is now global:
+
+```yaml
+submission_authorization:
+  user_authorized_globally: true
+  individual_application_approval_required: false
+```
 
 Do not enable autonomy by changing run mode alone. The source must be explicitly verified for live submission, `live_submit` must be enabled, the calibration flag must be cleared, and the current assessment plus actual screening questions must pass the policy.
 
@@ -169,6 +183,8 @@ P1 freshness:                            8-14 days
 
 Only a submission backed by confirmation evidence increments `verified_submitted`. Prepared, held, failed, duplicate, and unverified attempts do not count. Stop immediately at 13 verified submissions. At 8 or more, stop when fresh high-quality inventory has been reasonably exhausted. Below 8, stop rather than weakening eligibility, fit, readiness, truthfulness, source, schedule, or compensation policy.
 
-One blocked job never blocks the campaign. Persist its exact outcome as `HELD`, `SKIP`, or `PREPARED`, then continue. Required video, inaccessible forms, human-only actions, unsupported consequential declarations, non-autonomous sources, failed verification, inactive listings, and source-policy failures are per-job outcomes.
+One blocked job never blocks the campaign. Persist its exact application and queue outcomes, then continue. Required video, inaccessible forms, human-only actions, unsupported consequential declarations, source restrictions, unclear policies, failed verification, inactive listings, and source-policy failures are per-job outcomes.
+
+Review Queue statuses are `AUTO_READY`, `SOURCE_RESTRICTED`, `POLICY_UNCLEAR`, `HOLD`, `VIDEO_REQUIRED`, `READY_TO_RETRY`, `FORM_INACCESSIBLE`, and `CLOSED`. `MANUAL_APPLY` and the generic queue-level `PREPARED` status are retired. Candidate authorization is global, so neither can represent an authorization boundary.
 
 Before every submission, query the SQLite ledger and Google Sheet for the canonical URL, employer, role, posting ID, description fingerprint, and previous events. Run `SENIOR_POSITIONING_REVIEW` on the complete live payload. Do not retry an unverified submission blindly.

@@ -130,12 +130,12 @@ REVIEW_QUEUE_FIELD_MAP = {
 }
 
 REVIEW_QUEUE_STATUSES = (
-    "MANUAL_APPLY",
-    "READY_TO_RETRY",
-    "PREPARED",
+    "AUTO_READY",
+    "SOURCE_RESTRICTED",
+    "POLICY_UNCLEAR",
     "HOLD",
     "VIDEO_REQUIRED",
-    "SOURCE_RESTRICTED",
+    "READY_TO_RETRY",
     "FORM_INACCESSIBLE",
     "CLOSED",
 )
@@ -143,6 +143,35 @@ REVIEW_QUEUE_STATUSES = (
 REVIEW_QUEUE_MANUAL_PRESERVE_FIELDS = frozenset(
     {"Queue Status", "Next Action", "Re-review After", "Notes"}
 )
+
+
+def classify_review_queue_status(
+    *,
+    applicant_automation_policy: str,
+    auto_readiness_passes: bool,
+    closed: bool = False,
+    role_or_candidate_hold: bool = False,
+    video_required: bool = False,
+    form_accessible: bool = True,
+    retry_ready: bool = False,
+) -> str:
+    """Return the primary actionable queue state without inventing a manual-approval gate."""
+    policy_status = applicant_automation_policy.strip().upper()
+    if policy_status not in {"PERMITTED", "RESTRICTED", "UNCLEAR"}:
+        raise ValueError(f"unsupported applicant automation policy: {applicant_automation_policy}")
+    if closed:
+        return "CLOSED"
+    if video_required:
+        return "VIDEO_REQUIRED"
+    if not form_accessible:
+        return "READY_TO_RETRY" if retry_ready else "FORM_INACCESSIBLE"
+    if role_or_candidate_hold:
+        return "HOLD"
+    if policy_status == "RESTRICTED":
+        return "SOURCE_RESTRICTED"
+    if policy_status == "UNCLEAR":
+        return "POLICY_UNCLEAR"
+    return "AUTO_READY" if auto_readiness_passes else "HOLD"
 
 
 def _display(value: Any) -> Any:

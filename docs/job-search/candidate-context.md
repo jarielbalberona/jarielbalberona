@@ -40,7 +40,7 @@ candidate_media:
 
 The photo is a validated 400 by 400 RGB JPEG and is suitable for legitimate professional applications. Its exact checksum, size, and MIME metadata live in the machine-readable candidate facts. The image itself stays private and gitignored. Do not ask for another photo unless a destination has materially different requirements that the canonical image cannot satisfy.
 
-Do not create or submit an introduction video yet. When a live form proves that a video is required, keep the application `PREPARED`, apply `REQUIRED_VIDEO_INTRO`, and hold before submission. Optional video controls may be omitted. Media availability changes Application Readiness only; it does not change Technical Fit or Career Direction Fit.
+Do not create or submit an introduction video yet. When a live form proves that a video is required, keep the application `PREPARED`, apply `REQUIRED_VIDEO_INTRO`, set its Review Queue status to `VIDEO_REQUIRED`, and hold before submission. Optional video controls may be omitted. Media availability changes Application Readiness only; it does not change Technical Fit or Career Direction Fit.
 
 ## Employment and availability
 

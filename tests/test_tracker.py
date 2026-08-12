@@ -6,6 +6,7 @@ from datetime import date
 from job_search.tracker import (
     HEADERS,
     REVIEW_QUEUE_HEADERS,
+    classify_review_queue_status,
     close_review_queue_record,
     format_compensation_for_tracker,
     is_review_queue_due,
@@ -84,6 +85,45 @@ def queue_record(**overrides: object) -> dict[str, object]:
 
 
 class TrackerTests(unittest.TestCase):
+    def test_queue_classifier_separates_authorization_policy_and_role_blockers(self) -> None:
+        self.assertEqual(
+            "AUTO_READY",
+            classify_review_queue_status(
+                applicant_automation_policy="PERMITTED",
+                auto_readiness_passes=True,
+            ),
+        )
+        self.assertEqual(
+            "SOURCE_RESTRICTED",
+            classify_review_queue_status(
+                applicant_automation_policy="RESTRICTED",
+                auto_readiness_passes=True,
+            ),
+        )
+        self.assertEqual(
+            "POLICY_UNCLEAR",
+            classify_review_queue_status(
+                applicant_automation_policy="UNCLEAR",
+                auto_readiness_passes=True,
+            ),
+        )
+        self.assertEqual(
+            "HOLD",
+            classify_review_queue_status(
+                applicant_automation_policy="UNCLEAR",
+                auto_readiness_passes=False,
+                role_or_candidate_hold=True,
+            ),
+        )
+        self.assertEqual(
+            "VIDEO_REQUIRED",
+            classify_review_queue_status(
+                applicant_automation_policy="PERMITTED",
+                auto_readiness_passes=True,
+                video_required=True,
+            ),
+        )
+
     def test_review_queue_mapping_is_exactly_a_to_z(self) -> None:
         row = map_review_queue_record_to_row(queue_record())
         self.assertEqual(26, len(REVIEW_QUEUE_HEADERS))
@@ -96,7 +136,7 @@ class TrackerTests(unittest.TestCase):
     def test_held_review_queue_sync_is_idempotent(self) -> None:
         existing = [
             map_review_queue_record_to_row(
-                queue_record(queue_status="MANUAL_APPLY", notes="Manual review note")
+                queue_record(queue_status="POLICY_UNCLEAR", notes="Manual review note")
             )
         ]
         plan = plan_review_queue_upsert(
@@ -106,7 +146,7 @@ class TrackerTests(unittest.TestCase):
         self.assertEqual("update", plan.action)
         self.assertEqual(2, plan.row_number)
         self.assertEqual("queue_id", plan.matched_by)
-        self.assertEqual("MANUAL_APPLY", plan.values[13])
+        self.assertEqual("POLICY_UNCLEAR", plan.values[13])
         self.assertEqual("Manual review note", plan.values[25])
 
     def test_review_queue_matches_canonicalized_job_url(self) -> None:
@@ -147,12 +187,12 @@ class TrackerTests(unittest.TestCase):
 
     def test_new_review_queue_taxonomy_is_accepted_and_legacy_values_are_rejected(self) -> None:
         for queue_status in (
-            "MANUAL_APPLY",
-            "READY_TO_RETRY",
-            "PREPARED",
+            "AUTO_READY",
+            "SOURCE_RESTRICTED",
+            "POLICY_UNCLEAR",
             "HOLD",
             "VIDEO_REQUIRED",
-            "SOURCE_RESTRICTED",
+            "READY_TO_RETRY",
             "FORM_INACCESSIBLE",
             "CLOSED",
         ):
@@ -162,7 +202,13 @@ class TrackerTests(unittest.TestCase):
                         queue_record(queue_status=queue_status)
                     )
                 )
-        for queue_status in ("HELD", "REVIEW", "READY TO APPLY"):
+        for queue_status in (
+            "MANUAL_APPLY",
+            "PREPARED",
+            "HELD",
+            "REVIEW",
+            "READY TO APPLY",
+        ):
             with self.subTest(queue_status=queue_status):
                 self.assertFalse(
                     should_sync_review_queue(

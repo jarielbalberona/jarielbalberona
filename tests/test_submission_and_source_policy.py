@@ -10,13 +10,25 @@ from job_search.campaign import (
     classify_freshness,
     evaluate_campaign_progress,
 )
-from job_search.source_registry import get_source_policy, load_source_registry
+from job_search.source_registry import (
+    get_source_policy,
+    get_submission_authorization,
+    load_source_registry,
+)
 from job_search.submission import (
+    ApplicantAutomationPolicy,
     SourcePolicy,
+    SubmissionAuthorization,
     SubmissionBlocked,
     SubmissionController,
     SubmissionEvidence,
     evaluate_live_autonomy,
+)
+
+
+GLOBAL_AUTHORIZATION = SubmissionAuthorization(
+    user_authorized_globally=True,
+    individual_application_approval_required=False,
 )
 
 
@@ -52,10 +64,15 @@ class SubmissionTests(unittest.TestCase):
         self.assertEqual("AUTONOMOUS_CAMPAIGN", registry["default_run_mode"])
         self.assertEqual(85, registry["strong_apply_readiness_threshold"])
         self.assertEqual(92, registry["apply_readiness_threshold"])
+        self.assertEqual(GLOBAL_AUTHORIZATION, get_submission_authorization())
         indeed = registry["sources"]["indeed_ph"]
         self.assertFalse(indeed["live_submit"])
+        self.assertEqual("RESTRICTED", indeed["applicant_automation_policy"])
         self.assertEqual(RunMode.DISCOVERY_ONLY, get_source_policy("indeed_ph").execution_mode)
         self.assertFalse(registry["sources"]["greenhouse"]["live_submit"])
+        self.assertEqual(
+            "UNCLEAR", registry["sources"]["greenhouse"]["applicant_automation_policy"]
+        )
         self.assertFalse(registry["sources"]["ashby"]["live_submit"])
         self.assertEqual("2026-08-12", registry["sources"]["ashby"]["policy_verified_at"])
         self.assertFalse(registry["sources"]["lever"]["live_submit"])
@@ -67,6 +84,7 @@ class SubmissionTests(unittest.TestCase):
         )
         self.assertFalse(registry["sources"]["breezy"]["live_submit"])
         self.assertTrue(registry["sources"]["workable"]["live_submit"])
+        self.assertEqual("PERMITTED", registry["sources"]["workable"]["applicant_automation_policy"])
         self.assertEqual(RunMode.AUTONOMOUS, get_source_policy("workable").execution_mode)
 
     def test_dry_run_never_executes_submission_handler(self) -> None:
@@ -81,9 +99,15 @@ class SubmissionTests(unittest.TestCase):
         with self.assertRaises(SubmissionBlocked):
             controller.submit(
                 run_mode=RunMode.DRY_RUN,
-                source_policy=SourcePolicy(RunMode.AUTONOMOUS, True, "2026-08-11"),
+                source_policy=SourcePolicy(
+                    RunMode.AUTONOMOUS,
+                    True,
+                    "2026-08-11",
+                    ApplicantAutomationPolicy.PERMITTED,
+                ),
                 unresolved_questions=[],
                 handler=handler,
+                submission_authorization=GLOBAL_AUTHORIZATION,
             )
         self.assertEqual(0, called)
 
@@ -92,17 +116,29 @@ class SubmissionTests(unittest.TestCase):
         with self.assertRaises(SubmissionBlocked):
             controller.submit(
                 run_mode=RunMode.ASSISTED,
-                source_policy=SourcePolicy(RunMode.ASSISTED, False, None),
+                source_policy=SourcePolicy(
+                    RunMode.ASSISTED,
+                    False,
+                    None,
+                    ApplicantAutomationPolicy.PERMITTED,
+                ),
                 unresolved_questions=[],
                 handler=lambda: SubmissionEvidence(True, "confirmation-page"),
+                submission_authorization=GLOBAL_AUTHORIZATION,
             )
 
     def test_strong_apply_can_be_autonomous_after_calibration(self) -> None:
         decision = evaluate_live_autonomy(
             assessment=assessment(Verdict.STRONG_APPLY, 90),
-            source_policy=SourcePolicy(RunMode.AUTONOMOUS, True, "2026-08-11"),
+            source_policy=SourcePolicy(
+                RunMode.AUTONOMOUS,
+                True,
+                "2026-08-11",
+                ApplicantAutomationPolicy.PERMITTED,
+            ),
             unresolved_questions=[],
             calibration_stage=False,
+            submission_authorization=GLOBAL_AUTHORIZATION,
         )
         self.assertTrue(decision.permitted)
         self.assertFalse(decision.requires_review)
@@ -110,9 +146,15 @@ class SubmissionTests(unittest.TestCase):
     def test_apply_requires_higher_readiness_for_autonomy(self) -> None:
         decision = evaluate_live_autonomy(
             assessment=assessment(Verdict.APPLY, 91),
-            source_policy=SourcePolicy(RunMode.AUTONOMOUS, True, "2026-08-11"),
+            source_policy=SourcePolicy(
+                RunMode.AUTONOMOUS,
+                True,
+                "2026-08-11",
+                ApplicantAutomationPolicy.PERMITTED,
+            ),
             unresolved_questions=[],
             calibration_stage=False,
+            submission_authorization=GLOBAL_AUTHORIZATION,
         )
         self.assertFalse(decision.permitted)
         self.assertIn("READINESS_BELOW_AUTONOMY_THRESHOLD", decision.reason_codes)
@@ -120,9 +162,15 @@ class SubmissionTests(unittest.TestCase):
     def test_review_requires_jariel_review(self) -> None:
         decision = evaluate_live_autonomy(
             assessment=assessment(Verdict.REVIEW, 100),
-            source_policy=SourcePolicy(RunMode.AUTONOMOUS, True, "2026-08-11"),
+            source_policy=SourcePolicy(
+                RunMode.AUTONOMOUS,
+                True,
+                "2026-08-11",
+                ApplicantAutomationPolicy.PERMITTED,
+            ),
             unresolved_questions=[],
             calibration_stage=False,
+            submission_authorization=GLOBAL_AUTHORIZATION,
         )
         self.assertFalse(decision.permitted)
         self.assertTrue(decision.requires_review)
@@ -131,33 +179,88 @@ class SubmissionTests(unittest.TestCase):
     def test_skip_is_never_autonomous(self) -> None:
         decision = evaluate_live_autonomy(
             assessment=assessment(Verdict.SKIP, 100),
-            source_policy=SourcePolicy(RunMode.AUTONOMOUS, True, "2026-08-11"),
+            source_policy=SourcePolicy(
+                RunMode.AUTONOMOUS,
+                True,
+                "2026-08-11",
+                ApplicantAutomationPolicy.PERMITTED,
+            ),
             unresolved_questions=[],
             calibration_stage=False,
+            submission_authorization=GLOBAL_AUTHORIZATION,
         )
         self.assertFalse(decision.permitted)
         self.assertFalse(decision.requires_review)
         self.assertIn("VERDICT_SKIP", decision.reason_codes)
 
-    def test_calibration_and_unresolved_questions_block_autonomy(self) -> None:
+    def test_global_authorization_removes_calibration_approval_but_not_unresolved_questions(self) -> None:
         decision = evaluate_live_autonomy(
             assessment=assessment(Verdict.STRONG_APPLY, 100),
-            source_policy=SourcePolicy(RunMode.AUTONOMOUS, True, "2026-08-11"),
+            source_policy=SourcePolicy(
+                RunMode.AUTONOMOUS,
+                True,
+                "2026-08-11",
+                ApplicantAutomationPolicy.PERMITTED,
+            ),
             unresolved_questions=["Required salary answer"],
             calibration_stage=True,
+            submission_authorization=GLOBAL_AUTHORIZATION,
         )
         self.assertFalse(decision.permitted)
-        self.assertIn("CALIBRATION_REVIEW_REQUIRED", decision.reason_codes)
+        self.assertNotIn("CALIBRATION_REVIEW_REQUIRED", decision.reason_codes)
+        self.assertNotIn("INDIVIDUAL_APPLICATION_APPROVAL_REQUIRED", decision.reason_codes)
         self.assertIn("UNRESOLVED_CONSEQUENTIAL_FACT", decision.reason_codes)
+
+    def test_missing_global_authorization_blocks_autonomy(self) -> None:
+        decision = evaluate_live_autonomy(
+            assessment=assessment(Verdict.STRONG_APPLY, 100),
+            source_policy=SourcePolicy(
+                RunMode.AUTONOMOUS,
+                True,
+                "2026-08-12",
+                ApplicantAutomationPolicy.PERMITTED,
+            ),
+            unresolved_questions=[],
+            calibration_stage=False,
+        )
+        self.assertFalse(decision.permitted)
+        self.assertIn("GLOBAL_USER_AUTHORIZATION_MISSING", decision.reason_codes)
+
+    def test_restricted_and_unclear_platform_policies_are_distinct(self) -> None:
+        for policy_status, reason in (
+            (ApplicantAutomationPolicy.RESTRICTED, "SOURCE_RESTRICTED"),
+            (ApplicantAutomationPolicy.UNCLEAR, "POLICY_UNCLEAR"),
+        ):
+            with self.subTest(policy_status=policy_status):
+                decision = evaluate_live_autonomy(
+                    assessment=assessment(Verdict.STRONG_APPLY, 100),
+                    source_policy=SourcePolicy(
+                        RunMode.AUTONOMOUS,
+                        True,
+                        "2026-08-12",
+                        policy_status,
+                    ),
+                    unresolved_questions=[],
+                    calibration_stage=False,
+                    submission_authorization=GLOBAL_AUTHORIZATION,
+                )
+                self.assertFalse(decision.permitted)
+                self.assertIn(reason, decision.reason_codes)
 
     def test_autonomous_controller_enforces_current_assessment(self) -> None:
         controller = SubmissionController()
         result = controller.submit(
             run_mode=RunMode.AUTONOMOUS,
-            source_policy=SourcePolicy(RunMode.AUTONOMOUS, True, "2026-08-11"),
+            source_policy=SourcePolicy(
+                RunMode.AUTONOMOUS,
+                True,
+                "2026-08-11",
+                ApplicantAutomationPolicy.PERMITTED,
+            ),
             unresolved_questions=[],
             assessment=assessment(Verdict.STRONG_APPLY, 90),
             calibration_stage=False,
+            submission_authorization=GLOBAL_AUTHORIZATION,
             handler=lambda: SubmissionEvidence(True, "confirmation-page"),
         )
         self.assertTrue(result.verified)
@@ -167,10 +270,16 @@ class SubmissionTests(unittest.TestCase):
         with self.assertRaisesRegex(SubmissionBlocked, "campaign maximum"):
             controller.submit(
                 run_mode=RunMode.AUTONOMOUS_CAMPAIGN,
-                source_policy=SourcePolicy(RunMode.AUTONOMOUS, True, "2026-08-12"),
+                source_policy=SourcePolicy(
+                    RunMode.AUTONOMOUS,
+                    True,
+                    "2026-08-12",
+                    ApplicantAutomationPolicy.PERMITTED,
+                ),
                 unresolved_questions=[],
                 assessment=assessment(Verdict.STRONG_APPLY, 95),
                 calibration_stage=False,
+                submission_authorization=GLOBAL_AUTHORIZATION,
                 campaign_verified_submissions=13,
                 handler=lambda: SubmissionEvidence(True, "confirmation-page"),
             )
