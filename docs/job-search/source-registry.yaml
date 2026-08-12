@@ -61,8 +61,9 @@ sources:
     discovery: true
     execution_mode: DISCOVERY_ONLY
     live_submit: false
-    policy_verified_at: null
-    note: "Public jobs may be discovered, but applicant-side autonomous submission policy is not yet verified."
+    policy_verified_at: "2026-08-12"
+    policy_evidence: "https://www.ashbyhq.com/resources/terms"
+    note: "Ashby's public terms are customer-facing and do not establish applicant-side autonomous submission permission. Keep discovery-only."
 
   recruitee:
     enabled: true
@@ -79,8 +80,30 @@ sources:
     discovery: true
     execution_mode: DISCOVERY_ONLY
     live_submit: false
+    policy_verified_at: "2026-08-12"
+    policy_evidence: "https://www.lever.co/terms-of-service/"
+    note: "Lever's public terms are customer-facing and do not establish applicant-side autonomous submission permission. Keep discovery-only."
+
+  teamtailor:
+    url: "https://www.teamtailor.com/"
+    enabled: true
+    priority: P0
+    discovery: true
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    policy_verified_at: "2026-08-12"
+    policy_evidence: "https://www.teamtailor.com/en/privacy-policy/"
+    note: "Public career sites may be discovered. Teamtailor's current public privacy material does not establish applicant-side autonomous submission permission, so live submission remains disabled."
+
+  breezy:
+    url: "https://breezy.hr/"
+    enabled: true
+    priority: P1
+    discovery: true
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
     policy_verified_at: null
-    note: "Public jobs may be discovered, but applicant-side autonomous submission policy is not yet verified."
+    note: "Public career sites may be discovered, but no current official applicant-side automation permission was found. Keep discovery-only."
 
   employer_direct:
     enabled: true

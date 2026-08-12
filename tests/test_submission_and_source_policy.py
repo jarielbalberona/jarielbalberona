@@ -56,6 +56,16 @@ class SubmissionTests(unittest.TestCase):
         self.assertFalse(indeed["live_submit"])
         self.assertEqual(RunMode.DISCOVERY_ONLY, get_source_policy("indeed_ph").execution_mode)
         self.assertFalse(registry["sources"]["greenhouse"]["live_submit"])
+        self.assertFalse(registry["sources"]["ashby"]["live_submit"])
+        self.assertEqual("2026-08-12", registry["sources"]["ashby"]["policy_verified_at"])
+        self.assertFalse(registry["sources"]["lever"]["live_submit"])
+        self.assertEqual("2026-08-12", registry["sources"]["lever"]["policy_verified_at"])
+        self.assertFalse(registry["sources"]["teamtailor"]["live_submit"])
+        self.assertEqual(
+            RunMode.DISCOVERY_ONLY,
+            get_source_policy("teamtailor").execution_mode,
+        )
+        self.assertFalse(registry["sources"]["breezy"]["live_submit"])
         self.assertTrue(registry["sources"]["workable"]["live_submit"])
         self.assertEqual(RunMode.AUTONOMOUS, get_source_policy("workable").execution_mode)
 
