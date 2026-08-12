@@ -44,7 +44,7 @@ class DeduplicationTests(unittest.TestCase):
                     "fit_score": 91,
                     "verdict": "STRONG APPLY",
                     "readiness": 70,
-                    "queue_status": "HELD",
+                    "queue_status": "HOLD",
                     "hold_review_reason": "Consequential answer pending",
                     "cover_letter": "A role-specific letter.",
                     "re_review_after": "2026-08-12",

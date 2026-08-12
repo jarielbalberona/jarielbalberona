@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
@@ -10,6 +11,8 @@ CANDIDATE_FACTS_PATH = Path(__file__).parent / "policy" / "candidate_facts.json"
 APPLICATION_ANSWER_BANK_PATH = (
     Path(__file__).parent / "policy" / "application_answer_bank.json"
 )
+PRIVATE_CANDIDATE_FACTS_ENV = "JOB_SEARCH_PRIVATE_CANDIDATE_FACTS_PATH"
+DEFAULT_PRIVATE_CANDIDATE_FACTS_PATH = Path(".job-search/private-candidate-facts.json")
 
 
 @lru_cache(maxsize=1)
@@ -20,6 +23,15 @@ def load_candidate_facts() -> dict[str, Any]:
 @lru_cache(maxsize=1)
 def load_application_answer_bank() -> dict[str, Any]:
     return json.loads(APPLICATION_ANSWER_BANK_PATH.read_text(encoding="utf-8"))
+
+
+@lru_cache(maxsize=1)
+def load_private_candidate_facts() -> dict[str, Any]:
+    configured = os.environ.get(PRIVATE_CANDIDATE_FACTS_ENV, "").strip()
+    path = Path(configured) if configured else DEFAULT_PRIVATE_CANDIDATE_FACTS_PATH
+    if not path.is_file():
+        return {}
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
 def accepts_engagement_type(employment_type: str, *, full_time: bool = True) -> bool:

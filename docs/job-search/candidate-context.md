@@ -16,6 +16,8 @@ This is the authoritative, public-safe candidate profile for job-search operatio
 - Canonical structured CV source: `portfolio/src/data/cv.json`
 - Canonical candidate photo: private gitignored asset at `.job-search/assets/candidate-photo.jpeg`
 
+Use `Jariel Balberona` for ordinary professional-name fields. Legal name, full mailing address, and prior compensation are application-only private facts in `.job-search/private-candidate-facts.json`. Read them only for a form that specifically requires the corresponding legal, identity, address, background-check, contract, or compensation fact. Never copy them into this document, a CV, portfolio content, a cover letter, or another tracked/public artifact.
+
 Do not create a replacement CV during routine job-search work. If a form requires facts not present here or in the canonical CV source, record them as unresolved.
 
 Machine-readable canonical applicant facts live in `job_search/policy/candidate_facts.json`. The reusable semantic index lives in `job_search/policy/application_answer_bank.json`, with human guidance in `docs/job-search/application-answer-bank.md`. Search the answer bank first, reuse these facts automatically, and do not ask Jariel again unless the specific application materially differs.
@@ -86,11 +88,21 @@ Answer questions about upcoming commitments, planned leave, or travel affecting 
 
 These candidate-facing availability answers do not change employer or client exclusion policy. Never disclose or infer a confidential relationship when answering an ordinary employment-status, notice-period, or start-date question.
 
-Canonical application employment status is `not currently employed`, actively seeking full-time work, and available for screening this week. Current salary is therefore `Not currently applicable / not currently employed`, or numeric `0` only when a required control is strictly numeric. Previous or most-recent salary is `PHP 200,000/month`.
+Canonical application employment status is `not currently employed`, actively seeking full-time work, and available for screening this week. Current salary is therefore `Not currently applicable / not currently employed`, or numeric `0` only when a required control is strictly numeric. Previous or most-recent salary must be loaded from the private candidate-facts store and must not be reproduced in tracked documentation.
 
 Outside commitments do not interfere with full-time work. Jariel will prioritize the employer role and can accept an exclusivity requirement. Treat a materially broader IP or pre-existing-asset clause as a separate legal question.
 
-The remote setup includes a professional workspace, suitable development computer, webcam, microphone, screen sharing, high-speed internet, backup internet through a secondary provider and mobile data, and backup power. Exact providers, speeds, equipment specifications, capacity, and runtime require actual evidence rather than invention.
+The remote setup includes a professional, dedicated, quiet workspace; a suitable development computer; webcam; microphone; screen sharing; high-speed internet; backup internet through a secondary provider and mobile data; and backup power. Backup internet has a verified minimum of 100 Mbps. Backup power exceeds eight hours and supports a full workday; use the conservative whole number `8` when a numeric control requires hours. Provider names and detailed device specifications remain private/unspecified.
+
+## Mobility, working style, and standard application commitments
+
+Jariel is willing to relocate, including to a specifically named ordinary destination, and to travel domestically or internationally for business. A passport is available; do not expose document details.
+
+Answer ordinary questions confidently for independent/self-directed work, ambiguity, fast-moving or changing requirements, technical leadership, engineering mentoring, architecture ownership, code and pull-request review, distributed/global/remote teamwork, and direct client, stakeholder, product, and business communication. These facts do not authorize invented direct-report counts.
+
+Background and reference checks, NDAs/confidentiality, reasonable restrictive covenants, conflict-of-interest rules, standard assessments, take-home work, live coding, pair programming, and system-design interviews are accepted. Broad legal agreements still receive separate review. References are available upon request; do not provide contact details without a specific need.
+
+Jariel owns a suitable development computer, does not require an employer-provided machine, and can use employer-provided equipment if required. Recruitment, talent-pool, marketing, and promotional communication consent are canonically `Yes`.
 
 ## Canonical application answers
 
@@ -105,6 +117,7 @@ The remote setup includes a professional workspace, suitable development compute
 - Professional software engineering: `10+ years`; use numeric `10` for whole-year fields.
 - React: `10 years`; TypeScript: `8 years`.
 - CMS experience: `Yes`; represent substantial custom CMS development, WordPress, Shopify, and content-platform engineering confidently.
+- Professional LLM providers: `OpenAI, Anthropic Claude, and Google Gemini`.
 
 Do not reuse broad AI tenure for PyTorch, model training, ML research, MLOps, or another narrower specialty.
 
@@ -238,11 +251,10 @@ Current confidential client work may be described only through the generic evide
 The following require Jariel's explicit answer when a form asks for them:
 
 - work authorization and visa status for a jurisdiction not covered by the canonical facts below
-- relocation willingness
 - professional experience with a technology that has no actual implementation evidence
 - management scope or exact team size
 - degrees, certifications, clearance, or licenses not in the canonical CV
-- exact internet speed or provider, computer specifications, and backup-power runtime or capacity
+- backup-internet thresholds above 100 Mbps, exact provider names, detailed computer specifications, and backup-power requirements materially above the guaranteed eight-hour floor
 
 Expected compensation is resolved by `docs/job-search/compensation-policy.md`; it is not grouped with unknown current salary.
 

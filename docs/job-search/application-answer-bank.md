@@ -1,6 +1,6 @@
 # Canonical application answer bank
 
-This bank is the first lookup layer for application questions. The machine-readable index is `job_search/policy/application_answer_bank.json`; authoritative values remain in `job_search/policy/candidate_facts.json` so facts are not duplicated.
+This bank is the first lookup layer for application questions. The machine-readable index is `job_search/policy/application_answer_bank.json`; public-safe authoritative values remain in `job_search/policy/candidate_facts.json`. Legal identity, full address, and prior compensation remain only in the gitignored `.job-search/private-candidate-facts.json` store.
 
 Use this order:
 
@@ -49,15 +49,16 @@ Do not ask Jariel again for a banked fact unless the live question materially ch
 - PST/EST, US, UK/EU, Australian/AEST, and Philippine night-shift weekday schedules: `Yes`.
 - Monday-Friday: `Yes`.
 - Recurring Saturday or Sunday work: `No`.
-- Occasional emergency or on-call weekend support: `Yes`.
-- Professional workspace, suitable development computer, high-speed internet, webcam, microphone, screen sharing, backup internet, and backup power: `Yes`.
-- Backup internet: secondary provider plus mobile data.
-- Exact provider names, speed, device specifications, capacity, and runtime require actual evidence rather than invention.
+- Occasional emergency or on-call weekend and production-incident support outside normal hours: `Yes`; recurring weekend shifts remain `No`.
+- Professional, dedicated, quiet workspace; suitable development computer; webcam; microphone; and screen sharing: `Yes`.
+- Backup internet: `Yes`, through a secondary provider plus mobile data, with a verified minimum of `100 Mbps`. Do not disclose or invent provider names.
+- Backup power: `Yes`, more than eight hours and sufficient for a full workday. A numeric whole-hour field uses the conservative guaranteed value `8`.
+- A threshold at or below the verified minimum resolves `Yes`; a higher exact requirement remains unresolved unless new evidence exists.
 
 ## Compensation
 
 - Current salary: `Not currently applicable / not currently employed`; a strictly numeric current-salary field may use `0`.
-- Previous or most-recent salary: `PHP 200,000/month`; numeric `200000`.
+- Previous or most-recent salary: resolve from the private candidate-facts store only. Never copy its value into tracked policy or public artifacts.
 - Expected compensation follows `compensation-policy.md`, including advertised-range and engagement-context adjustments.
 
 ## Engineering and communication
@@ -66,11 +67,23 @@ Answer ordinary capability questions confidently from the evidence-backed facts 
 
 Professional English is `Yes`; a 1-10 rating is `9`. International-client communication, written asynchronous communication, and presenting technical decisions are `Yes`.
 
+Professional LLM providers: `OpenAI, Anthropic Claude, and Google Gemini`. OpenAI is primary; Claude and Gemini are used when the project calls for them. Do not inflate that into unsupported model-training or provider-platform specialization.
+
+Answer `Yes` for independent and self-directed execution, ambiguous or changing requirements, fast-moving/startup work, technical leadership, engineering mentoring, architecture ownership, code and pull-request review, distributed/global/remote teams, and direct client, product, business, and stakeholder communication. Do not invent direct-report counts.
+
 Capability does not create unsupported vendor experience or exact duration. CMS depth remains direct for custom CMS work, WordPress, and Shopify; AEM, Sitecore, or another unproven vendor remains bounded.
 
-## Standard screening
+## Mobility, screening, equipment, and consent
 
-The ordinary form answer is `Yes` for a background check, NDA, standard role-created-work IP assignment, standard security policies, technical assessment, take-home exercise, live technical interview, pair-programming interview, recruitment communications, and marketing or promotional communications. Professional references are `Yes, upon request`.
+- Relocation, destination-specific relocation, business travel, and international travel: `Yes`, unless a live destination or condition is materially unusual.
+- Passport available: `Yes`; do not expose passport details.
+- Background and reference checks: `Yes`; professional references: `Yes, upon request`.
+- NDA/confidentiality, reasonable non-compete, reasonable non-solicitation, reasonable exclusivity, and conflict-of-interest policies: `Yes`. Review unusually broad actual legal language separately.
+- Technical assessments, take-home exercises, live coding, pair programming, technical interviews, and system-design interviews: `Yes`.
+- Employer computer required: `No`. Own suitable device: `Yes`. Employer-provided equipment acceptable: `Yes`.
+- Recruitment communications, marketing/promotional communications, and talent-pool retention: `Yes`.
+
+The ordinary form answer also remains `Yes` for standard role-created-work IP assignment and standard security policies.
 
 Evaluate materially broader legal wording separately. Pre-existing IP ownership, unusually broad invention assignment, security clearance, medical or legal declarations, and intrusive monitoring are not ordinary defaults.
 

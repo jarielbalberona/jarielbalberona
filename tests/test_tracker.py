@@ -65,7 +65,7 @@ def queue_record(**overrides: object) -> dict[str, object]:
         "fit_score": 91,
         "verdict": "STRONG APPLY",
         "readiness": 72,
-        "queue_status": "HELD",
+        "queue_status": "HOLD",
         "hold_review_reason": "Required introduction video",
         "next_action": "Record candidate-authored video",
         "compensation": "Advertised: undisclosed | Policy reference: PHP 250,000 monthly",
@@ -90,23 +90,23 @@ class TrackerTests(unittest.TestCase):
         self.assertEqual(26, len(row))
         self.assertEqual("queue_123", row[0])
         self.assertEqual(91, row[10])
-        self.assertEqual("HELD", row[13])
+        self.assertEqual("HOLD", row[13])
         self.assertEqual('{"work_authorization": "Yes"}', row[19])
 
     def test_held_review_queue_sync_is_idempotent(self) -> None:
         existing = [
             map_review_queue_record_to_row(
-                queue_record(queue_status="REVIEW", notes="Manual review note")
+                queue_record(queue_status="MANUAL_APPLY", notes="Manual review note")
             )
         ]
         plan = plan_review_queue_upsert(
             existing,
-            queue_record(queue_status="HELD", notes="Local note"),
+            queue_record(queue_status="HOLD", notes="Local note"),
         )
         self.assertEqual("update", plan.action)
         self.assertEqual(2, plan.row_number)
         self.assertEqual("queue_id", plan.matched_by)
-        self.assertEqual("REVIEW", plan.values[13])
+        self.assertEqual("MANUAL_APPLY", plan.values[13])
         self.assertEqual("Manual review note", plan.values[25])
 
     def test_review_queue_matches_canonicalized_job_url(self) -> None:
@@ -136,7 +136,7 @@ class TrackerTests(unittest.TestCase):
         self.assertEqual("APPLIED", application_plan.values[14])
 
     def test_hard_skip_never_enters_review_queue(self) -> None:
-        skipped = queue_record(verdict="SKIP", queue_status="REVIEW")
+        skipped = queue_record(verdict="SKIP", queue_status="HOLD")
         self.assertFalse(should_sync_review_queue(skipped))
         with self.assertRaises(ValueError):
             plan_review_queue_upsert([], skipped)
@@ -144,6 +144,31 @@ class TrackerTests(unittest.TestCase):
     def test_worthwhile_active_queue_record_requires_prepared_cover_letter(self) -> None:
         with self.assertRaisesRegex(ValueError, "prepared cover letter"):
             plan_review_queue_upsert([], queue_record(cover_letter=""))
+
+    def test_new_review_queue_taxonomy_is_accepted_and_legacy_values_are_rejected(self) -> None:
+        for queue_status in (
+            "MANUAL_APPLY",
+            "READY_TO_RETRY",
+            "PREPARED",
+            "HOLD",
+            "VIDEO_REQUIRED",
+            "SOURCE_RESTRICTED",
+            "FORM_INACCESSIBLE",
+            "CLOSED",
+        ):
+            with self.subTest(queue_status=queue_status):
+                self.assertTrue(
+                    should_sync_review_queue(
+                        queue_record(queue_status=queue_status)
+                    )
+                )
+        for queue_status in ("HELD", "REVIEW", "READY TO APPLY"):
+            with self.subTest(queue_status=queue_status):
+                self.assertFalse(
+                    should_sync_review_queue(
+                        queue_record(queue_status=queue_status)
+                    )
+                )
 
     def test_due_re_review_excludes_closed_rows(self) -> None:
         self.assertTrue(

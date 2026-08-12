@@ -1,6 +1,7 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "candidate_facts": "candidate_facts.json",
+  "private_candidate_facts": ".job-search/private-candidate-facts.json",
   "resolution_order": [
     "canonical_answer_bank",
     "candidate_and_project_evidence",
@@ -8,6 +9,27 @@
     "material_unknown"
   ],
   "exact_answers": [
+    {
+      "id": "full_legal_name",
+      "match_any": ["full legal name", "legal birth name", "legal identity", "contractual name", "contract name", "name for contract", "name as shown on government-issued id", "name on government-issued id", "government name"],
+      "answer_kind": "scalar",
+      "fact_source": "private_candidate_facts",
+      "fact_path": "legal_identity.full_legal_name"
+    },
+    {
+      "id": "mailing_address",
+      "match_any": ["mailing address", "residential address", "permanent address", "shipping address", "full address", "complete address"],
+      "answer_kind": "scalar",
+      "fact_source": "private_candidate_facts",
+      "fact_path": "legal_identity.mailing_address.formatted"
+    },
+    {
+      "id": "professional_name",
+      "match_any": ["professional name", "preferred full name", "full name"],
+      "exclude_any": ["legal", "birth", "government", "identity", "background", "contract"],
+      "answer_kind": "scalar",
+      "fact_path": "identity.professional_name"
+    },
     {
       "id": "current_salary",
       "match_any": ["current salary", "current compensation"],
@@ -19,6 +41,7 @@
       "id": "previous_salary",
       "match_any": ["previous salary", "previous monthly salary", "most recent salary", "most recent monthly salary", "previous compensation", "most recent compensation"],
       "answer_kind": "previous_salary",
+      "fact_source": "private_candidate_facts",
       "fact_path": "previous_salary.monthly_php"
     },
     {
@@ -86,7 +109,7 @@
     },
     {
       "id": "professional_workspace",
-      "match_any": ["dedicated workspace", "professional workspace", "home office", "remote workspace"],
+      "match_any": ["dedicated workspace", "professional workspace", "quiet workspace", "home office", "remote workspace"],
       "answer_kind": "boolean",
       "fact_path": "remote_setup.professional_workspace"
     },
@@ -105,18 +128,32 @@
       "fact_path": "remote_setup.high_speed_internet"
     },
     {
+      "id": "backup_internet_speed",
+      "match_any": ["backup internet", "secondary internet"],
+      "match_any_context": ["mbps", "speed"],
+      "answer_kind": "backup_internet_threshold",
+      "fact_path": "remote_setup.backup_internet.minimum_verified_speed_mbps"
+    },
+    {
       "id": "backup_internet",
       "match_any": ["backup internet", "secondary internet"],
       "exclude_any": ["provider name", "exact provider", "mbps"],
       "answer_kind": "backup_internet",
-      "fact_path": "remote_setup.backup_internet"
+      "fact_path": "remote_setup.backup_internet.available"
+    },
+    {
+      "id": "backup_power_runtime",
+      "match_any": ["backup power", "power backup"],
+      "match_any_context": ["hours", "runtime", "full workday", "full work day", "8-hour", "eight-hour"],
+      "answer_kind": "backup_power_threshold",
+      "fact_path": "remote_setup.backup_power.conservative_guaranteed_whole_hours"
     },
     {
       "id": "backup_power",
       "match_any": ["backup power", "power backup"],
       "exclude_any": ["hours", "runtime", "capacity", "ups", "generator"],
       "answer_kind": "boolean",
-      "fact_path": "remote_setup.backup_power"
+      "fact_path": "remote_setup.backup_power.available"
     },
     {
       "id": "webcam_microphone_screen_share",
@@ -159,19 +196,19 @@
       "match_any": ["professional references", "references available"],
       "answer_kind": "literal",
       "answer": "Yes, upon request",
-      "fact_path": "standard_screening.professional_references_available"
+      "fact_path": "employment_screening.professional_references_available"
     },
     {
       "id": "background_check",
       "match_any": ["background check"],
       "answer_kind": "boolean",
-      "fact_path": "standard_screening.background_check"
+      "fact_path": "employment_screening.background_check"
     },
     {
       "id": "nda",
       "match_any": ["nda", "confidentiality agreement"],
       "answer_kind": "boolean",
-      "fact_path": "standard_screening.nda_or_confidentiality"
+      "fact_path": "employment_terms.nda"
     },
     {
       "id": "standard_ip_assignment",
@@ -191,37 +228,139 @@
       "id": "technical_assessment",
       "match_any": ["technical assessment", "coding assessment"],
       "answer_kind": "boolean",
-      "fact_path": "standard_screening.technical_assessment"
+      "fact_path": "interviews.technical_assessment"
     },
     {
       "id": "take_home",
       "match_any": ["take-home coding exercise", "take home coding exercise", "take-home assignment", "take home assignment"],
       "answer_kind": "boolean",
-      "fact_path": "standard_screening.take_home_coding_exercise"
+      "fact_path": "interviews.take_home"
     },
     {
       "id": "live_technical_interview",
       "match_any": ["live technical interview"],
       "answer_kind": "boolean",
-      "fact_path": "standard_screening.live_technical_interview"
+      "fact_path": "interviews.live_coding"
     },
     {
       "id": "pair_programming",
       "match_any": ["pair-programming interview", "pair programming interview"],
       "answer_kind": "boolean",
-      "fact_path": "standard_screening.pair_programming_interview"
+      "fact_path": "interviews.pair_programming"
     },
     {
       "id": "recruitment_communications",
       "match_any": ["recruitment-related communications", "recruitment communications"],
       "answer_kind": "boolean",
-      "fact_path": "standard_screening.recruitment_communications"
+      "fact_path": "consent.recruitment_communications"
     },
     {
       "id": "marketing_communications",
       "match_any": ["marketing communications", "promotional communications", "business updates consent"],
       "answer_kind": "boolean",
-      "fact_path": "standard_screening.marketing_or_promotional_communications"
+      "fact_path": "consent.marketing_communications"
+    },
+    {
+      "id": "professional_llm_providers",
+      "match_any": ["llm providers used professionally", "language model providers used professionally", "which llm providers", "what llm providers"],
+      "answer_kind": "scalar",
+      "fact_path": "llm_providers.generic_answer"
+    },
+    {
+      "id": "relocation",
+      "match_any": ["willing to relocate", "open to relocation", "can you relocate"],
+      "answer_kind": "boolean",
+      "fact_path": "mobility.willing_to_relocate"
+    },
+    {
+      "id": "travel",
+      "match_any": ["willing to travel", "travel for business", "business travel", "international travel"],
+      "answer_kind": "boolean",
+      "fact_path": "mobility.willing_to_travel_for_work"
+    },
+    {
+      "id": "passport",
+      "match_any": ["valid passport", "passport available", "do you have a passport"],
+      "answer_kind": "boolean",
+      "fact_path": "travel_documents.passport_available"
+    },
+    {
+      "id": "occasional_oncall",
+      "match_any": ["occasional on-call", "occasional on call", "production incident support", "emergency weekend support", "outside normal hours"],
+      "answer_kind": "boolean",
+      "fact_path": "schedule.occasional_oncall"
+    },
+    {
+      "id": "reference_check",
+      "match_any": ["reference check", "contact professional references"],
+      "answer_kind": "boolean",
+      "fact_path": "employment_screening.reference_check"
+    },
+    {
+      "id": "reasonable_non_compete",
+      "match_any": ["reasonable non-compete", "reasonable non compete"],
+      "answer_kind": "boolean",
+      "fact_path": "employment_terms.reasonable_non_compete"
+    },
+    {
+      "id": "reasonable_non_solicitation",
+      "match_any": ["reasonable non-solicitation", "reasonable non solicitation", "reasonable nonsolicitation"],
+      "answer_kind": "boolean",
+      "fact_path": "employment_terms.reasonable_non_solicit"
+    },
+    {
+      "id": "reasonable_exclusivity",
+      "match_any": ["reasonable exclusivity", "reasonable exclusive employment", "reasonable exclusive engagement"],
+      "answer_kind": "boolean",
+      "fact_path": "employment_terms.exclusivity_when_required"
+    },
+    {
+      "id": "conflict_policy",
+      "match_any": ["conflict of interest policy", "conflict-of-interest policy"],
+      "answer_kind": "boolean",
+      "fact_path": "employment_terms.conflict_of_interest_policy"
+    },
+    {
+      "id": "live_coding",
+      "match_any": ["live coding", "coding interview"],
+      "answer_kind": "boolean",
+      "fact_path": "interviews.live_coding"
+    },
+    {
+      "id": "system_design_interview",
+      "match_any": ["system design interview", "architecture interview"],
+      "answer_kind": "boolean",
+      "fact_path": "interviews.architecture_interview"
+    },
+    {
+      "id": "requires_employer_computer",
+      "match_any": ["require an employer-provided computer", "require company-provided equipment", "need an employer-provided computer"],
+      "answer_kind": "boolean",
+      "fact_path": "equipment.requires_employer_device"
+    },
+    {
+      "id": "own_device",
+      "match_any": ["use your own device", "use own device", "own suitable computer", "own development computer", "already have suitable equipment", "have suitable equipment"],
+      "answer_kind": "boolean",
+      "fact_path": "equipment.owns_suitable_professional_device"
+    },
+    {
+      "id": "employer_equipment_acceptable",
+      "match_any": ["use employer-provided equipment", "use company-provided equipment", "accept employer-provided equipment"],
+      "answer_kind": "boolean",
+      "fact_path": "equipment.accepts_employer_provided_device"
+    },
+    {
+      "id": "equipment_free_text",
+      "match_any": ["describe your computer setup", "describe your equipment", "equipment arrangement"],
+      "answer_kind": "scalar",
+      "fact_path": "equipment.free_text"
+    },
+    {
+      "id": "talent_pool_consent",
+      "match_any": ["talent pool", "retain your application", "future job opportunities"],
+      "answer_kind": "boolean",
+      "fact_path": "consent.talent_pool_retention"
     }
   ],
   "capability_answers": [
@@ -246,14 +385,17 @@
     {"id": "browser_runtime_verification", "match_any": ["browser verification", "runtime verification", "browser qa"], "fact_path": "senior_capabilities.browser_runtime_verification", "summary": "Substantial browser and runtime verification experience for production behavior."},
     {"id": "technical_architecture", "match_any": ["technical architecture", "system architecture", "software architecture"], "fact_path": "senior_capabilities.technical_architecture", "summary": "Substantial hands-on system, technical, and product architecture experience."},
     {"id": "end_to_end_ownership", "match_any": ["end-to-end feature ownership", "end to end feature ownership", "end-to-end ownership", "end to end ownership"], "fact_path": "senior_capabilities.end_to_end_feature_ownership", "summary": "Substantial end-to-end ownership from product requirements through production operation."},
-    {"id": "technical_leadership", "match_any": ["technical leadership", "tech lead"], "fact_path": "senior_capabilities.technical_leadership", "summary": "Substantial hands-on technical leadership and architecture ownership."},
+    {"id": "technical_leadership", "match_any": ["technical leadership", "tech lead", "led technical direction", "leading engineers", "led engineers"], "fact_path": "leadership.technical_leadership", "summary": "Substantial hands-on technical leadership and architecture ownership."},
+    {"id": "engineering_mentoring", "match_any": ["engineering mentoring", "mentor engineers", "mentoring engineers", "mentoring developers", "mentored engineers"], "fact_path": "leadership.mentoring_engineers", "summary": "Substantial hands-on engineering mentoring experience without implying unsupported direct-report scope."},
+    {"id": "architecture_ownership", "match_any": ["architecture ownership", "owned architecture", "architecture decisions"], "fact_path": "leadership.architecture_ownership", "summary": "Substantial hands-on architecture ownership and technical decision-making experience."},
+    {"id": "code_review", "match_any": ["code review", "reviewing code", "pull request review", "review pull requests", "reviewing pull requests", "engineering feedback", "technical feedback to engineers"], "fact_path": "engineering_practices.code_review", "summary": "Substantial code and pull-request review experience, including actionable engineering feedback."},
     {"id": "international_clients", "match_any": ["international client experience"], "fact_path": "client_experience.international_clients", "summary": "Substantial international client-delivery experience."},
     {"id": "us_clients", "match_any": ["us-client experience", "us client experience", "u.s. client experience", "american client experience"], "fact_path": "client_experience.us_clients", "summary": "Substantial US-client delivery experience."},
     {"id": "consulting_agency", "match_any": ["consulting experience", "agency experience", "consulting/agency"], "fact_path": "client_experience.consulting_or_agency", "summary": "Substantial consulting and agency-environment experience."},
-    {"id": "client_facing", "match_any": ["client-facing engineering", "client facing engineering"], "fact_path": "client_experience.client_facing_engineering", "summary": "Substantial direct client-facing engineering experience."},
-    {"id": "distributed_async", "match_any": ["distributed team", "async team", "asynchronous team"], "fact_path": "client_experience.distributed_or_async_teams", "summary": "Substantial distributed and asynchronous team experience."},
-    {"id": "independent_work", "match_any": ["working independently", "work independently"], "fact_path": "senior_capabilities.working_independently", "summary": "Substantial experience independently owning ambiguous engineering work."},
-    {"id": "startup_ambiguity", "match_any": ["startup environment", "ambiguous environment"], "fact_path": "senior_capabilities.startup_or_ambiguous_environments", "summary": "Substantial experience delivering in startup and ambiguous product environments."}
+    {"id": "client_facing", "match_any": ["client-facing engineering", "client facing engineering", "client-facing experience", "client facing experience", "direct client communication", "communicate directly with clients", "communicating directly with clients", "stakeholder communication", "stakeholder-facing", "stakeholder facing", "product stakeholders", "business stakeholders"], "fact_path": "client_experience.client_facing_engineering", "summary": "Substantial direct client, product, business, and stakeholder-facing engineering experience."},
+    {"id": "distributed_async", "match_any": ["distributed team", "async team", "asynchronous team", "global team", "remote team", "remote collaboration"], "fact_path": "client_experience.distributed_or_async_teams", "summary": "Substantial distributed, global, remote, and asynchronous team experience."},
+    {"id": "independent_work", "match_any": ["working independently", "work independently", "self-directed", "self directed", "minimal supervision", "ambiguous requirements"], "fact_path": "working_style.works_independently", "summary": "Substantial experience independently owning ambiguous engineering work with self-directed execution."},
+    {"id": "startup_ambiguity", "match_any": ["startup experience", "startup environment", "ambiguous environment", "fast-moving environment", "fast moving environment", "changing requirements"], "fact_path": "working_style.startup_environment_experience", "summary": "Substantial experience delivering in startup, fast-moving, and ambiguous product environments."}
   ],
   "free_text_templates": [
     {

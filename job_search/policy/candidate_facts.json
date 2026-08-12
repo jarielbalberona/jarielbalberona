@@ -1,5 +1,10 @@
 {
-  "schema_version": 5,
+  "schema_version": 6,
+  "identity": {
+    "professional_name": "Jariel Balberona",
+    "legal_identity_store": ".job-search/private-candidate-facts.json",
+    "legal_identity_usage": "legal_or_identity_verification_only"
+  },
   "employment_status": {
     "currently_employed_for_application_purposes": false,
     "actively_seeking_full_time": true
@@ -30,11 +35,29 @@
       "Friday"
     ],
     "recurring_weekend_work": false,
-    "occasional_emergency_or_oncall_weekend": true
+    "occasional_emergency_or_oncall_weekend": true,
+    "occasional_oncall": true,
+    "occasional_emergency_weekend_support": true,
+    "production_incident_support": true
   },
   "ai_experience": {
     "broad_ai_experience": "2+ years",
     "numeric_years_when_required": 2
+  },
+  "llm_providers": {
+    "openai": {
+      "professional": true,
+      "usage_level": "primary"
+    },
+    "anthropic_claude": {
+      "professional": true,
+      "usage_level": "project_dependent"
+    },
+    "google_gemini": {
+      "professional": true,
+      "usage_level": "project_dependent"
+    },
+    "generic_answer": "OpenAI, Anthropic Claude, and Google Gemini"
   },
   "technology_experience": {
     "professional_software_engineering": {
@@ -168,7 +191,11 @@
     "international_clients": true,
     "consulting_or_agency": true,
     "client_facing_engineering": true,
-    "distributed_or_async_teams": true
+    "direct_client_interaction": true,
+    "stakeholder_communication": true,
+    "product_and_business_stakeholder_collaboration": true,
+    "distributed_or_async_teams": true,
+    "global_or_remote_teams": true
   },
   "location": {
     "country": "Philippines",
@@ -184,6 +211,15 @@
     "city": "Dumaguete City",
     "region": "Negros Oriental",
     "state_or_region": "Negros Oriental"
+  },
+  "mobility": {
+    "willing_to_relocate": true,
+    "willing_to_relocate_to_specific_destination": true,
+    "willing_to_travel_for_work": true,
+    "international_travel": true
+  },
+  "travel_documents": {
+    "passport_available": true
   },
   "work_authorization": {
     "philippines": {
@@ -211,20 +247,28 @@
   },
   "remote_setup": {
     "professional_workspace": true,
+    "dedicated_workspace": true,
+    "quiet_workspace": true,
     "suitable_development_computer": true,
     "webcam": true,
     "microphone": true,
     "screen_sharing": true,
     "high_speed_internet": true,
-    "backup_internet": true,
-    "backup_internet_types": [
-      "secondary_internet_provider",
-      "mobile_data"
-    ],
-    "backup_power": true
-  },
-  "previous_salary": {
-    "monthly_php": 200000
+    "backup_internet": {
+      "available": true,
+      "minimum_verified_speed_mbps": 100,
+      "methods": [
+        "secondary_internet_provider",
+        "mobile_data"
+      ],
+      "provider_names_public": false
+    },
+    "backup_power": {
+      "available": true,
+      "runtime_hours": ">8",
+      "conservative_guaranteed_whole_hours": 8,
+      "supports_full_workday": true
+    }
   },
   "communication": {
     "english": {
@@ -236,17 +280,65 @@
     "technical_decision_presentation": true
   },
   "standard_screening": {
-    "background_check": true,
-    "professional_references_available": true,
-    "nda_or_confidentiality": true,
     "standard_role_ip_assignment": true,
-    "standard_security_policies": true,
+    "standard_security_policies": true
+  },
+  "employment_screening": {
+    "background_check": true,
+    "reference_check": true,
+    "professional_references_available": true,
+    "references_answer": "Yes, upon request"
+  },
+  "employment_terms": {
+    "nda": true,
+    "confidentiality_agreement": true,
+    "reasonable_non_compete": true,
+    "reasonable_non_solicit": true,
+    "exclusivity_when_required": true,
+    "willing_to_prioritize_employer_role": true,
+    "conflict_of_interest_policy": true,
+    "broad_legal_agreement_requires_review": true
+  },
+  "interviews": {
     "technical_assessment": true,
-    "take_home_coding_exercise": true,
-    "live_technical_interview": true,
-    "pair_programming_interview": true,
+    "take_home": true,
+    "live_coding": true,
+    "pair_programming": true,
+    "architecture_interview": true
+  },
+  "equipment": {
+    "requires_employer_device": false,
+    "owns_suitable_professional_device": true,
+    "accepts_employer_provided_device": true,
+    "free_text": "I already have a professional development setup and do not require company-provided equipment, but I am fully comfortable using employer-provided hardware when required by company policy."
+  },
+  "consent": {
     "recruitment_communications": true,
-    "marketing_or_promotional_communications": true
+    "talent_pool_retention": true,
+    "marketing_communications": true
+  },
+  "working_style": {
+    "works_independently": true,
+    "self_directed": true,
+    "comfortable_with_ambiguity": true,
+    "distributed_team_experience": true,
+    "global_team_experience": true,
+    "remote_team_experience": true,
+    "startup_environment_experience": true,
+    "fast_moving_environment": true,
+    "changing_requirements": true,
+    "ambiguity_tolerance": true
+  },
+  "leadership": {
+    "technical_leadership": true,
+    "mentoring_engineers": true,
+    "architecture_ownership": true,
+    "direct_report_count_claimed": false
+  },
+  "engineering_practices": {
+    "code_review": true,
+    "pull_request_review": true,
+    "giving_engineering_feedback": true
   },
   "senior_capabilities": {
     "full_stack_product_engineering": true,

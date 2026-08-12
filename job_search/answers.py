@@ -12,6 +12,7 @@ from .candidate import (
     canonical_location,
     load_application_answer_bank,
     load_candidate_facts,
+    load_private_candidate_facts,
 )
 from .compensation import (
     build_compensation_decision,
@@ -145,6 +146,7 @@ def _answer_bank_answer(
     facts: Mapping[str, Any],
 ) -> AnswerResolution | None:
     bank = load_application_answer_bank()
+    private_facts = load_private_candidate_facts()
     normalized_field_type = field_type.casefold().replace("-", "_").replace(" ", "_")
     numeric_control = normalized_field_type in {
         "number",
@@ -159,9 +161,15 @@ def _answer_bank_answer(
         entry_id = str(entry["id"])
         answer_kind = str(entry.get("answer_kind", "scalar"))
         fact_path = str(entry.get("fact_path", ""))
-        evidence = f"application_answer_bank.{entry_id} -> candidate_facts.{fact_path}"
+        fact_source = str(entry.get("fact_source", "candidate_facts"))
+        source_facts = private_facts if fact_source == "private_candidate_facts" else facts
+        evidence = f"application_answer_bank.{entry_id} -> {fact_source}.{fact_path}"
+        if fact_source == "private_candidate_facts" and not source_facts:
+            return _unknown(
+                "This application requires a private identity or compensation fact, but the gitignored private candidate-facts store is unavailable."
+            )
         if answer_kind == "current_salary":
-            currently_employed = bool(_fact_at(facts, fact_path))
+            currently_employed = bool(_fact_at(source_facts, fact_path))
             if currently_employed:
                 return _unknown(
                     "Current salary requires a current-employment compensation fact that is not canonicalized."
@@ -173,7 +181,7 @@ def _answer_bank_answer(
                 evidence,
             )
         if answer_kind == "previous_salary":
-            monthly_php = int(_fact_at(facts, fact_path))
+            monthly_php = int(_fact_at(source_facts, fact_path))
             answer = str(monthly_php) if numeric_control else f"PHP {monthly_php:,}/month"
             return _exact(
                 answer,
@@ -189,7 +197,7 @@ def _answer_bank_answer(
                 *(f"candidate_facts.{path}" for path in paths),
             )
         if answer_kind == "backup_internet":
-            available = bool(_fact_at(facts, fact_path))
+            available = bool(_fact_at(source_facts, fact_path))
             answer = (
                 "Yes - secondary internet provider and mobile data"
                 if available
@@ -199,17 +207,77 @@ def _answer_bank_answer(
                 answer,
                 "Canonical backup internet uses a secondary provider and mobile data.",
                 evidence,
-                "candidate_facts.remote_setup.backup_internet_types",
+                "candidate_facts.remote_setup.backup_internet.methods",
+            )
+        if answer_kind == "backup_internet_threshold":
+            verified_mbps = int(_fact_at(source_facts, fact_path))
+            thresholds = [
+                float(value)
+                for value in re.findall(r"(\d+(?:\.\d+)?)\s*mbps", text)
+            ]
+            if thresholds:
+                required_mbps = max(thresholds)
+                if required_mbps > verified_mbps:
+                    return _unknown(
+                        f"Backup internet is verified to at least {verified_mbps} Mbps, below the requested {required_mbps:g} Mbps threshold."
+                    )
+                if any(
+                    term in text
+                    for term in ("at least", "minimum", "require", "can you", "do you")
+                ):
+                    return _exact(
+                        "Yes",
+                        f"Verified backup internet meets the requested {required_mbps:g} Mbps threshold.",
+                        evidence,
+                    )
+            answer = str(verified_mbps) if numeric_control else f"{verified_mbps} Mbps"
+            return _exact(
+                answer,
+                "Canonical verified minimum backup-internet speed; provider names remain private.",
+                evidence,
+            )
+        if answer_kind == "backup_power_threshold":
+            guaranteed_hours = int(_fact_at(source_facts, fact_path))
+            numeric_hours = [int(value) for value in re.findall(r"\b(\d+)\s*(?:-?hour|hours?)", text)]
+            if "eight-hour" in text or "eight hour" in text:
+                numeric_hours.append(8)
+            if "full workday" in text or "full work day" in text:
+                return _exact(
+                    "Yes",
+                    "Canonical backup power supports a full workday and exceeds eight hours.",
+                    evidence,
+                    "candidate_facts.remote_setup.backup_power.supports_full_workday",
+                )
+            if numeric_hours:
+                required_hours = max(numeric_hours)
+                if required_hours > guaranteed_hours:
+                    return _unknown(
+                        "Backup power exceeds eight hours, but the requested higher exact runtime is not canonicalized."
+                    )
+                if any(
+                    term in text
+                    for term in ("at least", "minimum", "require", "can you", "do you", "support")
+                ):
+                    return _exact(
+                        "Yes",
+                        f"Canonical backup power meets the requested {required_hours}-hour threshold.",
+                        evidence,
+                    )
+            answer = str(guaranteed_hours) if numeric_control else "More than 8 hours"
+            return _exact(
+                answer,
+                "Canonical backup-power runtime exceeds eight hours; numeric controls use the conservative guaranteed whole-hour value.",
+                evidence,
             )
         if answer_kind == "literal":
-            if fact_path and not bool(_fact_at(facts, fact_path)):
+            if fact_path and not bool(_fact_at(source_facts, fact_path)):
                 return _unknown(f"Canonical fact for {entry_id} is not affirmative.")
             return _exact(
                 str(entry["answer"]),
                 "Canonical reusable application answer.",
                 evidence,
             )
-        value = _fact_at(facts, fact_path)
+        value = _fact_at(source_facts, fact_path)
         if answer_kind == "boolean":
             answer = "Yes" if bool(value) else "No"
         else:
@@ -347,9 +415,16 @@ def _is_boolean_question(text: str) -> bool:
         term in text
         for term in (
             "do you have",
+            "do you",
             "have you",
+            "are you",
             "are you experienced",
             "are you familiar",
+            "can you",
+            "will you",
+            "would you",
+            "willing to",
+            "comfortable with",
             "experience with",
             "experience in",
         )

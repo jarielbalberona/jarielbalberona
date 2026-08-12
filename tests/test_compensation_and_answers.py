@@ -5,6 +5,7 @@ import unittest
 from datetime import datetime
 from pathlib import Path
 from types import SimpleNamespace
+from unittest.mock import patch
 from zoneinfo import ZoneInfo
 
 from job_search.answers import AnswerStatus, resolve_question, resolve_questions
@@ -455,18 +456,23 @@ class AnswerPolicyTests(unittest.TestCase):
         numeric_current = resolve_question(
             "current_salary", "What is your current salary?", field_type="number"
         )
-        previous = resolve_question(
-            "previous_salary", "What was your most recent monthly salary?"
-        )
-        numeric_previous = resolve_question(
-            "previous_salary",
-            "What was your most recent monthly salary?",
-            field_type="number",
-        )
+        private_fixture = {"previous_salary": {"monthly_php": 123456}}
+        with patch(
+            "job_search.answers.load_private_candidate_facts",
+            return_value=private_fixture,
+        ):
+            previous = resolve_question(
+                "previous_salary", "What was your most recent monthly salary?"
+            )
+            numeric_previous = resolve_question(
+                "previous_salary",
+                "What was your most recent monthly salary?",
+                field_type="number",
+            )
         self.assertEqual("Not currently applicable / not currently employed", current.answer)
         self.assertEqual("0", numeric_current.answer)
-        self.assertEqual("PHP 200,000/month", previous.answer)
-        self.assertEqual("200000", numeric_previous.answer)
+        self.assertEqual("PHP 123,456/month", previous.answer)
+        self.assertEqual("123456", numeric_previous.answer)
         self.assertTrue(
             all(
                 result.status == AnswerStatus.EXACT
@@ -510,7 +516,7 @@ class AnswerPolicyTests(unittest.TestCase):
                 self.assertEqual(answer, result.answer)
                 self.assertEqual(AnswerStatus.EXACT, result.status)
 
-    def test_schedule_and_remote_setup_defaults_do_not_invent_specs(self) -> None:
+    def test_schedule_and_remote_setup_use_verified_thresholds(self) -> None:
         self.assertEqual(
             "Yes",
             resolve_question("schedule", "Can you work Monday-Friday AEST?").answer,
@@ -528,11 +534,121 @@ class AnswerPolicyTests(unittest.TestCase):
         exact_speed = resolve_question(
             "internet_speed", "Do you have at least 25 Mbps backup internet?"
         )
-        exact_runtime = resolve_question(
-            "power_runtime", "How many hours of backup power runtime do you have?"
+        reported_speed = resolve_question(
+            "internet_speed", "What is your backup internet speed?"
         )
-        self.assertEqual(AnswerStatus.MATERIAL_UNKNOWN, exact_speed.status)
-        self.assertEqual(AnswerStatus.MATERIAL_UNKNOWN, exact_runtime.status)
+        eight_hour_power = resolve_question(
+            "power_runtime", "Can your backup power support at least 8 hours?"
+        )
+        exact_runtime = resolve_question(
+            "power_runtime",
+            "How many hours of backup power runtime do you have?",
+            field_type="number",
+        )
+        self.assertEqual("Yes", exact_speed.answer)
+        self.assertEqual("100 Mbps", reported_speed.answer)
+        self.assertEqual("Yes", eight_hour_power.answer)
+        self.assertEqual("8", exact_runtime.answer)
+        self.assertEqual(AnswerStatus.EXACT, exact_speed.status)
+        self.assertEqual(AnswerStatus.EXACT, exact_runtime.status)
+
+        above_verified = resolve_question(
+            "internet_speed", "Do you have at least 150 Mbps backup internet?"
+        )
+        self.assertEqual(AnswerStatus.MATERIAL_UNKNOWN, above_verified.status)
+        recurring_weekend = resolve_question(
+            "weekend_schedule", "Can you work a recurring weekend schedule?"
+        )
+        self.assertEqual("No", recurring_weekend.answer)
+        self.assertEqual(AnswerStatus.EXACT, recurring_weekend.status)
+
+    def test_private_legal_identity_resolves_without_public_literal(self) -> None:
+        private_fixture = {
+            "legal_identity": {
+                "full_legal_name": "Private Legal Fixture",
+                "mailing_address": {"formatted": "Private Address Fixture"},
+            }
+        }
+        with patch(
+            "job_search.answers.load_private_candidate_facts",
+            return_value=private_fixture,
+        ):
+            legal_name = resolve_question(
+                "legal_name", "Please provide your full legal birth name."
+            )
+            address = resolve_question(
+                "mailing_address", "Please provide your full mailing address."
+            )
+        self.assertEqual(private_fixture["legal_identity"]["full_legal_name"], legal_name.answer)
+        self.assertEqual(
+            private_fixture["legal_identity"]["mailing_address"]["formatted"],
+            address.answer,
+        )
+        self.assertEqual(AnswerStatus.EXACT, legal_name.status)
+        self.assertEqual(AnswerStatus.EXACT, address.status)
+
+    def test_professional_name_remains_public_safe(self) -> None:
+        result = resolve_question("full_name", "What is your full name?")
+        self.assertEqual("Jariel Balberona", result.answer)
+        self.assertEqual(AnswerStatus.EXACT, result.status)
+
+    def test_llm_mobility_travel_and_passport_answers_are_canonical(self) -> None:
+        questions = (
+            (
+                "llm_providers",
+                "Which LLM providers have you used professionally?",
+                "OpenAI, Anthropic Claude, and Google Gemini",
+            ),
+            ("relocation", "Are you willing to relocate?", "Yes"),
+            ("travel", "Are you willing to travel internationally for business?", "Yes"),
+            ("passport", "Do you have a valid passport?", "Yes"),
+        )
+        for key, question, expected in questions:
+            with self.subTest(key=key):
+                result = resolve_question(key, question)
+                self.assertEqual(expected, result.answer)
+                self.assertEqual(AnswerStatus.EXACT, result.status)
+
+    def test_senior_working_style_and_collaboration_are_not_undersold(self) -> None:
+        questions = (
+            ("independent", "Can you work independently with ambiguous requirements?"),
+            ("mentoring", "Have you mentored engineers?"),
+            ("architecture", "Have you owned architecture decisions?"),
+            ("reviews", "Do you review pull requests and give engineering feedback?"),
+            ("distributed", "Have you worked with global remote teams?"),
+            ("stakeholders", "Do you communicate directly with business stakeholders?"),
+            ("startup", "Are you comfortable in a fast-moving environment with changing requirements?"),
+        )
+        for key, question in questions:
+            with self.subTest(key=key):
+                result = resolve_question(key, question)
+                self.assertEqual("Yes", result.answer)
+                self.assertEqual(AnswerStatus.STRONGEST_SUPPORTED_ANSWER, result.status)
+
+    def test_screening_terms_assessments_equipment_and_consent_are_canonical(self) -> None:
+        questions = (
+            ("reference_check", "Are you willing to undergo a reference check?", "Yes"),
+            ("nda", "Will you sign an NDA or confidentiality agreement?", "Yes"),
+            ("noncompete", "Can you accept a reasonable non-compete?", "Yes"),
+            ("nonsolicit", "Can you accept a reasonable non-solicitation clause?", "Yes"),
+            ("exclusive", "Can you accept reasonable exclusivity?", "Yes"),
+            ("conflict", "Will you comply with a conflict of interest policy?", "Yes"),
+            ("live_coding", "Are you willing to complete a live coding interview?", "Yes"),
+            ("assessment", "Are you willing to complete a technical assessment?", "Yes"),
+            ("system_design", "Are you willing to complete a system design interview?", "Yes"),
+            ("own_device", "Can you use your own device?", "Yes"),
+            ("suitable_equipment", "Do you already have suitable equipment?", "Yes"),
+            ("employer_device", "Do you require an employer-provided computer?", "No"),
+            ("provided_device", "Are you willing to use employer-provided equipment?", "Yes"),
+            ("dedicated_workspace", "Do you have a dedicated workspace?", "Yes"),
+            ("quiet_workspace", "Do you have a quiet workspace?", "Yes"),
+            ("talent_pool", "Do you consent to retention in our talent pool?", "Yes"),
+        )
+        for key, question, expected in questions:
+            with self.subTest(key=key):
+                result = resolve_question(key, question)
+                self.assertEqual(expected, result.answer)
+                self.assertEqual(AnswerStatus.EXACT, result.status)
 
     def test_communication_screening_and_free_text_templates_are_reusable(self) -> None:
         self.assertEqual(

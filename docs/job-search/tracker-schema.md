@@ -79,14 +79,25 @@ Create or update a row only for `SHORTLISTED`, `PREPARED`, `APPLIED`, or later s
 | Y | Re-review After |
 | Z | Notes |
 
-Queue statuses are `PREPARED`, `HELD`, `REVIEW`, `READY TO APPLY`, and `CLOSED`. Every active queue item must include a role-specific cover letter, even when the current form does not expose a cover-letter field. `Re-review After` is an input to future `$manage-job-search` runs: due non-closed rows are rechecked before fresh discovery inventory at the same priority.
+Queue statuses are `MANUAL_APPLY`, `READY_TO_RETRY`, `PREPARED`, `HOLD`, `VIDEO_REQUIRED`, `SOURCE_RESTRICTED`, `FORM_INACCESSIBLE`, and `CLOSED`.
+
+- `MANUAL_APPLY`: all candidate facts are resolved and the packet is ready, but the source policy requires Jariel to complete the final submission.
+- `READY_TO_RETRY`: no candidate-fact blocker remains; re-open or re-inspect the live flow because a temporary access/form condition prevented final preparation.
+- `PREPARED`: complete packet is retained, but no current action classification is stronger.
+- `HOLD`: a genuine role requirement, candidate decision, or unsupported material fact remains.
+- `VIDEO_REQUIRED`: the only or primary candidate-owned blocker is a required introduction/recorded video.
+- `SOURCE_RESTRICTED`: source policy blocks the required action and there is no immediately actionable manual packet.
+- `FORM_INACCESSIBLE`: the live application form cannot currently be inspected or prepared.
+- `CLOSED`: inactive, submitted, rejected, withdrawn, or otherwise no longer active.
+
+Every active queue item must include a role-specific cover letter, even when the current form does not expose a cover-letter field. `Re-review After` is an input to future `$manage-job-search` runs: due non-closed rows are rechecked before fresh discovery inventory at the same priority.
 
 ## Controlled values
 
 - Verdict: `STRONG APPLY`, `APPLY`, `REVIEW`, `SKIP`
 - Application Status: `SHORTLISTED`, `PREPARED`, `APPLIED`, `ASSESSMENT`, `INTERVIEW`, `REJECTED`, `OFFER`, `WITHDRAWN`, `CLOSED`
 - Response Type: `ACKNOWLEDGEMENT`, `RECRUITER CONTACT`, `REQUEST FOR INFORMATION`, `ASSESSMENT`, `INTERVIEW`, `REJECTION`, `OFFER`, `OTHER`
-- Queue Status: `PREPARED`, `HELD`, `REVIEW`, `READY TO APPLY`, `CLOSED`
+- Queue Status: `MANUAL_APPLY`, `READY_TO_RETRY`, `PREPARED`, `HOLD`, `VIDEO_REQUIRED`, `SOURCE_RESTRICTED`, `FORM_INACCESSIBLE`, `CLOSED`
 
 ## Idempotency and transitions
 
