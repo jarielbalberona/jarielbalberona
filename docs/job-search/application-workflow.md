@@ -5,20 +5,22 @@ Every application starts from the complete current job description. Never reuse 
 ## Sequence
 
 1. Load the normalized job and confirm it remains active.
-2. Resolve the actual employer and run hard eligibility gates.
+2. Resolve the actual employer, run the current-employer exclusion, and record employer-origin and remote-geography evidence without treating either as an eligibility gate.
 3. Deduplicate against the local ledger and tracker.
-4. Persist posting date, discovery date, age in days, and freshness bucket. Search `P0_FRESH` before `P1_RECENT`; normally skip older listings during a bounded campaign.
+4. Persist posting date, discovery date, age in days, and freshness bucket. Search `P0_FRESH` (0-7 days) before `P1_RECENT` (8-30 days), then consider `P2_EXTENDED` (31-45 days) only for roles that score `STRONG APPLY`.
 5. Assess the employer's real problem, responsibilities, seniority, architecture, career direction, stack, AI/product/platform relevance, and remote compatibility.
-6. Choose one candidate narrative and the strongest two or three evidence sources.
-7. Prepare a concise job-specific letter and direct screening-answer plan.
-8. Inspect every live form control; search the canonical answer bank first, then resolve exact, strongest-supported, capability-depth, best-supported, and conservative answers. Surface only genuine material unknowns.
+6. Inspect every live form control and run preflight for required media, assessments, human verification, declarations, work authorization, and other expensive blockers before generating prose.
+7. Choose one candidate narrative and the strongest two or three evidence sources.
+8. Prepare a concise job-specific letter and direct screening-answer plan; search the canonical answer bank first, then resolve exact, strongest-supported, capability-depth, best-supported, and conservative answers. Surface only genuine material unknowns.
 9. Run `SENIOR_POSITIONING_REVIEW` across the complete live payload.
 10. Check the dated source execution policy and any employer-specific declarations.
 11. Choose the hybrid path: submit autonomously only when source, run mode, readiness, and campaign cap permit it; otherwise fully prepare a legitimate human-final-click fallback.
 12. For `HUMAN_FINAL_CLICK`, populate every field, attach every document, verify the payload, stop before the final control, and record `HUMAN_SUBMIT_READY`.
-13. Require submission evidence before recording `APPLIED`.
-14. Persist the local event, sync the human tracker, and later reconcile inbound Gmail evidence.
+13. Require typed submission evidence before recording `APPLIED`.
+14. Persist the canonical local event, project it to the human tracker, and later reconcile inbound Gmail evidence.
 15. On a per-job blocker, hold or skip that application and continue the campaign.
+
+SQLite is the lifecycle authority. The Google Sheet is a projection, not a second writable state machine. Campaign summaries are derived from persisted `run_outcomes`; caller-supplied totals are rejected when they disagree. Store timestamps in timezone-qualified UTC and render Manila time only for display.
 
 ## Required assessment output
 
@@ -62,7 +64,7 @@ Report these separately:
 - `Eligibility Confidence`: confidence that employer, activity, remote, location, and employment facts are correctly resolved.
 - `Application Readiness`: whether the current listing, packet, actual screening questions, required answers, and material experience claims are ready for submission.
 
-Unknown advertised compensation does not reduce eligibility by itself. Expected compensation follows `compensation-policy.md`. Reduce readiness or require review for unresolved remote eligibility, recurring weekend obligations, work authorization, genuine material unknowns, unavailable application entry, or materially unsupported requirements.
+Unknown advertised compensation does not reduce eligibility by itself. Expected compensation follows `compensation-policy.md`. Reduce readiness or require review for recurring weekend obligations, unresolved work authorization outside the canonical jurisdictions, genuine material unknowns, unavailable application entry, or materially unsupported central requirements. Remote-from-Philippines status affects the remote/employment score but is not itself a readiness blocker.
 
 Required candidate media must be classified from the live application control when available. A missing required introduction video uses `REQUIRED_VIDEO_INTRO`, caps Application Readiness below the autonomous threshold, and holds the application without changing the job-fit dimensions. Do not infer `NOT_REQUIRED` from a job description that merely omits media; use `UNKNOWN_NOT_INSPECTED` until the form is inspected.
 
@@ -91,6 +93,8 @@ Use concise, direct, engineering-focused language. Lead with supported ownership
 Answer questions directly. Do not turn each answer into a cover letter. Search `application-answer-bank.md` and its machine-readable index first, then use candidate and project evidence, the strongest supported interpretation, direct or transferable capability classifications, best-supported answers, and conservative floor-style estimates. Record answer, interpretation, confidence, and supporting evidence. Positive evidence-backed statuses and conservative estimates are resolved and normally do not reduce readiness.
 
 Recognize senior engineering equivalence. Custom CMS development, WordPress, Shopify, and content administration are substantial CMS capability; REST and full-stack ownership support API design; relational product systems support database design; multi-tenant SaaS and production ownership support architecture; lead and consulting roles support technical leadership and client-facing delivery. Do not turn missing vendor keywords into missing capability. Conversely, do not claim a vendor specialization, exact duration, legal fact, credential, or metric without evidence.
+
+Allow one learnable non-central framework, tool, or vendor gap when responsibilities, architecture, and the majority of the core stack match. Record `NONCENTRAL_SKILL_GAP` without a readiness cap. Keep `MATERIAL_REQUIREMENT_GAP` for a missing technology or domain capability that is central to daily work.
 
 Evaluate forced-choice options as complete claims. Do not choose an option because one clause is supported when another clause asserts unsupported enterprise scale, vendor depth, migration history, traffic volume, or organizational scope. Select the highest option whose full meaning is supported, even when a lower option compresses or understates nuance; preserve the accurate nuance in a related free-text field or letter.
 

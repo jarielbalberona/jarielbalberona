@@ -68,6 +68,9 @@ class SubmissionTests(unittest.TestCase):
         self.assertEqual("AUTONOMOUS_CAMPAIGN", registry["default_run_mode"])
         self.assertEqual(85, registry["strong_apply_readiness_threshold"])
         self.assertEqual(92, registry["apply_readiness_threshold"])
+        self.assertEqual(7, registry["p0_max_age_days"])
+        self.assertEqual(30, registry["p1_max_age_days"])
+        self.assertEqual(45, registry["p2_max_age_days"])
         self.assertEqual(GLOBAL_AUTHORIZATION, get_submission_authorization())
         indeed = registry["sources"]["indeed_ph"]
         self.assertFalse(indeed["live_submit"])
@@ -408,6 +411,22 @@ class SubmissionTests(unittest.TestCase):
         self.assertEqual(
             (10, FreshnessBucket.P1_RECENT),
             classify_freshness("2026-08-02", "2026-08-12"),
+        )
+        self.assertEqual(
+            (30, FreshnessBucket.P1_RECENT),
+            classify_freshness("2026-07-13", "2026-08-12"),
+        )
+        self.assertEqual(
+            (31, FreshnessBucket.P2_EXTENDED),
+            classify_freshness("2026-07-12", "2026-08-12"),
+        )
+        self.assertEqual(
+            (45, FreshnessBucket.P2_EXTENDED),
+            classify_freshness("2026-06-28", "2026-08-12"),
+        )
+        self.assertEqual(
+            (46, FreshnessBucket.OLDER_THAN_45_DAYS),
+            classify_freshness("2026-06-27", "2026-08-12"),
         )
         self.assertEqual(
             CampaignStopReason.QUALITY_LIMITED_INVENTORY_EXHAUSTED,

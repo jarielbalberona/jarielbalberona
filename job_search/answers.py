@@ -146,7 +146,7 @@ def _answer_bank_answer(
     facts: Mapping[str, Any],
 ) -> AnswerResolution | None:
     bank = load_application_answer_bank()
-    private_facts = load_private_candidate_facts()
+    private_facts: Mapping[str, Any] | None = None
     normalized_field_type = field_type.casefold().replace("-", "_").replace(" ", "_")
     numeric_control = normalized_field_type in {
         "number",
@@ -162,6 +162,8 @@ def _answer_bank_answer(
         answer_kind = str(entry.get("answer_kind", "scalar"))
         fact_path = str(entry.get("fact_path", ""))
         fact_source = str(entry.get("fact_source", "candidate_facts"))
+        if fact_source == "private_candidate_facts" and private_facts is None:
+            private_facts = load_private_candidate_facts()
         source_facts = private_facts if fact_source == "private_candidate_facts" else facts
         evidence = f"application_answer_bank.{entry_id} -> {fact_source}.{fact_path}"
         if fact_source == "private_candidate_facts" and not source_facts:
@@ -429,6 +431,105 @@ def _is_boolean_question(text: str) -> bool:
             "experience in",
         )
     ) and not any(term in text for term in ("describe", "how would you", "years"))
+
+
+def _private_demographic_answer(
+    key: str,
+    question: str,
+) -> AnswerResolution | None:
+    """Resolve only a narrowly matched voluntary EEO question from private facts."""
+
+    normalized_key = re.sub(r"[^a-z0-9]+", "_", key.casefold()).strip("_")
+    normalized_question = " ".join(question.casefold().split())
+    text = f"{normalized_key} {normalized_question}"
+
+    category: str | None = None
+    if normalized_key in {"hispanic_latino", "eeo_hispanic_latino", "ethnicity"} or (
+        "hispanic" in normalized_question or "latino" in normalized_question
+    ):
+        category = "hispanic_latino"
+    elif normalized_key in {
+        "veteran",
+        "veteran_status",
+        "protected_veteran",
+        "eeo_veteran",
+    } or any(
+        phrase in normalized_question
+        for phrase in ("protected veteran", "veteran status", "are you a veteran")
+    ):
+        category = "veteran"
+    elif normalized_key in {
+        "disability",
+        "disability_status",
+        "eeo_disability",
+    } or any(
+        phrase in normalized_question
+        for phrase in (
+            "disability status",
+            "do you have a disability",
+            "have you had a disability",
+            "individual with a disability",
+        )
+    ):
+        if "accommodation" not in normalized_question:
+            category = "disability"
+    elif normalized_key in {"gender", "eeo_gender"} or normalized_question in {
+        "gender",
+        "gender?",
+        "what is your gender?",
+        "select your gender",
+    }:
+        if "identity" not in normalized_question:
+            category = "gender"
+    elif normalized_key in {"race", "eeo_race"} or normalized_question in {
+        "race",
+        "race?",
+        "what is your race?",
+        "select your race",
+        "please identify your race",
+    }:
+        category = "race"
+
+    if category is None:
+        return None
+
+    private_facts = load_private_candidate_facts()
+    demographics = private_facts.get("demographics", {})
+    category_facts = demographics.get(category, {}) if isinstance(demographics, Mapping) else {}
+    if not isinstance(category_facts, Mapping):
+        category_facts = {}
+
+    if category == "gender":
+        answer = category_facts.get("value")
+    elif category == "race":
+        answer = category_facts.get("value")
+    elif category == "hispanic_latino":
+        answer = category_facts.get("answer")
+    elif category == "disability":
+        answer = (
+            "No"
+            if _is_boolean_question(text)
+            and "status" not in normalized_question
+            else category_facts.get("answer")
+        )
+    else:
+        answer = (
+            "No"
+            if _is_boolean_question(text)
+            and "status" not in normalized_question
+            else category_facts.get("answer")
+        )
+
+    if not isinstance(answer, str) or not answer.strip():
+        return _unknown(
+            "The form asks a recognized voluntary EEO question, but its private canonical answer is unavailable."
+        )
+
+    return _exact(
+        answer.strip(),
+        "Explicit private voluntary EEO answer; use only for the matching application field.",
+        f"private_candidate_facts.demographics.{category}",
+    )
 
 
 def _cms_answer(text: str, facts: Mapping[str, Any]) -> AnswerResolution | None:
@@ -713,6 +814,10 @@ def resolve_question(
                 "candidate_facts.cms",
             )
         return _exact(supplied, "Explicit canonical or application-specific answer.")
+
+    demographic_answer = _private_demographic_answer(key, question)
+    if demographic_answer is not None:
+        return demographic_answer
 
     facts = load_candidate_facts()
     text = f"{key} {question}".casefold()

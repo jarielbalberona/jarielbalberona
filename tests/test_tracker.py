@@ -246,16 +246,16 @@ class TrackerTests(unittest.TestCase):
         self.assertEqual("PREPARED", row[14])
 
     def test_repeated_sync_updates_same_application(self) -> None:
-        existing = [map_record_to_row(record(application_status="SHORTLISTED", notes="Manual note"))]
-        plan = plan_sheet_upsert(existing, record(application_status="PREPARED", notes="Local note"))
+        existing = [map_record_to_row(record(application_status="APPLIED", notes="Manual note"))]
+        plan = plan_sheet_upsert(existing, record(application_status="INTERVIEW", notes="Local note"))
         self.assertEqual("update", plan.action)
         self.assertEqual(2, plan.row_number)
         self.assertEqual("application_id", plan.matched_by)
-        self.assertEqual("SHORTLISTED", plan.values[14])
+        self.assertEqual("INTERVIEW", plan.values[14])
         self.assertEqual("Manual note", plan.values[25])
 
     def test_new_application_appends(self) -> None:
-        plan = plan_sheet_upsert([], record())
+        plan = plan_sheet_upsert([], record(application_status="APPLIED"))
         self.assertEqual("append", plan.action)
         self.assertIsNone(plan.row_number)
 

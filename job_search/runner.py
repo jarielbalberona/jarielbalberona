@@ -13,6 +13,7 @@ from .models import ApplicationStatus, CompanyOrigin, FitRubric, Job, RunMode, V
 from .normalization import application_id, canonicalize_url
 from .policy import EmployerExclusionMatcher, evaluate_eligibility
 from .scoring import build_assessment, reconcile_assessment_with_answers
+from .source_registry import resolve_source_id
 
 
 DEFAULT_STATE = Path(".job-search")
@@ -125,7 +126,7 @@ def run_dry_run(
     state_dir: Path = DEFAULT_STATE,
 ) -> dict[str, Any]:
     payload = json.loads(input_path.read_text(encoding="utf-8"))
-    source = payload["source"]
+    source = resolve_source_id(payload["source"])
     mode = RunMode(payload.get("mode", "DRY_RUN"))
     if mode != RunMode.DRY_RUN:
         raise ValueError("calibration import must run in DRY_RUN")
@@ -170,20 +171,25 @@ def run_dry_run(
         for position, item in enumerate(payload["jobs"], start=1):
             try:
                 job = _job_from_dict(item, source)
+                provisional_id = application_id(job)
+                ledger.record_run_outcome(run_id, provisional_id, "DISCOVERED", occurrence_key=str(position))
                 eligibility = evaluate_eligibility(job, matcher)
                 job_id, duplicate = ledger.upsert_job(
                     job,
                     eligibility_verdict=eligibility.verdict.value if eligibility.verdict else None,
                     reason_codes=eligibility.reason_codes,
                 )
+                ledger.record_run_outcome(run_id, job_id, "NORMALIZED")
                 counts["normalized_count"] += 1
                 if duplicate:
+                    ledger.record_run_outcome(run_id, job_id, "DUPLICATE")
                     counts["duplicate_count"] += 1
                     if not payload.get("reassess_existing", False):
                         continue
                     counts["reassessed_count"] += 1
 
                 if eligibility.can_score:
+                    ledger.record_run_outcome(run_id, job_id, "ELIGIBLE")
                     counts["eligible_count"] += 1
 
                 rubric_data = item.get("rubric")
@@ -208,6 +214,7 @@ def run_dry_run(
                     interview_risks=_list(analysis.get("interview_risks")),
                 )
                 counts["assessed_count"] += 1
+                ledger.record_run_outcome(run_id, job_id, "ASSESSED")
                 packet_input = item.get("application_packet")
                 if packet_input and assessment.verdict != Verdict.SKIP:
                     packet = prepare_application_packet(
@@ -245,6 +252,7 @@ def run_dry_run(
                         json.dumps(packet.to_dict(), indent=2, sort_keys=True), encoding="utf-8"
                     )
                     counts["prepared_count"] += 1
+                    ledger.record_run_outcome(run_id, job_id, "PREPARED")
                     prepared.append({"job_id": job_id, "artifact": str(artifact_path)})
 
                 ledger.save_assessment(assessment)
@@ -256,6 +264,16 @@ def run_dry_run(
                     Verdict.STRONG_APPLY: "strong_apply_count",
                 }[assessment.verdict]
                 counts[count_key] += 1
+                ledger.record_run_outcome(
+                    run_id,
+                    job_id,
+                    {
+                        Verdict.SKIP: "SKIPPED",
+                        Verdict.REVIEW: "REVIEW",
+                        Verdict.APPLY: "APPLY",
+                        Verdict.STRONG_APPLY: "STRONG_APPLY",
+                    }[assessment.verdict],
+                )
                 result = {
                     "rank": position,
                     "job_id": job_id,
@@ -294,7 +312,9 @@ def run_dry_run(
             "external_writes": list(payload.get("external_writes", [])),
             "real_applications_submitted": 0,
         }
-        ledger.finish_run(run_id, counts, errors, summary["external_writes"])
+        derived_counts = ledger.finish_run(run_id, errors=errors, external_writes=summary["external_writes"])
+        derived_counts["reassessed_count"] = counts["reassessed_count"]
+        summary["counts"] = derived_counts
 
     (run_dir / "summary.json").write_text(
         json.dumps(summary, indent=2, sort_keys=True), encoding="utf-8"

@@ -7,6 +7,13 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from .campaign import CampaignPolicy, classify_freshness
+from .lifecycle import (
+    ApplicationEventType,
+    SubmissionEvidence,
+    assert_transition,
+    canonical_event_type,
+    require_applied_evidence,
+)
 from .models import ApplicationPacket, ApplicationStatus, Assessment, Job, RunMode, utc_now
 from .normalization import (
     application_id,
@@ -14,7 +21,10 @@ from .normalization import (
     canonicalize_url,
     content_fingerprint,
     description_hash,
+    normalize_source_key,
 )
+from .queue import queue_dates
+from .time_utils import canonical_timestamp, normalize_utc_timestamp
 from .tracker import should_sync_review_queue
 
 
@@ -85,8 +95,8 @@ class Ledger:
             """,
             (
                 run_id,
-                started_at or utc_now(),
-                source,
+                canonical_timestamp(started_at) or utc_now(),
+                normalize_source_key(source),
                 mode.value,
                 campaign_policy.minimum_desired_new_submissions if campaign_policy else None,
                 campaign_policy.normal_target_new_submissions if campaign_policy else None,
@@ -95,7 +105,58 @@ class Ledger:
         )
         self.connection.commit()
 
-    def finish_run(self, run_id: str, counts: Mapping[str, int], errors: list[str], external_writes: list[str]) -> None:
+    def record_run_outcome(
+        self,
+        run_id: str,
+        job_id: str,
+        outcome: str,
+        payload: Mapping[str, Any] | None = None,
+        occurrence_key: str = "",
+    ) -> None:
+        self.connection.execute(
+            """
+            INSERT OR IGNORE INTO run_outcomes(run_id, job_id, outcome, occurrence_key, payload_json, created_at)
+            VALUES (?, ?, ?, ?, ?, ?)
+            """,
+            (run_id, job_id, outcome.strip().upper(), occurrence_key, json.dumps(dict(payload or {}), sort_keys=True), utc_now()),
+        )
+        self.connection.commit()
+
+    def derive_run_counts(self, run_id: str) -> dict[str, int]:
+        mapping = {
+            "DISCOVERED": "discovered_count", "NORMALIZED": "normalized_count",
+            "DUPLICATE": "duplicate_count", "SKIPPED": "skipped_count",
+            "REVIEW": "review_count", "APPLY": "apply_count",
+            "STRONG_APPLY": "strong_apply_count", "PREPARED": "prepared_count",
+            "SUBMITTED": "submitted_count", "ELIGIBLE": "eligible_count",
+            "ASSESSED": "assessed_count", "HELD": "held_count",
+            "VERIFIED_SUBMITTED": "verified_submitted_count",
+            "AUTO_SUBMITTED": "auto_submitted_count",
+            "AUTO_VERIFIED_SUBMITTED": "auto_verified_submitted_count",
+            "HUMAN_SUBMIT_READY": "human_submit_ready_count",
+            "READY_FOR_BROWSER_PREP": "ready_for_browser_prep_count",
+            "HUMAN_CLICKED": "human_clicked_count",
+            "HUMAN_VERIFIED_SUBMITTED": "human_verified_submitted_count",
+            "SUBMISSION_UNVERIFIED": "submission_unverified_count",
+            "VIDEO_REQUIRED": "video_required_count",
+        }
+        result = {column: 0 for column in mapping.values()}
+        for row in self.connection.execute(
+            "SELECT outcome, COUNT(*) AS total FROM run_outcomes WHERE run_id = ? GROUP BY outcome",
+            (run_id,),
+        ):
+            column = mapping.get(str(row["outcome"]))
+            if column:
+                result[column] = int(row["total"])
+        return result
+
+    def finish_run(
+        self,
+        run_id: str,
+        counts: Mapping[str, int] | None = None,
+        errors: list[str] | None = None,
+        external_writes: list[str] | None = None,
+    ) -> dict[str, int]:
         columns = (
             "discovered_count",
             "normalized_count",
@@ -120,12 +181,26 @@ class Ledger:
             "video_required_count",
         )
         assignments = ", ".join(f"{name} = ?" for name in columns)
-        values = [int(counts.get(name, 0)) for name in columns]
+        derived = self.derive_run_counts(run_id)
+        has_outcomes = self.connection.execute(
+            "SELECT EXISTS(SELECT 1 FROM run_outcomes WHERE run_id = ?)", (run_id,)
+        ).fetchone()[0]
+        authoritative = derived if has_outcomes else {name: int((counts or {}).get(name, 0)) for name in columns}
+        if has_outcomes and counts:
+            mismatches = {
+                name: (int(counts.get(name, 0)), derived[name])
+                for name in columns
+                if int(counts.get(name, 0)) != derived[name]
+            }
+            if mismatches:
+                raise ValueError(f"caller-supplied run counts disagree with ledger outcomes: {mismatches}")
+        values = [authoritative[name] for name in columns]
         self.connection.execute(
             f"UPDATE runs SET finished_at = ?, {assignments}, errors_json = ?, external_writes_json = ? WHERE run_id = ?",
-            (utc_now(), *values, json.dumps(errors), json.dumps(external_writes), run_id),
+            (utc_now(), *values, json.dumps(errors or []), json.dumps(external_writes or []), run_id),
         )
         self.connection.commit()
+        return authoritative
 
     def _find_existing_job(self, job: Job) -> sqlite3.Row | None:
         canonical_url = canonical_job_url(job)
@@ -149,6 +224,7 @@ class Ledger:
         eligibility_verdict: str | None = None,
         reason_codes: list[str] | tuple[str, ...] = (),
     ) -> tuple[str, bool]:
+        job.source = normalize_source_key(job.source)
         canonical_url = canonical_job_url(job)
         if job.posting_age_days is None or job.freshness_bucket is None:
             age, bucket = classify_freshness(job.posted_at, job.discovered_at)
@@ -216,7 +292,7 @@ class Ledger:
                         description_hash(job.description),
                         content_fingerprint(job),
                         int(job.active),
-                        job.posted_at,
+                        canonical_timestamp(job.posted_at),
                         job.posting_age_days,
                         job.freshness_bucket,
                         eligibility_verdict,
@@ -275,8 +351,8 @@ class Ledger:
             description_hash(job.description),
             content_fingerprint(job),
             int(job.active),
-            job.posted_at,
-            job.discovered_at,
+            canonical_timestamp(job.posted_at),
+            canonical_timestamp(job.discovered_at),
             job.posting_age_days,
             job.freshness_bucket,
             eligibility_verdict,
@@ -331,7 +407,7 @@ class Ledger:
                 json.dumps(assessment.reason_codes),
                 json.dumps(assessment.rubric.to_dict()) if assessment.rubric else None,
                 json.dumps(assessment.to_dict(), sort_keys=True),
-                assessment.created_at,
+                canonical_timestamp(assessment.created_at),
             ),
         )
         self.connection.commit()
@@ -357,7 +433,7 @@ class Ledger:
                 packet.narrative,
                 packet.letter,
                 json.dumps(packet.to_dict(), sort_keys=True),
-                packet.prepared_at,
+                canonical_timestamp(packet.prepared_at),
             ),
         )
         self.connection.commit()
@@ -369,19 +445,28 @@ class Ledger:
         status: ApplicationStatus,
         *,
         application_method: str = "",
+        submission_evidence: SubmissionEvidence | Mapping[str, Any] | None = None,
     ) -> None:
+        current_row = self.connection.execute(
+            "SELECT status FROM applications WHERE application_id = ?", (packet.application_id,)
+        ).fetchone()
+        current = ApplicationStatus(current_row["status"]) if current_row else None
+        assert_transition(current, status)
+        evidence = require_applied_evidence(status, submission_evidence)
         now = utc_now()
         self.connection.execute(
             """
             INSERT INTO applications(
               application_id, job_id, status, application_method, cv_version,
-              date_discovered, answer_metadata_json, compensation_decision_json,
-              created_at, updated_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+              date_discovered, date_applied, submission_evidence_json,
+              answer_metadata_json, compensation_decision_json, created_at, updated_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(application_id) DO UPDATE SET
               status = excluded.status,
               application_method = excluded.application_method,
               cv_version = excluded.cv_version,
+              date_applied = COALESCE(applications.date_applied, excluded.date_applied),
+              submission_evidence_json = COALESCE(excluded.submission_evidence_json, applications.submission_evidence_json),
               answer_metadata_json = excluded.answer_metadata_json,
               compensation_decision_json = excluded.compensation_decision_json,
               updated_at = excluded.updated_at
@@ -393,6 +478,8 @@ class Ledger:
                 application_method,
                 packet.cv_version,
                 packet.prepared_at[:10],
+                (str(evidence.get("occurred_at", now)) if evidence else None),
+                json.dumps(evidence, sort_keys=True) if evidence else None,
                 json.dumps(packet.answer_metadata, sort_keys=True),
                 json.dumps(packet.compensation_decision, sort_keys=True)
                 if packet.compensation_decision
@@ -413,17 +500,27 @@ class Ledger:
                 """,
                 (packet.application_id, now, packet.job_id),
             )
+            self.record_application_event(
+                application_id_value=packet.application_id,
+                event_type=ApplicationEventType.SUBMISSION_VERIFIED,
+                external_key=str(evidence["external_key"]),
+                payload=evidence,
+                created_at=str(evidence.get("occurred_at", now)),
+                commit=False,
+            )
         self.connection.commit()
 
     def record_application_event(
         self,
         *,
         application_id_value: str,
-        event_type: str,
+        event_type: str | ApplicationEventType,
         external_key: str,
         payload: Mapping[str, Any] | None = None,
         created_at: str | None = None,
+        commit: bool = True,
     ) -> bool:
+        event_type = canonical_event_type(event_type).value
         seed = f"{application_id_value}|{event_type}|{external_key}"
         event_id = "event_" + hashlib.blake2b(seed.encode(), digest_size=10).hexdigest()
         cursor = self.connection.execute(
@@ -438,10 +535,11 @@ class Ledger:
                 event_type,
                 external_key,
                 json.dumps(dict(payload or {}), sort_keys=True),
-                created_at or utc_now(),
+                canonical_timestamp(created_at) or utc_now(),
             ),
         )
-        self.connection.commit()
+        if commit:
+            self.connection.commit()
         return cursor.rowcount == 1
 
     def upsert_review_queue(self, record: Mapping[str, Any]) -> None:
@@ -464,6 +562,12 @@ class Ledger:
         ):
             raise ValueError("worthwhile active Review Queue records require a prepared cover letter")
         now = utc_now()
+        queue_status = str(record["queue_status"]).strip().upper()
+        default_review, default_expiry = queue_dates(queue_status)
+        re_review_after = record.get("re_review_after") or default_review
+        expires_at = record.get("expires_at") or default_expiry
+        if queue_status != "CLOSED" and not str(record.get("next_action", "")).strip():
+            raise ValueError("active Review Queue records require a concrete next action")
         self.connection.execute(
             """
             INSERT INTO review_queue(
@@ -472,9 +576,9 @@ class Ledger:
               posted_date, job_age, fit_score, verdict, readiness, queue_status,
               hold_review_reason, next_action, compensation, key_matches,
               material_gaps, prepared_screening_answers, cover_letter, cv_version,
-              media_requirement, source_ats_policy, re_review_after, notes,
-              created_at, updated_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+              media_requirement, source_ats_policy, re_review_after, expires_at,
+              last_verified_at, notes, created_at, updated_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(queue_id) DO UPDATE SET
               job_id = excluded.job_id,
               application_id = COALESCE(excluded.application_id, review_queue.application_id),
@@ -504,6 +608,8 @@ class Ledger:
               media_requirement = excluded.media_requirement,
               source_ats_policy = excluded.source_ats_policy,
               re_review_after = excluded.re_review_after,
+              expires_at = excluded.expires_at,
+              last_verified_at = excluded.last_verified_at,
               notes = excluded.notes,
               updated_at = excluded.updated_at
             """,
@@ -536,7 +642,9 @@ class Ledger:
                 record.get("cv_version", ""),
                 record.get("media_requirement", ""),
                 record.get("source_ats_policy", ""),
-                record.get("re_review_after"),
+                re_review_after,
+                expires_at,
+                record.get("last_verified_at") or record.get("last_reviewed") or now,
                 record.get("notes", ""),
                 now,
                 now,
@@ -590,7 +698,7 @@ class Ledger:
                 confidence,
                 int(ambiguous),
                 json.dumps(candidate_ids),
-                received_at,
+                canonical_timestamp(received_at),
                 json.dumps(dict(metadata), sort_keys=True),
                 utc_now(),
             ),
@@ -645,7 +753,7 @@ class Ledger:
                 video_duration,
                 video_method,
                 json.dumps(dict(evidence or {}), sort_keys=True),
-                inspected_at,
+                canonical_timestamp(inspected_at),
                 now,
             ),
         )
@@ -663,6 +771,102 @@ class Ledger:
         ).fetchall()
         return [dict(row) for row in rows]
 
+    def harden_existing_data(self) -> dict[str, int]:
+        """Normalize legacy vocabulary and backfill queue control dates safely."""
+        result = {"sources": 0, "events": 0, "queue_dates": 0, "timestamps": 0}
+        for row in self.connection.execute("SELECT rowid, source FROM job_sources").fetchall():
+            canonical = normalize_source_key(str(row["source"]))
+            if canonical == row["source"]:
+                continue
+            original = self.connection.execute(
+                "SELECT * FROM job_sources WHERE rowid = ?", (row["rowid"],)
+            ).fetchone()
+            self.connection.execute(
+                "INSERT OR IGNORE INTO job_sources(source, source_posting_id, job_id, url, observed_at) VALUES (?, ?, ?, ?, ?)",
+                (canonical, original["source_posting_id"], original["job_id"], original["url"], original["observed_at"]),
+            )
+            self.connection.execute("DELETE FROM job_sources WHERE rowid = ?", (row["rowid"],))
+            result["sources"] += 1
+        for row in self.connection.execute("SELECT job_id, source, source_posting_id FROM jobs").fetchall():
+            canonical = normalize_source_key(str(row["source"]))
+            if canonical == row["source"]:
+                continue
+            collision = self.connection.execute(
+                "SELECT 1 FROM jobs WHERE source = ? AND source_posting_id = ? AND job_id != ?",
+                (canonical, row["source_posting_id"], row["job_id"]),
+            ).fetchone()
+            if not collision:
+                self.connection.execute("UPDATE jobs SET source = ? WHERE job_id = ?", (canonical, row["job_id"]))
+                result["sources"] += 1
+
+        for row in self.connection.execute("SELECT * FROM application_events").fetchall():
+            canonical = canonical_event_type(str(row["event_type"])).value
+            if canonical == row["event_type"]:
+                continue
+            self.record_application_event(
+                application_id_value=str(row["application_id"]),
+                event_type=canonical,
+                external_key=str(row["external_key"] or ""),
+                payload=json.loads(str(row["payload_json"] or "{}")),
+                created_at=str(row["created_at"]),
+                commit=False,
+            )
+            self.connection.execute("DELETE FROM application_events WHERE event_id = ?", (row["event_id"],))
+            result["events"] += 1
+
+        for row in self.connection.execute(
+            "SELECT queue_id, queue_status, re_review_after, expires_at FROM review_queue WHERE queue_status != 'CLOSED'"
+        ).fetchall():
+            review, expiry = queue_dates(str(row["queue_status"]))
+            if row["re_review_after"] and row["expires_at"]:
+                continue
+            self.connection.execute(
+                "UPDATE review_queue SET re_review_after = COALESCE(re_review_after, ?), expires_at = COALESCE(expires_at, ?), updated_at = ? WHERE queue_id = ?",
+                (review, expiry, utc_now(), row["queue_id"]),
+            )
+            result["queue_dates"] += 1
+
+        timestamp_columns = {
+            "runs": ("started_at", "finished_at"),
+            "jobs": ("posted_at", "discovered_at", "created_at", "updated_at"),
+            "assessments": ("created_at",),
+            "application_drafts": ("created_at",),
+            "applications": ("date_applied", "last_response_at", "created_at", "updated_at"),
+            "application_events": ("created_at",),
+            "email_events": ("received_at", "created_at"),
+            "application_media_requirements": ("inspected_at", "updated_at"),
+            "review_queue": ("last_verified_at", "created_at", "updated_at"),
+        }
+        for table, columns in timestamp_columns.items():
+            primary_key = {
+                "runs": "run_id", "jobs": "job_id", "assessments": "assessment_id",
+                "application_drafts": "draft_id", "applications": "application_id",
+                "application_events": "event_id", "email_events": "message_id",
+                "application_media_requirements": "job_id", "review_queue": "queue_id",
+            }[table]
+            selection = ", ".join((primary_key, *columns))
+            for row in self.connection.execute(f"SELECT {selection} FROM {table}").fetchall():
+                updates: dict[str, str] = {}
+                for column in columns:
+                    raw = str(row[column] or "").strip()
+                    if "T" not in raw or not raw:
+                        continue
+                    try:
+                        canonical = normalize_utc_timestamp(raw)
+                    except ValueError:
+                        continue
+                    if canonical != raw:
+                        updates[column] = canonical
+                if updates:
+                    assignments = ", ".join(f"{column} = ?" for column in updates)
+                    self.connection.execute(
+                        f"UPDATE {table} SET {assignments} WHERE {primary_key} = ?",
+                        (*updates.values(), row[primary_key]),
+                    )
+                    result["timestamps"] += len(updates)
+        self.connection.commit()
+        return result
+
     def table_count(self, table: str) -> int:
         if table not in {
             "runs",
@@ -675,6 +879,7 @@ class Ledger:
             "email_events",
             "application_media_requirements",
             "review_queue",
+            "run_outcomes",
         }:
             raise ValueError("unsupported table")
         return int(self.connection.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0])

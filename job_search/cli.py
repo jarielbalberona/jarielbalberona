@@ -6,6 +6,7 @@ from pathlib import Path
 
 from .ledger import DEFAULT_DB, Ledger
 from .models import CompanyOrigin, Job
+from .monitoring import build_read_only_gmail_plan
 from .policy import EmployerExclusionMatcher, evaluate_eligibility
 from .runner import DEFAULT_STATE, run_dry_run
 
@@ -16,6 +17,12 @@ def _parser() -> argparse.ArgumentParser:
 
     init = subcommands.add_parser("init", help="initialize ignored private SQLite state")
     init.add_argument("--db", type=Path, default=DEFAULT_DB)
+
+    harden = subcommands.add_parser("harden-ledger", help="normalize legacy private ledger data")
+    harden.add_argument("--db", type=Path, default=DEFAULT_DB)
+
+    monitor = subcommands.add_parser("response-monitor-plan", help="emit a read-only Gmail search plan")
+    monitor.add_argument("--db", type=Path, default=DEFAULT_DB)
 
     dry_run = subcommands.add_parser("dry-run", help="persist a normalized DRY_RUN input")
     dry_run.add_argument("--input", type=Path, required=True)
@@ -44,6 +51,27 @@ def main() -> int:
 
     if args.command == "dry-run":
         print(json.dumps(run_dry_run(args.input, db_path=args.db, state_dir=args.state_dir), indent=2))
+        return 0
+
+    if args.command == "harden-ledger":
+        with Ledger(args.db) as ledger:
+            ledger.initialize()
+            result = ledger.harden_existing_data()
+        print(json.dumps({"db": str(args.db), **result}, sort_keys=True))
+        return 0
+
+    if args.command == "response-monitor-plan":
+        with Ledger(args.db) as ledger:
+            ledger.initialize()
+            rows = ledger.connection.execute(
+                """
+                SELECT a.application_id, a.status, j.company, j.role
+                FROM applications a JOIN jobs j ON j.job_id = a.job_id
+                ORDER BY a.updated_at DESC
+                """
+            ).fetchall()
+            plan = build_read_only_gmail_plan(dict(row) for row in rows)
+        print(json.dumps(plan, indent=2, sort_keys=True))
         return 0
 
     if args.command == "policy-check":

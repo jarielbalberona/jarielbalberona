@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any
 
 from .models import RunMode
+from .normalization import normalize_source_key
 from .submission import (
     ApplicantAutomationPolicy,
     SourcePolicy,
@@ -115,6 +116,32 @@ def list_discovery_sources(path: Path = DEFAULT_REGISTRY) -> list[dict[str, Any]
     )
 
 
+def resolve_source_id(source: str, path: Path = DEFAULT_REGISTRY) -> str:
+    needle = normalize_source_key(source)
+    for source_id, entry in load_source_registry(path)["sources"].items():
+        candidates = [source_id, entry.get("name", ""), *entry.get("aliases", [])]
+        if needle in {normalize_source_key(str(candidate)) for candidate in candidates if candidate}:
+            return source_id
+    return needle
+
+
+def plan_diverse_discovery_rotation(
+    observed_counts: dict[str, int] | None = None,
+    path: Path = DEFAULT_REGISTRY,
+) -> list[dict[str, Any]]:
+    """Prioritize underrepresented sources without changing job fit scores."""
+    counts = {resolve_source_id(key, path): int(value) for key, value in (observed_counts or {}).items()}
+    rotation = list_discovery_sources(path)
+    return sorted(
+        rotation,
+        key=lambda entry: (
+            counts.get(str(entry["id"]), 0),
+            PRIORITY_ORDER.get(str(entry.get("priority", "P3")), 99),
+            str(entry["id"]),
+        ),
+    )
+
+
 def validate_source_registry(path: Path = DEFAULT_REGISTRY) -> list[str]:
     registry = load_source_registry(path)
     errors: list[str] = []
@@ -124,6 +151,12 @@ def validate_source_registry(path: Path = DEFAULT_REGISTRY) -> list[str]:
         errors.append("registry must be explicitly configured as preferred, not an allowlist")
     if registry.get("candidate_paid_access", {}).get("default_authorized") is not False:
         errors.append("candidate paid access must default to false")
+    diversity = registry.get("source_diversity", {})
+    share = diversity.get("max_single_source_share_percent")
+    if not isinstance(share, int) or not 1 <= share <= 100:
+        errors.append("source diversity requires a valid max single-source share")
+    if int(diversity.get("minimum_source_families_per_run", 0)) < 2:
+        errors.append("source diversity requires at least two source families per run")
 
     for source_id, entry in registry["sources"].items():
         priority = entry.get("priority")
@@ -147,7 +180,7 @@ def validate_source_registry(path: Path = DEFAULT_REGISTRY) -> list[str]:
 
 
 def get_source_policy(source: str, path: Path = DEFAULT_REGISTRY) -> SourcePolicy:
-    entry = load_source_registry(path)["sources"][source]
+    entry = load_source_registry(path)["sources"][resolve_source_id(source, path)]
     return SourcePolicy(
         execution_mode=RunMode(entry["execution_mode"]),
         live_submit=bool(entry["live_submit"]),

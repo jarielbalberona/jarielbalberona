@@ -24,9 +24,15 @@ Senior Software Engineer is the baseline identity. AI-native and agentic product
 - Staff Software Engineer - AI
 - Staff Product Engineer
 
+## Adjacent roles
+
+Also assess senior backend, software-heavy platform, developer infrastructure, developer productivity, integration or cloud product engineering, hands-on solutions architecture, and technical-lead roles with substantial implementation ownership. Responsibilities, scope, compensation, and evidence of hands-on delivery override title shorthand such as `Software Engineer`, `Engineer III`, or `Mid-Senior`.
+
+One learnable non-central framework, tool, or vendor gap is acceptable when the responsibilities, architecture, and majority of the core stack match. A missing technology that is the daily center of the job remains a material requirement gap.
+
 ## Deprioritize or skip
 
-Heavily penalize or skip pure ML research, research scientist, data scientist, model-training specialist, CUDA or kernel engineering, roles centered on advanced PyTorch/model training, pure DevOps, pure SRE with little product work, minimally hands-on management, junior or mid-level roles, pixel-only frontend implementation, WordPress-only work, and generic VA/BPO technical work.
+Heavily penalize or skip pure ML research, research scientist, data scientist, model-training specialist, CUDA or kernel engineering, roles centered on advanced PyTorch/model training, pure DevOps, pure SRE with little product work, minimally hands-on management, explicitly junior roles, pixel-only frontend implementation, WordPress-only work, and generic VA/BPO technical work.
 
 Python is not itself a blocker. Determine whether it is merely the implementation language or whether deep ML research is the actual job.
 
@@ -38,9 +44,9 @@ Give high career-direction scores to hands-on senior software, product, full-sta
 
 A pure DevOps or SRE role may still be technically credible. It must not reach `STRONG APPLY` from technical overlap alone.
 
-## International-company requirement
+## Employer geography
 
-Target companies based outside the Philippines. Determine the actual employer's origin or headquarters, not the posting location or payroll vehicle.
+Prioritize companies based outside the Philippines, but employer origin is no longer an eligibility gate. Determine and record the actual employer's origin or headquarters when evidence is available; do not infer it from posting location or payroll vehicle.
 
 Eligible examples:
 
@@ -49,9 +55,11 @@ Eligible examples:
 - an Australian company using a Philippine Employer of Record
 - a European company with a Philippine subsidiary or local payroll
 
-Skip confirmed Philippine-headquartered companies, Philippine-local startups, Philippine outsourcing companies acting as the actual employer, and Philippine agencies hiring for their own teams. Use `PH_LOCAL_COMPANY`.
+Philippine-headquartered employers may proceed through compensation, responsibilities, seniority, engineering-domain, schedule, and fit assessment. Continue to score generic outsourcing, VA/BPO, staffing, and low-value agency work poorly based on the actual work; do not reject a credible product-engineering employer merely because it is Philippine-local.
 
-If the actual employer origin remains genuinely ambiguous after reasonable verification, classify the role `REVIEW` with `COMPANY_ORIGIN_UNVERIFIED`. Do not guess and do not apply.
+If employer origin remains ambiguous after reasonable verification, store `AMBIGUOUS` and continue. Never invent an origin.
+
+Remote-from-Philippines status is also assessment evidence rather than a hard gate. Explicit exclusions, silence, and positive support must be recorded accurately and reflected in the remote/employment-compatibility score. Applications must always use the canonical Philippine location and truthful authorization answers even when the listing indicates a location mismatch.
 
 ## Current-employer exclusion
 
@@ -64,8 +72,7 @@ The confidential identities are stored as normalized fingerprints in `job_search
 ```text
 identify actual employer
 -> current-employer check
--> company-origin check
--> remote-from-Philippines eligibility
+-> record company origin and remote geography
 -> role and seniority eligibility
 -> engineering-domain eligibility
 -> deduplication

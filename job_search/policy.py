@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Iterable
 
 from .compensation import evaluate_compensation_range
-from .models import CompanyOrigin, EligibilityResult, Job, Verdict
+from .models import EligibilityResult, Job, Verdict
 from .normalization import fingerprint, normalize_text
 
 
@@ -60,7 +60,6 @@ class EmployerExclusionMatcher:
 
 DEPRIORITIZED_ROLE_PATTERNS = (
     r"\bjunior\b",
-    r"\bmid[- ]?level\b",
     r"\bdata scientist\b",
     r"\bresearch scientist\b",
     r"\bmachine learning researcher\b",
@@ -91,38 +90,6 @@ def evaluate_eligibility(job: Job, matcher: EmployerExclusionMatcher | None = No
             verdict=Verdict.SKIP,
             reason_codes=("CURRENT_EMPLOYER_EXCLUDED",),
             explanation="The actual or destination employer is confidentially excluded.",
-        )
-
-    if job.company_origin == CompanyOrigin.PHILIPPINES:
-        return EligibilityResult(
-            can_score=False,
-            verdict=Verdict.SKIP,
-            reason_codes=("PH_LOCAL_COMPANY",),
-            explanation="The actual employer is confirmed Philippine-headquartered.",
-        )
-
-    if job.company_origin == CompanyOrigin.AMBIGUOUS:
-        return EligibilityResult(
-            can_score=False,
-            verdict=Verdict.REVIEW,
-            reason_codes=("COMPANY_ORIGIN_UNVERIFIED",),
-            explanation="The actual employer origin is unresolved and must be verified.",
-        )
-
-    if job.remote_from_ph is False:
-        return EligibilityResult(
-            can_score=False,
-            verdict=Verdict.SKIP,
-            reason_codes=("REMOTE_PH_INELIGIBLE",),
-            explanation="The role cannot be performed from the Philippines.",
-        )
-
-    if job.remote_from_ph is None:
-        return EligibilityResult(
-            can_score=False,
-            verdict=Verdict.REVIEW,
-            reason_codes=("REMOTE_PH_UNVERIFIED",),
-            explanation="Remote-from-Philippines compatibility is unresolved.",
         )
 
     schedule_text = normalize_text(job.work_schedule)

@@ -93,23 +93,46 @@ class PolicyTests(unittest.TestCase):
         )
         self.assertTrue(result.can_score)
 
-    def test_philippine_headquartered_company_is_skipped(self) -> None:
+    def test_philippine_headquartered_company_can_be_scored(self) -> None:
         result = evaluate_eligibility(
             job(company_origin=CompanyOrigin.PHILIPPINES), matcher_for("Excluded Fixture")
         )
-        self.assertEqual(Verdict.SKIP, result.verdict)
-        self.assertEqual(("PH_LOCAL_COMPANY",), result.reason_codes)
+        self.assertTrue(result.can_score)
+        self.assertIsNone(result.verdict)
+        self.assertEqual((), result.reason_codes)
 
-    def test_ambiguous_origin_is_review(self) -> None:
+    def test_ambiguous_origin_can_be_scored(self) -> None:
         result = evaluate_eligibility(
             job(company_origin=CompanyOrigin.AMBIGUOUS), matcher_for("Excluded Fixture")
         )
-        self.assertEqual(Verdict.REVIEW, result.verdict)
-        self.assertEqual(("COMPANY_ORIGIN_UNVERIFIED",), result.reason_codes)
+        self.assertTrue(result.can_score)
+        self.assertIsNone(result.verdict)
+        self.assertEqual((), result.reason_codes)
+
+    def test_explicit_remote_ph_mismatch_can_be_scored(self) -> None:
+        result = evaluate_eligibility(
+            job(remote_from_ph=False), matcher_for("Excluded Fixture")
+        )
+        self.assertTrue(result.can_score)
+        self.assertIsNone(result.verdict)
+
+    def test_unverified_remote_ph_status_can_be_scored(self) -> None:
+        result = evaluate_eligibility(
+            job(remote_from_ph=None), matcher_for("Excluded Fixture")
+        )
+        self.assertTrue(result.can_score)
+        self.assertIsNone(result.verdict)
+
+    def test_mid_level_title_is_scored_from_responsibilities(self) -> None:
+        result = evaluate_eligibility(
+            job(role="Mid-level Software Engineer"), matcher_for("Excluded Fixture")
+        )
+        self.assertTrue(result.can_score)
 
     def test_hard_blocker_overrides_perfect_rubric(self) -> None:
+        matcher = matcher_for("Confidential Current Employer")
         eligibility = evaluate_eligibility(
-            job(company_origin=CompanyOrigin.PHILIPPINES), matcher_for("Excluded Fixture")
+            job(company="Confidential Current Employer"), matcher
         )
         assessment = build_assessment(
             job_id="job_1",
@@ -173,6 +196,11 @@ class PolicyTests(unittest.TestCase):
         reasons = ["WORK_AUTHORIZATION_UNRESOLVED", "MATERIAL_REQUIREMENT_GAP"]
         self.assertEqual(85, calibrate_eligibility_confidence(100, reasons))
         self.assertEqual(55, calibrate_application_readiness(100, reasons))
+
+    def test_one_noncentral_skill_gap_does_not_cap_readiness(self) -> None:
+        reasons = ["NONCENTRAL_SKILL_GAP"]
+        self.assertEqual(100, calibrate_eligibility_confidence(100, reasons))
+        self.assertEqual(100, calibrate_application_readiness(100, reasons))
 
     def test_positioning_quality_failures_cap_readiness(self) -> None:
         self.assertEqual(

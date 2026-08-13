@@ -28,6 +28,8 @@ class SourceRegistryExpansionTests(unittest.TestCase):
             "turing": ("TALENT_NETWORK", "P2"),
             "toptal": ("TALENT_NETWORK", "P2"),
             "contra": ("PROFESSIONAL_FREELANCE_MARKETPLACE", "P2"),
+            "dover": ("ATS", "P1"),
+            "yc_work_at_a_startup": ("JOB_BOARD", "P1"),
             "justremote": ("REMOTE_JOB_BOARD", "P3"),
             "upwork": ("FREELANCE_MARKETPLACE", "P3"),
         }

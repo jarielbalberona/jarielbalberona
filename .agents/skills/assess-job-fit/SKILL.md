@@ -11,11 +11,10 @@ Read `docs/job-search/application-answer-bank.md`, `docs/job-search/candidate-co
 
 1. Identify the actual destination employer.
 2. Return `SKIP / CURRENT_EMPLOYER_EXCLUDED` for a confidential blocked employer or recruiter listing for one.
-3. Return `SKIP / PH_LOCAL_COMPANY` for a confirmed Philippine-headquartered employer.
-4. Return `REVIEW / COMPANY_ORIGIN_UNVERIFIED` when origin cannot be verified.
-5. Apply remote-from-Philippines, seniority, and engineering-domain blockers.
-6. Return `SKIP / REQUIRED_WEEKEND_WORK` for required recurring Saturday or Sunday work. Review unclear on-call wording.
-7. Evaluate known advertised compensation against employee or contractor thresholds. Undisclosed compensation is not a blocker.
+3. Record employer origin and remote-from-Philippines evidence without using either as an eligibility gate. Philippine-local, origin-ambiguous, explicitly location-mismatched, and remote-unknown jobs may be scored and applied to; keep Jariel's location and authorization answers truthful.
+4. Apply seniority and engineering-domain blockers from actual responsibilities, not title shorthand alone.
+5. Return `SKIP / REQUIRED_WEEKEND_WORK` for required recurring Saturday or Sunday work. Review unclear on-call wording.
+6. Evaluate known advertised compensation against employee or contractor thresholds. Undisclosed compensation is not a blocker.
 
 When compensation is undisclosed, classify whether the role is Philippines-targeted international hiring, direct international-rate hiring, or genuinely unknown. Do not infer a premium budget from foreign headquarters or high job fit alone. Preserve any advertised range or recruiter budget evidence for application preparation.
 
@@ -34,6 +33,10 @@ Score from the full description, not keyword overlap:
 - remote and employment compatibility: 10
 
 Do not treat conventional DevOps or SRE as a target AI/software-platform role merely because AWS, Terraform, CI/CD, Kubernetes, or observability match. Score technical credibility and career direction separately.
+
+Responsibilities override generic title labels. Assess senior backend, software-heavy platform, developer infrastructure, developer productivity, integration or cloud product engineering, hands-on solutions architecture, technical-lead, `Software Engineer`, `Engineer III`, and `Mid-Senior` roles when the actual scope is senior and hands-on.
+
+Allow one learnable non-central framework, tool, or vendor gap when the responsibilities, architecture, and majority of the core stack match. Use `NONCENTRAL_SKILL_GAP` without a readiness cap. Keep `MATERIAL_REQUIREMENT_GAP` for a missing technology or capability central to daily work.
 
 Multiply the base fit by eligibility confidence to produce the final fit score. Also return application readiness independently. Apply repository reason-code caps so optimistic inputs cannot hide material unknowns. Unknown compensation alone is not an eligibility penalty.
 

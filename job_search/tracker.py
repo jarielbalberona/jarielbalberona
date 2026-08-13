@@ -68,7 +68,7 @@ FIELD_MAP = {
 }
 
 MANUAL_PRESERVE_FIELDS = frozenset(
-    {"Application Status", "Next Action", "Follow-up Date", "Notes"}
+    {"Next Action", "Follow-up Date", "Notes"}
 )
 
 REVIEW_QUEUE_HEADERS = (
@@ -145,6 +145,14 @@ REVIEW_QUEUE_STATUSES = (
 REVIEW_QUEUE_MANUAL_PRESERVE_FIELDS = frozenset(
     {"Queue Status", "Next Action", "Re-review After", "Notes"}
 )
+
+TRACKER_APPLICATION_STATUSES = frozenset(
+    {"APPLIED", "ASSESSMENT", "INTERVIEW", "REJECTED", "OFFER", "WITHDRAWN", "CLOSED"}
+)
+
+
+def should_sync_application(record: Mapping[str, Any]) -> bool:
+    return str(record.get("application_status", "")).strip().upper() in TRACKER_APPLICATION_STATUSES
 
 
 def classify_review_queue_status(
@@ -345,6 +353,8 @@ def plan_sheet_upsert(
     *,
     preserve_manual: bool = True,
 ) -> SheetUpsertPlan:
+    if not should_sync_application(record):
+        raise ValueError("Applications sheet is a post-submission lifecycle projection only")
     target_id = str(record.get("application_id", ""))
     target_url = str(record.get("canonical_job_url", ""))
     match_index: int | None = None

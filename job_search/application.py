@@ -9,6 +9,7 @@ from .models import ApplicationPacket, Assessment, Job, Verdict
 from .normalization import application_id
 from .policy import EmployerExclusionMatcher
 from .positioning import assert_senior_positioning, strengthen_supported_positioning
+from .preflight import ApplicationPreflight
 
 
 class ConfidentialityError(ValueError):
@@ -86,7 +87,10 @@ def prepare_application_packet(
     screening_questions_source: str = "",
     screening_field_types: Mapping[str, str] | None = None,
     matcher: EmployerExclusionMatcher | None = None,
+    preflight: ApplicationPreflight | None = None,
 ) -> ApplicationPacket:
+    if preflight is not None and not preflight.can_prepare:
+        raise ValueError(f"application preflight blocked preparation: {', '.join(preflight.blockers)}")
     if assessment.verdict not in {Verdict.STRONG_APPLY, Verdict.APPLY, Verdict.REVIEW}:
         raise ValueError("application packets may not be prepared for skipped jobs")
     if assessment.reason_codes:

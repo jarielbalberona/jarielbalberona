@@ -29,7 +29,9 @@ load job
 
 ## Hard stops
 
-Never submit when the employer is excluded, company origin is Philippine-local or ambiguous, remote-from-Philippines eligibility is unresolved, recurring weekend work is required, known compensation violates policy, a `MATERIAL_UNKNOWN` remains, the listing is inactive or duplicate, source policy forbids it, or run mode is `DRY_RUN`.
+Never submit when the employer is excluded, recurring weekend work is required, known compensation violates policy, a `MATERIAL_UNKNOWN` remains, the listing is inactive or duplicate, source policy forbids it, or run mode is `DRY_RUN`.
+
+Company origin and listing geography are not hard stops. Philippine-local employers, ambiguous employer origin, explicit location mismatches, and unverified remote-from-Philippines status may proceed when fit and readiness pass. Preserve the evidence and always submit Jariel's canonical Philippine location and truthful work-authorization answers; never manufacture eligibility to fit a listing.
 
 Before finalizing form answers, verify that forced-choice selections are fully supported and that source-of-discovery answers come from ledger provenance rather than the ATS host. A higher option containing an unsupported scale or specialization claim fails truthfulness even when part of the option matches.
 

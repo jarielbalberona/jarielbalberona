@@ -9,7 +9,7 @@ A job may proceed only when:
 ```text
 fit meets threshold
 AND no hard blocker exists
-AND actual employer is eligible
+AND actual employer is identified sufficiently for exclusion and deduplication checks
 AND role is legitimate and active
 AND role is not a duplicate
 AND answers are truthful
@@ -17,16 +17,13 @@ AND consequential unknowns are resolved
 AND source execution policy permits the action
 ```
 
-Run gates in this order: actual employer, current-employer exclusion, company origin, remote-from-Philippines compatibility, required recurring weekend work, known compensation floors, role/seniority, engineering domain, deduplication, then fit scoring.
+Run gates in this order: actual employer, current-employer exclusion, required recurring weekend work, known compensation floors, role/seniority, engineering domain, deduplication, then fit scoring. Record company origin and remote-from-Philippines status before scoring, but do not use either as an eligibility gate.
 
-Confirmed current employers and clients always produce `SKIP / CURRENT_EMPLOYER_EXCLUDED`, including a recruiter listing that names a blocked destination company. Confirmed Philippine-local employers produce `SKIP / PH_LOCAL_COMPANY`. Ambiguous company origin produces `REVIEW / COMPANY_ORIGIN_UNVERIFIED` and cannot proceed to submission.
+Confirmed current employers and clients always produce `SKIP / CURRENT_EMPLOYER_EXCLUDED`, including a recruiter listing that names a blocked destination company. Philippine-local employers, ambiguous employer origin, explicit remote-from-Philippines exclusions, and unverified remote geography may proceed to scoring and application. Preserve those facts, score remote/employment compatibility honestly, and never misstate Jariel's Philippine location or authorization.
 
 ## Reason codes
 
 - `CURRENT_EMPLOYER_EXCLUDED`
-- `PH_LOCAL_COMPANY`
-- `COMPANY_ORIGIN_UNVERIFIED`
-- `REMOTE_PH_INELIGIBLE`
 - `SENIORITY_MISMATCH`
 - `ENGINEERING_DOMAIN_MISMATCH`
 - `ROLE_DEPRIORITIZED`
@@ -57,6 +54,7 @@ Confirmed current employers and clients always produce `SKIP / CURRENT_EMPLOYER_
 - `COMPENSATION_UNDISCLOSED`
 - `COMPENSATION_CONVERSION_REQUIRED`
 - `MATERIAL_REQUIREMENT_GAP`
+- `NONCENTRAL_SKILL_GAP`
 - `CAREER_DIRECTION_MISMATCH`
 - `CALIBRATION_REVIEW_REQUIRED`
 - `READINESS_BELOW_AUTONOMY_THRESHOLD`
@@ -76,9 +74,13 @@ Confirmed current employers and clients always produce `SKIP / CURRENT_EMPLOYER_
 - `HUMAN_VERIFICATION_REQUIRED`
 - `TECHNICAL_FINAL_CLICK_RESTRICTED`
 
+Historical ledger rows may contain `PH_LOCAL_COMPANY`, `COMPANY_ORIGIN_UNVERIFIED`, `REMOTE_PH_INELIGIBLE`, or `REMOTE_PH_UNVERIFIED`. Those codes describe the policy in effect when the row was assessed; they are no longer live eligibility gates.
+
 Current-employer identities are represented by normalized fingerprints in tracked policy. Do not log or publish the private relationship.
 
-Timezone inconvenience is not a blocker. Full-time contractor, independent-contractor, consultant, freelance, B2B, and EOR structures are accepted. Required recurring weekend work is a hard incompatibility; ambiguous or rare on-call language requires evidence rather than an automatic skip.
+Timezone inconvenience and listing geography are not blockers. Full-time contractor, independent-contractor, consultant, freelance, B2B, and EOR structures are accepted. Required recurring weekend work is a hard incompatibility; ambiguous or rare on-call language requires evidence rather than an automatic skip.
+
+Responsibilities override title shorthand. Explicitly junior roles remain deprioritized, while `Software Engineer`, `Engineer III`, `Mid-Senior`, hands-on solutions architecture, senior backend, software-heavy platform, developer infrastructure, developer productivity, integration or cloud product engineering, and technical-lead roles may proceed when actual scope is senior and hands-on. One learnable non-central stack or vendor gap is acceptable and uses `NONCENTRAL_SKILL_GAP`; a missing technology central to daily work remains `MATERIAL_REQUIREMENT_GAP`.
 
 Uncertainty is not the same as unanswerable. Search the canonical application answer bank first, then candidate and project evidence, then derive the strongest-supported answer. Within that process use `EXACT`, `STRONGEST_SUPPORTED_ANSWER`, capability-depth classifications such as `DIRECT_DEEP`, `DIRECT_WORKING`, and `TRANSFERABLE_STRONG`, then `BEST_SUPPORTED_ANSWER`, `CONSERVATIVE_ESTIMATE`, and finally `MATERIAL_UNKNOWN`. All positive evidence-backed statuses are truthful resolved answers. Only a genuine `MATERIAL_UNKNOWN` remains consequential. Compensation evaluation follows `compensation-policy.md`; undisclosed compensation is not a blocker and ordinary expected-compensation answers are autonomous.
 
@@ -122,6 +124,8 @@ An automated receipt remains `APPLIED`; it is not recruiter interest.
 ## Submission evidence
 
 Clicking an Apply control is not success. Mark `APPLIED` only after a confirmation page, ATS success state, employer confirmation, or appropriate acknowledgement proves submission. Persist the evidence type and timestamp.
+
+SQLite owns lifecycle state. Canonical events distinguish preparation, human-ready, submit-clicked, submission-verified, submission-unverified, response stages, and tracker/queue projections. Normalize legacy aliases during maintenance. The Applications Sheet may contain only independently verified `APPLIED` or later records and cannot override SQLite status.
 
 `HUMAN_SUBMIT_READY` means every live field and document has been prepared and verified and the only remaining action is Jariel's final submission control. It is not `APPLIED`, `HOLD`, `VIDEO_REQUIRED`, `POLICY_UNCLEAR`, or `SOURCE_RESTRICTED`. A later statement that Jariel clicked Submit must be reconciled as `VERIFIED_SUBMITTED`, `SUBMISSION_UNVERIFIED`, `NOT_SUBMITTED`, `FAILED`, or `DUPLICATE_RISK`; never assume success or click again blindly.
 
@@ -202,13 +206,18 @@ absolute maximum:                    13
 plausible raw/normalized inventory:  50 minimum, 100 target when available
 human-final-click browser batch:      5-10 tabs
 P0 freshness:                         0-7 days
-P1 freshness:                         8-14 days
+P1 freshness:                         8-30 days
+P2 extended strong-match inventory:  31-45 days
 ```
 
-An outcome is either an autonomous submission backed by confirmation evidence or a fully verified `HUMAN_SUBMIT_READY` application. Keep those metrics separate: human-ready never increments `APPLIED` or verified-submission counts. Stop immediately at 13 combined outcomes. At 8 or more, stop when fresh high-quality inventory has been reasonably exhausted. Below 8, stop rather than weakening eligibility, fit, readiness, truthfulness, source, schedule, or compensation policy.
+An outcome is either an autonomous submission backed by confirmation evidence or a fully verified `HUMAN_SUBMIT_READY` application. Keep those metrics separate: human-ready never increments `APPLIED` or verified-submission counts. Stop immediately at 13 combined outcomes. At 8 or more, stop when fresh high-quality inventory has been reasonably exhausted. Search P0 before P1, then consider P2 only for roles that score `STRONG APPLY`. Listings older than 45 days require a separately documented strategic exception. Below 8, stop rather than weakening the remaining eligibility, fit, readiness, truthfulness, source, schedule, or compensation policy.
 
 One blocked job never blocks the campaign. Persist its exact application and queue outcomes, then continue. Required video, inaccessible forms, human-only actions, unsupported consequential declarations, source restrictions, unclear policies, failed verification, inactive listings, and source-policy failures are per-job outcomes.
 
 Review Queue statuses are `HUMAN_SUBMIT_READY`, `READY_FOR_BROWSER_PREP`, `VIDEO_REQUIRED`, `HOLD`, `READY_TO_RETRY`, `SOURCE_RESTRICTED`, `POLICY_UNCLEAR`, `FORM_INACCESSIBLE`, `SUBMISSION_UNVERIFIED`, and `CLOSED`. `SOURCE_RESTRICTED` and `POLICY_UNCLEAR` describe applications that have not yet been fully prepared; once complete, their actionable status is `HUMAN_SUBMIT_READY` and source-policy detail remains in its dedicated column.
+
+Every active queue record requires a concrete next action, computed re-review date, and expiry date. Expiry triggers live re-verification; it does not silently claim the listing is closed. Required media, assessment cost, declarations, CAPTCHA, and human verification must be discovered in preflight before application prose is generated.
+
+Source diversity is a discovery control, not a scoring dimension. Prefer underrepresented reputable sources and target a maximum 40 percent single-source share while keeping the same employer, fit, freshness, truthfulness, compensation, and submission-policy gates. All campaign metrics are derived from persisted per-job outcomes.
 
 Before every submission, query the SQLite ledger and Google Sheet for the canonical URL, employer, role, posting ID, description fingerprint, and previous events. Run `SENIOR_POSITIONING_REVIEW` on the complete live payload. Do not retry an unverified submission blindly.

@@ -20,6 +20,14 @@ TRACKING_QUERY_KEYS = {
     "trackingid",
 }
 
+SOURCE_KEY_ALIASES = {
+    "indeedph": "indeed_ph",
+    "indeed_ph": "indeed_ph",
+    "greenhouse_direct": "greenhouse",
+    "workable_direct": "workable",
+    "employer_direct": "employer_direct",
+}
+
 
 def normalize_text(value: str) -> str:
     decomposed = unicodedata.normalize("NFKD", value or "")
@@ -41,6 +49,12 @@ def normalize_domain(value: str) -> str:
 
 def normalize_role(value: str) -> str:
     return re.sub(r"[^a-z0-9]+", " ", normalize_text(value)).strip()
+
+
+def normalize_source_key(value: str) -> str:
+    key = re.sub(r"[^a-z0-9]+", "_", normalize_text(value)).strip("_")
+    compact = key.replace("_", "")
+    return SOURCE_KEY_ALIASES.get(key, SOURCE_KEY_ALIASES.get(compact, key))
 
 
 def fingerprint(kind: str, value: str) -> str:

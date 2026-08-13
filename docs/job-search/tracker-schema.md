@@ -5,7 +5,7 @@
 - Connected account: `jarielbalb@gmail.com`
 - Tabs: `Applications` and `Review Queue`
 
-SQLite owns discovery, skips, deduplication, drafts, queue identity, execution detail, and run evidence. The Sheet is the human-facing lifecycle and review surface.
+SQLite owns discovery, skips, deduplication, drafts, queue identity, lifecycle state, execution detail, and run evidence. The Sheet is a human-facing projection and review surface; it is not a second lifecycle authority.
 
 ## Applications tab
 
@@ -105,7 +105,7 @@ Every active queue item must include a role-specific cover letter, even when the
 
 Application identity uses Application ID and canonical URL. Review Queue identity uses the local Queue ID first, then canonical job URL, then normalized employer plus role as a defensive fallback. The local Queue ID is bound in SQLite to job ID, source posting ID, description hash, and canonical URL.
 
-Before appending, check both the local ledger and existing Sheet rows. Update an existing row rather than appending a duplicate. Preserve non-empty manually edited status, next-action, date, and notes fields unless an explicitly authorized or proven lifecycle transition wins.
+Before appending, check both the local ledger and existing Sheet rows. Update an existing row rather than appending a duplicate. Project application and queue status from SQLite. Preserve manual notes and compatible next-action/follow-up values, but never let a Sheet value regress or override proven lifecycle state. Queue expiry remains private structured state in SQLite; a due or expired row must be re-verified rather than silently closed.
 
 After verified submission:
 

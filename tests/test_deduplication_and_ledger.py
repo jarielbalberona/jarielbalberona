@@ -5,6 +5,7 @@ import unittest
 from pathlib import Path
 
 from job_search.ledger import Ledger
+from job_search.lifecycle import SubmissionEvidence
 from job_search.models import ApplicationPacket, ApplicationStatus, CompanyOrigin, Job
 from job_search.normalization import canonicalize_url
 
@@ -46,6 +47,7 @@ class DeduplicationTests(unittest.TestCase):
                     "readiness": 70,
                     "queue_status": "HOLD",
                     "hold_review_reason": "Consequential answer pending",
+                    "next_action": "Resolve the consequential answer",
                     "cover_letter": "A role-specific letter.",
                     "re_review_after": "2026-08-12",
                 }
@@ -69,7 +71,15 @@ class DeduplicationTests(unittest.TestCase):
                     gaps=[],
                     reasons=[],
                 )
-                ledger.upsert_application(packet, ApplicationStatus.APPLIED)
+                ledger.upsert_application(
+                    packet,
+                    ApplicationStatus.APPLIED,
+                    submission_evidence=SubmissionEvidence(
+                        evidence_type="ATS_CONFIRMATION_PAGE",
+                        detail="Confirmation page displayed application received.",
+                        external_key="https://jobs.example.com/review/confirmation",
+                    ),
+                )
                 row = ledger.list_review_queue()[0]
                 self.assertEqual("CLOSED", row["queue_status"])
                 self.assertEqual(0, len(ledger.list_review_queue(include_closed=False)))

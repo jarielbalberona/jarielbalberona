@@ -1,4 +1,4 @@
-version: 9
+version: 11
 default_run_mode: AUTONOMOUS_CAMPAIGN
 default_execution_model: HYBRID_AUTONOMOUS_WITH_HUMAN_FINAL_CLICK
 autonomy_calibration_stage: false
@@ -14,6 +14,11 @@ campaign_minimum_plausible_inventory: 50
 campaign_target_plausible_inventory: 100
 human_submit_batch_minimum: 5
 human_submit_batch_maximum: 10
+
+source_diversity:
+  max_single_source_share_percent: 40
+  minimum_source_families_per_run: 4
+  prioritize_underrepresented_sources: true
 
 submission_authorization:
   user_authorized_globally: true
@@ -156,6 +161,51 @@ sources:
     policy_evidence: "https://www.personio.com/terms/"
     supporting_evidence: "https://www.personio.com/recruitment-privacy-policy/"
     note: "Public employer career pages and forms may be discovered and prepared. Personio's current public customer terms and recruiting privacy material explain platform and applicant-data processing, but do not affirmatively permit third-party applicant submission. Keep the final click human-owned."
+
+  dover:
+    name: "Dover"
+    type: ATS
+    url: "https://app.dover.com/jobs/"
+    enabled: true
+    priority: P1
+    discovery: true
+    profile_supported: false
+    requires_account: false
+    requires_vetting: false
+    paid_access_required: false
+    candidate_fee_required: false
+    location_strategy: "Use employer-specific location text; Dover-hosted Remote (International) is positive eligibility evidence when the employer also says applicants from all geographies are welcome"
+    submission_destination_behavior: "Prepare the employer-specific Dover form; keep the final Apply click human-owned"
+    last_verified: "2026-08-13"
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    applicant_automation_policy: UNCLEAR
+    policy_verified_at: "2026-08-13"
+    policy_evidence: "https://www.dover.com/terms"
+    supporting_evidence: "https://help.dover.com/en/articles/6480741-getting-started-with-ats-features"
+    note: "Dover is a legitimate reusable ATS and its public careers pages expose complete employer-specific forms. Current terms are customer-oriented and do not affirmatively permit applicant-side automated submission, so preserve a human final click."
+
+  yc_work_at_a_startup:
+    name: "Y Combinator Work at a Startup"
+    aliases: ["YC Jobs", "Work at a Startup"]
+    type: JOB_BOARD
+    url: "https://www.ycombinator.com/jobs"
+    enabled: true
+    priority: P1
+    discovery: true
+    profile_supported: true
+    requires_account: true
+    requires_vetting: false
+    paid_access_required: false
+    candidate_fee_required: false
+    location_strategy: "Prefer listings that explicitly say worldwide, any timezone, or work from anywhere; verify the employer's own role text"
+    submission_destination_behavior: "Authenticated Work at a Startup application; reuse an existing account and keep the final action human-owned"
+    last_verified: "2026-08-13"
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    applicant_automation_policy: UNCLEAR
+    policy_verified_at: null
+    note: "Useful startup discovery with direct founder connections, but applications require candidate authentication. Do not create a duplicate account or claim a form is prepared while login is unresolved."
 
   wellfound:
     name: "Wellfound"
