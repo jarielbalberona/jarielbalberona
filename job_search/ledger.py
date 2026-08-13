@@ -8,7 +8,13 @@ from typing import Any, Mapping
 
 from .campaign import CampaignPolicy, classify_freshness
 from .models import ApplicationPacket, ApplicationStatus, Assessment, Job, RunMode, utc_now
-from .normalization import application_id, canonicalize_url, content_fingerprint, description_hash
+from .normalization import (
+    application_id,
+    canonical_job_url,
+    canonicalize_url,
+    content_fingerprint,
+    description_hash,
+)
 from .tracker import should_sync_review_queue
 
 
@@ -122,7 +128,7 @@ class Ledger:
         self.connection.commit()
 
     def _find_existing_job(self, job: Job) -> sqlite3.Row | None:
-        canonical_url = canonicalize_url(job.original_url)
+        canonical_url = canonical_job_url(job)
         fingerprint = content_fingerprint(job)
         if job.source_posting_id:
             found = self.connection.execute(
@@ -143,7 +149,7 @@ class Ledger:
         eligibility_verdict: str | None = None,
         reason_codes: list[str] | tuple[str, ...] = (),
     ) -> tuple[str, bool]:
-        canonical_url = canonicalize_url(job.original_url)
+        canonical_url = canonical_job_url(job)
         if job.posting_age_days is None or job.freshness_bucket is None:
             age, bucket = classify_freshness(job.posted_at, job.discovered_at)
             job.posting_age_days = age
@@ -221,10 +227,16 @@ class Ledger:
                     ),
                 )
             else:
-                self.connection.execute(
-                    "UPDATE jobs SET updated_at = ? WHERE job_id = ?",
-                    (now, job_id),
-                )
+                if job.destination_ats_url:
+                    self.connection.execute(
+                        "UPDATE jobs SET canonical_url = ?, updated_at = ? WHERE job_id = ?",
+                        (canonical_url, now, job_id),
+                    )
+                else:
+                    self.connection.execute(
+                        "UPDATE jobs SET updated_at = ? WHERE job_id = ?",
+                        (now, job_id),
+                    )
             self.connection.commit()
             return job_id, True
 
@@ -234,7 +246,7 @@ class Ledger:
             job.source,
             job.source_posting_id,
             job.original_url,
-            canonicalize_url(job.original_url),
+            canonical_url,
             job.company,
             job.actual_employer,
             job.destination_company,

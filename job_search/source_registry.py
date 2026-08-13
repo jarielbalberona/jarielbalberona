@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import Any
 
@@ -12,6 +13,24 @@ from .submission import (
 
 
 DEFAULT_REGISTRY = Path("docs/job-search/source-registry.yaml")
+PRIORITY_ORDER = {"P0": 0, "P1": 1, "P2": 2, "P3": 3}
+SOURCE_TYPES = frozenset(
+    {
+        "JOB_BOARD",
+        "DEVELOPER_JOB_BOARD",
+        "REMOTE_JOB_BOARD",
+        "PH_REMOTE_JOB_BOARD",
+        "PH_CONTRACTOR_JOB_BOARD",
+        "PH_EOR_REMOTE_SOURCE",
+        "TALENT_NETWORK",
+        "FREELANCE_MARKETPLACE",
+        "PROFESSIONAL_FREELANCE_MARKETPLACE",
+        "ATS",
+        "EMPLOYER_DIRECT",
+        "COMMUNITY_SOURCE",
+        "GENERAL_JOB_BOARD",
+    }
+)
 
 
 def _parse_scalar(value: str) -> Any:
@@ -22,6 +41,8 @@ def _parse_scalar(value: str) -> Any:
         return value == "true"
     if len(value) >= 2 and value[0] == value[-1] == '"':
         return value[1:-1]
+    if value.startswith(("[", "{")):
+        return json.loads(value)
     try:
         return int(value)
     except ValueError:
@@ -69,7 +90,60 @@ def load_source_registry(path: Path = DEFAULT_REGISTRY) -> dict[str, Any]:
             current_source[key] = _parse_scalar(value)
             continue
         raise ValueError(f"unsupported source-registry structure: {raw_line}")
+    for source in result["sources"].values():
+        if "note" in source and "notes" not in source:
+            source["notes"] = source["note"]
     return result
+
+
+def list_discovery_sources(path: Path = DEFAULT_REGISTRY) -> list[dict[str, Any]]:
+    """Return the enabled recurring-discovery rotation in crawl order.
+
+    Priority controls discovery efficiency only. It is deliberately not exposed
+    to scoring code and must never modify a job's fit assessment.
+    """
+
+    sources = load_source_registry(path)["sources"]
+    rotation = [
+        {"id": source_id, **entry}
+        for source_id, entry in sources.items()
+        if entry.get("enabled", False) and entry.get("discovery", False)
+    ]
+    return sorted(
+        rotation,
+        key=lambda entry: PRIORITY_ORDER.get(str(entry.get("priority", "P3")), 99),
+    )
+
+
+def validate_source_registry(path: Path = DEFAULT_REGISTRY) -> list[str]:
+    registry = load_source_registry(path)
+    errors: list[str] = []
+    seen_aliases: dict[str, str] = {}
+
+    if not registry.get("registry_policy", {}).get("preferred_not_allowlist", False):
+        errors.append("registry must be explicitly configured as preferred, not an allowlist")
+    if registry.get("candidate_paid_access", {}).get("default_authorized") is not False:
+        errors.append("candidate paid access must default to false")
+
+    for source_id, entry in registry["sources"].items():
+        priority = entry.get("priority")
+        if priority not in PRIORITY_ORDER:
+            errors.append(f"{source_id}: invalid priority {priority!r}")
+        source_type = entry.get("type")
+        if source_type is not None and source_type not in SOURCE_TYPES:
+            errors.append(f"{source_id}: invalid type {source_type!r}")
+
+        aliases = [source_id, entry.get("name", ""), *entry.get("aliases", [])]
+        for alias in aliases:
+            normalized = "".join(character for character in str(alias).casefold() if character.isalnum())
+            if not normalized:
+                continue
+            existing = seen_aliases.get(normalized)
+            if existing and existing != source_id:
+                errors.append(f"duplicate source alias {alias!r}: {existing} and {source_id}")
+            else:
+                seen_aliases[normalized] = source_id
+    return errors
 
 
 def get_source_policy(source: str, path: Path = DEFAULT_REGISTRY) -> SourcePolicy:

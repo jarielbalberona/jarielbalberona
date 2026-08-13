@@ -68,6 +68,7 @@ class Job:
     company_origin: CompanyOrigin
     location: str = ""
     source_posting_id: str | None = None
+    destination_ats_url: str | None = None
     actual_employer: str | None = None
     destination_company: str | None = None
     company_domain: str | None = None

@@ -1,4 +1,4 @@
-version: 4
+version: 9
 default_run_mode: AUTONOMOUS_CAMPAIGN
 default_execution_model: HYBRID_AUTONOMOUS_WITH_HUMAN_FINAL_CLICK
 autonomy_calibration_stage: false
@@ -8,7 +8,8 @@ campaign_minimum_desired_new_submissions: 8
 campaign_normal_target_new_submissions: 10
 campaign_maximum_new_submissions: 13
 p0_max_age_days: 7
-p1_max_age_days: 14
+p1_max_age_days: 30
+p2_max_age_days: 45
 campaign_minimum_plausible_inventory: 50
 campaign_target_plausible_inventory: 100
 human_submit_batch_minimum: 5
@@ -17,6 +18,24 @@ human_submit_batch_maximum: 10
 submission_authorization:
   user_authorized_globally: true
   individual_application_approval_required: false
+
+registry_policy:
+  preferred_not_allowlist: true
+  discover_additional_reputable_sources: true
+  auto_add_reusable_sources: true
+  new_source_checks: ["legitimacy", "source_type", "candidate_cost", "priority"]
+  priority_affects_fit: false
+
+candidate_paid_access:
+  default_authorized: false
+  free_profile_creation_allowed: true
+  subscriptions_require_explicit_authorization: true
+  proposal_credits_require_explicit_authorization: true
+  boosted_applications_require_explicit_authorization: true
+
+opportunistic_discovery:
+  hard_blocked: false
+  not_in_default_rotation: ["fiverr", "freelancer_com", "peopleperhour", "flexjobs", "hubstaff_talent", "remote_co", "galasya", "remotework_ph", "hireable_ph", "pinoy_jobs_online", "hireme_ph", "husay_ph", "pesojobs", "workmates_ph"]
 
 sources:
   indeed_ph:
@@ -124,6 +143,458 @@ sources:
     applicant_automation_policy: UNCLEAR
     policy_verified_at: null
     note: "Public career sites may be discovered, but no current official applicant-side automation permission was found. Keep discovery-only."
+
+  personio:
+    url: "https://jobs.personio.com/"
+    enabled: true
+    priority: P0
+    discovery: true
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    applicant_automation_policy: UNCLEAR
+    policy_verified_at: "2026-08-13"
+    policy_evidence: "https://www.personio.com/terms/"
+    supporting_evidence: "https://www.personio.com/recruitment-privacy-policy/"
+    note: "Public employer career pages and forms may be discovered and prepared. Personio's current public customer terms and recruiting privacy material explain platform and applicant-data processing, but do not affirmatively permit third-party applicant submission. Keep the final click human-owned."
+
+  wellfound:
+    name: "Wellfound"
+    aliases: ["AngelList Talent"]
+    type: JOB_BOARD
+    url: "https://wellfound.com/jobs"
+    enabled: true
+    priority: P0
+    discovery: true
+    profile_supported: true
+    requires_account: false
+    requires_vetting: false
+    paid_access_required: false
+    candidate_fee_required: false
+    default_search_categories: ["Senior Software Engineer", "Senior Full Stack Engineer", "Staff Software Engineer", "AI Engineer", "AI Product Engineer", "Product Engineer"]
+    location_strategy: "Prefer Philippines, APAC, worldwide, or anywhere; verify Remote independently"
+    submission_destination_behavior: "Resolve employer destination; Wellfound-hosted final click remains human-owned"
+    last_verified: "2026-08-13"
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    applicant_automation_policy: UNCLEAR
+    policy_verified_at: "2026-08-12"
+    policy_evidence: "https://wellfound.com/terms"
+    supporting_evidence: "https://wellfound.com/terms/jobs"
+    note: "Public listings are useful for human-paced discovery, but current terms do not affirmatively permit third-party applicant submission. Keep live submission disabled and require a human final click for Wellfound-hosted applications."
+
+  arc_dev:
+    name: "Arc.dev"
+    aliases: ["Arc Remote Jobs"]
+    type: DEVELOPER_JOB_BOARD
+    url: "https://arc.dev/remote-jobs"
+    enabled: true
+    priority: P0
+    discovery: true
+    profile_supported: true
+    requires_account: false
+    requires_vetting: false
+    paid_access_required: false
+    candidate_fee_required: false
+    default_search_categories: ["Senior Software Engineer", "Senior Full Stack", "Staff Software Engineer", "AI Engineer", "AI Product Engineer", "Product Engineer", "Technical Lead"]
+    location_strategy: "Search Philippines, APAC, and global remote; verify explicit country eligibility"
+    submission_destination_behavior: "Resolve employer or ATS destination; profile opportunities use authenticated candidate workflow"
+    last_verified: "2026-08-13"
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    applicant_automation_policy: NOT_APPLICABLE
+    policy_verified_at: "2026-08-13"
+    policy_evidence: "https://arc.dev/remote-jobs"
+    note: "Recurring developer-job discovery. Do not create a duplicate candidate account and do not infer Philippines eligibility from a generic Remote label."
+
+  dynamite_jobs:
+    name: "Dynamite Jobs"
+    type: REMOTE_JOB_BOARD
+    url: "https://dynamitejobs.com/"
+    enabled: true
+    priority: P0
+    discovery: true
+    profile_supported: true
+    requires_account: false
+    requires_vetting: false
+    paid_access_required: false
+    candidate_fee_required: false
+    default_search_categories: ["Senior Software Engineer", "Staff Engineer", "TypeScript", "Full Stack", "Product Engineer", "AI Engineer"]
+    location_strategy: "Search worldwide and APAC remote roles; verify country and timezone at destination"
+    submission_destination_behavior: "Resolve and prefer employer-direct or ATS destination"
+    last_verified: "2026-08-13"
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    applicant_automation_policy: NOT_APPLICABLE
+    policy_verified_at: "2026-08-13"
+    policy_evidence: "https://dynamitejobs.com/"
+    note: "High-priority remote engineering discovery. Preserve Dynamite Jobs provenance and apply destination-source policy."
+
+  we_work_remotely:
+    name: "We Work Remotely"
+    aliases: ["WWR"]
+    type: REMOTE_JOB_BOARD
+    url: "https://weworkremotely.com/"
+    enabled: true
+    priority: P0
+    discovery: true
+    profile_supported: false
+    requires_account: false
+    requires_vetting: false
+    paid_access_required: false
+    candidate_fee_required: false
+    default_search_categories: ["Programming", "Full-Stack", "Backend", "Product Engineering", "AI Software"]
+    location_strategy: "Prefer Anywhere in the World, Philippines, or APAC; verify at destination"
+    submission_destination_behavior: "Resolve and prefer employer-direct or ATS destination"
+    last_verified: "2026-08-13"
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    applicant_automation_policy: UNCLEAR
+    policy_verified_at: "2026-08-12"
+    policy_evidence: "https://weworkremotely.com/terms-and-conditions"
+    supporting_evidence: "https://weworkremotely.com/categories/remote-full-stack-programming-jobs.rss"
+    note: "The public board and RSS feeds are useful for discovery, but current terms do not affirmatively permit third-party applicant submission. Treat WWR geography labels as hints only and verify the destination employer's actual country eligibility before preparation."
+
+  remoteok:
+    name: "Remote OK"
+    aliases: ["RemoteOK"]
+    type: REMOTE_JOB_BOARD
+    url: "https://remoteok.com/"
+    enabled: true
+    priority: P1
+    discovery: true
+    profile_supported: false
+    requires_account: false
+    requires_vetting: false
+    paid_access_required: false
+    candidate_fee_required: false
+    default_search_categories: ["Software Development", "Senior", "Full Stack", "AI"]
+    location_strategy: "Use worldwide, APAC, and Philippines signals; verify at employer destination"
+    submission_destination_behavior: "Always resolve actual employer or ATS destination"
+    last_verified: "2026-08-13"
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    applicant_automation_policy: NOT_APPLICABLE
+    policy_verified_at: "2026-08-13"
+    policy_evidence: "https://remoteok.com/api"
+    note: "Use Remote OK's public feed for discovery only. Preserve Remote OK as discovery provenance, then verify and use the destination employer or ATS application policy. Never treat listing text or tracking redirects as submission authority."
+
+  remotive:
+    name: "Remotive"
+    type: REMOTE_JOB_BOARD
+    url: "https://remotive.com/remote-jobs/"
+    enabled: true
+    priority: P1
+    discovery: true
+    profile_supported: false
+    requires_account: false
+    requires_vetting: false
+    paid_access_required: false
+    candidate_fee_required: false
+    default_search_categories: ["Software Development", "AI", "Senior", "Full Stack"]
+    location_strategy: "Use Philippines, APAC, and worldwide filters without assuming generic Remote eligibility"
+    submission_destination_behavior: "Resolve and prefer employer-direct or ATS destination"
+    last_verified: "2026-08-13"
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    applicant_automation_policy: NOT_APPLICABLE
+    policy_verified_at: "2026-08-13"
+    policy_evidence: "https://remotive.com/api/remote-jobs"
+    note: "Use Remotive's public job feed for discovery only. Preserve Remotive as discovery provenance and apply the destination employer or ATS policy before preparing or submitting an application."
+
+  working_nomads:
+    name: "Working Nomads"
+    type: REMOTE_JOB_BOARD
+    url: "https://www.workingnomads.com/remote-development-jobs"
+    enabled: true
+    priority: P1
+    discovery: true
+    profile_supported: false
+    requires_account: false
+    requires_vetting: false
+    paid_access_required: false
+    candidate_fee_required: false
+    default_search_categories: ["Development", "Technology", "Senior Software Engineer", "AI Engineer"]
+    location_strategy: "Start with Anywhere, then verify country and timezone at destination"
+    submission_destination_behavior: "Resolve and prefer employer-direct or ATS destination"
+    last_verified: "2026-08-13"
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    applicant_automation_policy: NOT_APPLICABLE
+    policy_verified_at: "2026-08-13"
+    policy_evidence: "https://www.workingnomads.com/remote-development-jobs"
+    note: "Secondary remote discovery source. Geographic labels are discovery hints, not application eligibility proof."
+
+  hiretalent_ph:
+    name: "HireTalent.ph"
+    aliases: ["HireTalent PH"]
+    type: PH_REMOTE_JOB_BOARD
+    url: "https://hiretalent.ph/"
+    enabled: true
+    priority: P1
+    discovery: true
+    profile_supported: true
+    requires_account: true
+    requires_vetting: false
+    paid_access_required: null
+    candidate_fee_required: null
+    default_search_categories: ["Software Development", "Engineering", "AI", "Product", "Platform"]
+    location_strategy: "Philippines-based talent serving international businesses; resolve the actual client"
+    submission_destination_behavior: "Resolve international employer or client before assessment"
+    last_verified: "2026-08-13"
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    applicant_automation_policy: UNCLEAR
+    policy_verified_at: null
+    note: "Public discovery is available, but contact/application instructions may require a talent account and an unlock. Do not pay to unlock any listing. Do not relax compensation, seniority, or career-direction standards for offshore inventory."
+
+  filipino_contractors:
+    name: "FilipinoContractors.com"
+    aliases: ["Filipino Contractors"]
+    type: PH_CONTRACTOR_JOB_BOARD
+    url: "https://filipinocontractors.com/"
+    enabled: true
+    priority: P1
+    discovery: true
+    profile_supported: true
+    requires_account: true
+    requires_vetting: false
+    paid_access_required: false
+    candidate_fee_required: false
+    default_search_categories: ["Software Development", "Engineering", "AI", "Product Engineering"]
+    location_strategy: "Philippines-based contractors; resolve international client and schedule"
+    submission_destination_behavior: "Resolve hiring client where possible; preserve intermediary provenance"
+    last_verified: "2026-08-13"
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    applicant_automation_policy: UNCLEAR
+    policy_verified_at: null
+    note: "Contractor compensation floors remain unchanged. Do not infer the client or employment terms."
+
+  foundit_ph:
+    name: "Foundit Philippines"
+    aliases: ["Monster Philippines", "Foundit PH"]
+    type: GENERAL_JOB_BOARD
+    url: "https://www.foundit.com.ph/"
+    enabled: true
+    priority: P2
+    discovery: true
+    profile_supported: true
+    requires_account: false
+    requires_vetting: false
+    paid_access_required: false
+    candidate_fee_required: false
+    default_search_categories: ["Senior Software Engineer", "Full Stack Engineer", "AI Engineer", "Remote"]
+    location_strategy: "Strict remote and senior filters; resolve employer and location terms"
+    submission_destination_behavior: "Prefer employer-direct or ATS destination when available"
+    last_verified: "2026-08-13"
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    applicant_automation_policy: UNCLEAR
+    policy_verified_at: null
+    note: "General-board inventory requires strict compensation, career-direction, and employer checks."
+
+  remote_talent_ph:
+    name: "RemoteTalent.ph"
+    aliases: ["Remote Talent PH"]
+    type: PH_REMOTE_JOB_BOARD
+    url: "https://remotetalent.ph/"
+    enabled: true
+    priority: P2
+    discovery: true
+    profile_supported: true
+    requires_account: false
+    requires_vetting: false
+    paid_access_required: false
+    candidate_fee_required: false
+    default_search_categories: ["Software Development", "Full Stack", "AI", "Product Engineering"]
+    location_strategy: "Philippines-based remote talent; resolve international employer or client"
+    submission_destination_behavior: "Resolve underlying employer/client before assessment"
+    last_verified: "2026-08-13"
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    applicant_automation_policy: UNCLEAR
+    policy_verified_at: null
+    note: "The configured HTTPS endpoint was unreachable during the 2026-08-13 smoke test. Retain as requested at P2 for later re-verification; do not treat it as productive inventory until reachable."
+
+  remotify_ph:
+    name: "Remotify.ph"
+    aliases: ["Remotify"]
+    type: PH_EOR_REMOTE_SOURCE
+    url: "https://www.remotify.ph/"
+    enabled: true
+    priority: P2
+    discovery: true
+    profile_supported: false
+    requires_account: false
+    requires_vetting: false
+    paid_access_required: false
+    candidate_fee_required: false
+    default_search_categories: ["Software Engineering", "Product Engineering", "AI Engineering"]
+    location_strategy: "Treat Philippine EOR/payroll location separately from underlying employer origin"
+    submission_destination_behavior: "Resolve and preserve both EOR/intermediary and underlying international client"
+    last_verified: "2026-08-13"
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    applicant_automation_policy: NOT_APPLICABLE
+    policy_verified_at: null
+    note: "No public candidate job inventory was found during the 2026-08-13 smoke test. Treat as an EOR/intermediary lead source only. Do not reject solely because a Philippine EOR administers employment."
+
+  turing:
+    name: "Turing"
+    type: TALENT_NETWORK
+    url: "https://www.turing.com/jobs"
+    enabled: true
+    priority: P2
+    discovery: true
+    profile_supported: true
+    requires_account: true
+    requires_vetting: true
+    paid_access_required: false
+    candidate_fee_required: false
+    default_search_categories: ["Senior Software Engineer", "AI Engineer", "Product Engineer"]
+    location_strategy: "Global talent network; match opportunity geography and schedule explicitly"
+    submission_destination_behavior: "Talent-network onboarding/profile flow, not ordinary per-job submission"
+    last_verified: "2026-08-13"
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    applicant_automation_policy: UNCLEAR
+    policy_verified_at: null
+    note: "Reuse an existing account. Candidate profile and vetting are distinct from applying to a single job."
+
+  toptal:
+    name: "Toptal"
+    type: TALENT_NETWORK
+    url: "https://www.toptal.com/talent/apply"
+    enabled: true
+    priority: P2
+    discovery: true
+    profile_supported: true
+    requires_account: true
+    requires_vetting: true
+    paid_access_required: false
+    candidate_fee_required: false
+    default_search_categories: ["Software Developer", "Full Stack Developer", "AI Engineer"]
+    location_strategy: "Global talent network; opportunity matching follows network acceptance"
+    submission_destination_behavior: "Vetting/application to talent network, not ordinary per-job submission"
+    last_verified: "2026-08-13"
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    applicant_automation_policy: UNCLEAR
+    policy_verified_at: null
+    note: "Do not represent network screening as a job application and do not create a duplicate account."
+
+  contra:
+    name: "Contra"
+    type: PROFESSIONAL_FREELANCE_MARKETPLACE
+    url: "https://contra.com/opportunities"
+    enabled: true
+    priority: P2
+    discovery: true
+    profile_supported: true
+    requires_account: true
+    requires_vetting: false
+    paid_access_required: false
+    candidate_fee_required: false
+    default_search_categories: ["Software Engineering", "Full Stack Development", "AI", "Product Engineering"]
+    location_strategy: "Global remote engagements; verify client, scope, schedule, and country eligibility"
+    submission_destination_behavior: "Marketplace opportunity/proposal flow; prioritize substantial engagements"
+    last_verified: "2026-08-13"
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    applicant_automation_policy: UNCLEAR
+    policy_verified_at: null
+    note: "Use senior positioning and compensation floors. Reuse an existing profile and avoid low-value micro-projects."
+
+  justremote:
+    name: "JustRemote"
+    type: REMOTE_JOB_BOARD
+    url: "https://justremote.co/remote-developer-jobs"
+    enabled: true
+    priority: P3
+    discovery: true
+    profile_supported: false
+    requires_account: false
+    requires_vetting: false
+    paid_access_required: false
+    candidate_fee_required: false
+    default_search_categories: ["Developer", "Software Engineer", "Full Stack", "AI"]
+    location_strategy: "Use only when a listing explicitly includes Philippines or worldwide; the current applicant-location index does not list Philippines"
+    submission_destination_behavior: "Resolve and prefer employer-direct or ATS destination"
+    last_verified: "2026-08-13"
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    applicant_automation_policy: NOT_APPLICABLE
+    policy_verified_at: null
+    note: "P3 incremental discovery only; paid Power Search or equivalent is not authorized."
+
+  upwork:
+    name: "Upwork"
+    type: FREELANCE_MARKETPLACE
+    url: "https://www.upwork.com/freelance-jobs/"
+    enabled: true
+    priority: P3
+    discovery: true
+    profile_supported: true
+    requires_account: true
+    requires_vetting: false
+    paid_access_required: false
+    candidate_fee_required: false
+    default_search_categories: ["Senior Full Stack Development", "Software Engineering", "AI Engineering", "Long-term Contract"]
+    location_strategy: "Global contract inventory; verify client, schedule, and meaningful engagement scope"
+    submission_destination_behavior: "Marketplace proposal flow; never spend Connects or boost without explicit authorization"
+    last_verified: "2026-08-13"
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    applicant_automation_policy: UNCLEAR
+    policy_verified_at: null
+    note: "Secondary inventory only. Reuse an existing account; no paid proposal credits, boosts, or services without approval."
+
+  onlinejobs_ph:
+    name: "OnlineJobs.ph"
+    aliases: ["Online Jobs PH", "OLJ"]
+    type: PH_REMOTE_JOB_BOARD
+    url: "https://www.onlinejobs.ph/"
+    enabled: false
+    priority: P3
+    discovery: false
+    profile_supported: false
+    requires_account: true
+    requires_vetting: false
+    paid_access_required: false
+    candidate_fee_required: false
+    default_search_categories: []
+    location_strategy: "Disabled by candidate policy"
+    submission_destination_behavior: "No discovery, profile creation, profile mutation, or submission"
+    last_verified: "2026-08-13"
+    execution_mode: DISABLED
+    live_submit: false
+    applicant_automation_policy: RESTRICTED
+    policy_verified_at: null
+    note: "Explicitly disabled. Do not create or modify an OnlineJobs.ph profile."
+
+  hacker_news_who_is_hiring:
+    url: "https://news.ycombinator.com/submitted?id=whoishiring"
+    enabled: true
+    priority: P1
+    discovery: true
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    applicant_automation_policy: NOT_APPLICABLE
+    policy_verified_at: "2026-08-13"
+    policy_evidence: "https://news.ycombinator.com/item?id=49156683"
+    note: "Monthly employer-authored hiring thread used only for discovery. Preserve the HN post as discovery provenance, then apply the destination employer or ATS policy to any application. Verify geography, freshness, role status, and employer identity independently."
+
+  remote_rocketship:
+    url: "https://www.remoterocketship.com/"
+    enabled: true
+    priority: P2
+    discovery: false
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    applicant_automation_policy: RESTRICTED
+    policy_verified_at: "2026-08-13"
+    policy_evidence: "https://www.remoterocketship.com/us/terms/"
+    note: "The current terms prohibit scraping and automated browser sessions. Do not automate this source or submit through it. A lead encountered through ordinary web-search results may be verified only at the employer's direct career page, whose ATS policy governs preparation and submission."
 
   employer_direct:
     enabled: true

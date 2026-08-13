@@ -97,6 +97,41 @@ class DeduplicationTests(unittest.TestCase):
                 self.assertEqual(1, ledger.table_count("jobs"))
                 self.assertEqual(2, ledger.table_count("job_sources"))
 
+    def test_destination_ats_url_deduplicates_changed_cross_source_descriptions(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            db = Path(directory) / "ledger.sqlite"
+            with Ledger(db) as ledger:
+                ledger.initialize()
+                first = fixture_job(
+                    "wellfound", "https://wellfound.com/jobs/123", "wellfound-123"
+                )
+                first.description = "Short aggregator summary for the role."
+                first.destination_ats_url = (
+                    "https://job-boards.greenhouse.io/acme/jobs/456?utm_source=wellfound"
+                )
+                second = fixture_job(
+                    "remoteok", "https://remoteok.com/remote-jobs/789", "remoteok-789"
+                )
+                second.description = "The complete employer-authored job description."
+                second.destination_ats_url = (
+                    "https://job-boards.greenhouse.io/acme/jobs/456?source=remoteok"
+                )
+
+                first_id, first_duplicate = ledger.upsert_job(first)
+                second_id, second_duplicate = ledger.upsert_job(second)
+
+                self.assertFalse(first_duplicate)
+                self.assertTrue(second_duplicate)
+                self.assertEqual(first_id, second_id)
+                self.assertEqual(1, ledger.table_count("jobs"))
+                self.assertEqual(2, ledger.table_count("job_sources"))
+                canonical_url = ledger.connection.execute(
+                    "SELECT canonical_url FROM jobs WHERE job_id = ?", (first_id,)
+                ).fetchone()["canonical_url"]
+                self.assertEqual(
+                    "https://job-boards.greenhouse.io/acme/jobs/456", canonical_url
+                )
+
     def test_compensation_answer_metadata_and_schedule_are_persisted(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             db = Path(directory) / "ledger.sqlite"

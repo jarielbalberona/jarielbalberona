@@ -71,6 +71,12 @@ def description_hash(description: str) -> str:
     return hashlib.sha256(normalize_text(description).encode()).hexdigest()
 
 
+def canonical_job_url(job: Job) -> str:
+    """Prefer the resolved employer/ATS destination over an aggregator URL."""
+
+    return canonicalize_url(job.destination_ats_url or job.original_url)
+
+
 def content_fingerprint(job: Job) -> str:
     payload = "|".join(
         [normalize_company(job.employer), normalize_role(job.role), description_hash(job.description)]
@@ -86,7 +92,7 @@ def application_id(job: Job) -> str:
                 normalize_company(job.employer),
                 normalize_role(job.role),
                 job.source_posting_id or "",
-                canonicalize_url(job.original_url),
+                canonical_job_url(job),
             ]
         )
     digest = hashlib.blake2b(core.encode(), digest_size=10).hexdigest()
