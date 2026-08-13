@@ -52,7 +52,9 @@ Permit autonomy only when repository policy allows it:
 - `REVIEW`: Jariel review required.
 - `SKIP`: never apply.
 
-For a complete application on a source that is `RESTRICTED` or `UNCLEAR`, or when CAPTCHA, human verification, or a technical final-click restriction applies, use `HUMAN_FINAL_CLICK`: populate every field, attach all documents, verify the payload, stop before the final control, and record `HUMAN_SUBMIT_READY`. Do not leave it as `SOURCE_RESTRICTED`, `POLICY_UNCLEAR`, or `HOLD` once only Jariel's click remains.
+For a dated source classified `UNCLEAR`, use Jariel's repository-owned `policy_unclear_agent_submission_authorized` setting. When it is enabled and every other gate passes, submit without asking for another approval while preserving the source classification as `UNCLEAR`. If the dated override is unavailable, use `HUMAN_FINAL_CLICK`.
+
+For a complete application on a source that is explicitly `RESTRICTED`, or when CAPTCHA, human verification, or a technical final-click restriction applies, use `HUMAN_FINAL_CLICK`: populate every legitimate field, attach all documents, verify the payload, stop before the final control, and record `HUMAN_SUBMIT_READY`. Do not bypass the restriction or security control. Do not leave it as `SOURCE_RESTRICTED`, `POLICY_UNCLEAR`, or `HOLD` once only Jariel's click remains.
 
 For `AUTONOMOUS_CAMPAIGN`, also enforce the persisted campaign maximum before entering the submission handler. A campaign outcome is either an auto-verified submission or `HUMAN_SUBMIT_READY`, but keep those metrics separate. Required video, unsupported consequential declarations, inaccessible forms, and failed verification remain `VIDEO_REQUIRED`, `HOLD`, `FORM_INACCESSIBLE`, or `SUBMISSION_UNVERIFIED`; continue to the next job.
 

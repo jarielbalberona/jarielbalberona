@@ -84,7 +84,7 @@ Queue statuses are `HUMAN_SUBMIT_READY`, `READY_FOR_BROWSER_PREP`, `VIDEO_REQUIR
 - `HUMAN_SUBMIT_READY`: the live form is fully populated and verified; Jariel's final click is the only remaining action. This is not an application submission.
 - `READY_FOR_BROWSER_PREP`: the packet is complete but has not been loaded into a live browser form, normally because the 5-10 tab human batch is full.
 - `SOURCE_RESTRICTED`: current applicant-side terms expressly prohibit the required automated or third-party submission action.
-- `POLICY_UNCLEAR`: current official applicant-side material is silent or ambiguous, so autonomous submission is not permitted.
+- `POLICY_UNCLEAR`: current official applicant-side material is silent or ambiguous and the dated standing-authorization override is unavailable, so agent submission is not permitted yet.
 - `READY_TO_RETRY`: no candidate-fact blocker remains; re-open or re-inspect the live flow because a temporary access/form condition prevented final preparation.
 - `HOLD`: a genuine role requirement, candidate decision, or unsupported material fact remains.
 - `VIDEO_REQUIRED`: the only or primary candidate-owned blocker is a required introduction/recorded video.

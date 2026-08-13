@@ -200,4 +200,7 @@ def get_submission_authorization(
         individual_application_approval_required=bool(
             entry.get("individual_application_approval_required", True)
         ),
+        policy_unclear_agent_submission_authorized=bool(
+            entry.get("policy_unclear_agent_submission_authorized", False)
+        ),
     )

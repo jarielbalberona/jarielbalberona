@@ -1,4 +1,4 @@
-version: 12
+version: 13
 default_run_mode: AUTONOMOUS_CAMPAIGN
 default_execution_model: HYBRID_AUTONOMOUS_WITH_HUMAN_FINAL_CLICK
 autonomy_calibration_stage: false
@@ -23,6 +23,7 @@ source_diversity:
 submission_authorization:
   user_authorized_globally: true
   individual_application_approval_required: false
+  policy_unclear_agent_submission_authorized: true
 
 registry_policy:
   preferred_not_allowlist: true
@@ -103,7 +104,7 @@ sources:
     policy_verified_at: "2026-08-12"
     policy_evidence: "https://www.ashbyhq.com/resources/terms"
     supporting_evidence: "https://www.ashbyhq.com/resources/privacy"
-    note: "Ashby's public terms are customer-facing and do not establish applicant-side autonomous submission permission. Keep discovery-only."
+    note: "Ashby's public terms are customer-facing and do not establish applicant-side autonomous submission permission. Keep the source classification UNCLEAR. Jariel's standing policy-unclear authorization permits his agent to submit a truthful, complete application after a dated policy review; it does not reclassify Ashby as PERMITTED."
 
   recruitee:
     enabled: true

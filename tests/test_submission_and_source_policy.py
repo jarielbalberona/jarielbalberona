@@ -33,6 +33,12 @@ from job_search.submission import (
 GLOBAL_AUTHORIZATION = SubmissionAuthorization(
     user_authorized_globally=True,
     individual_application_approval_required=False,
+    policy_unclear_agent_submission_authorized=True,
+)
+
+GLOBAL_AUTHORIZATION_WITHOUT_UNCLEAR_OVERRIDE = SubmissionAuthorization(
+    user_authorized_globally=True,
+    individual_application_approval_required=False,
 )
 
 
@@ -249,7 +255,11 @@ class SubmissionTests(unittest.TestCase):
                     ),
                     unresolved_questions=[],
                     calibration_stage=False,
-                    submission_authorization=GLOBAL_AUTHORIZATION,
+                    submission_authorization=(
+                        GLOBAL_AUTHORIZATION
+                        if policy_status == ApplicantAutomationPolicy.RESTRICTED
+                        else GLOBAL_AUTHORIZATION_WITHOUT_UNCLEAR_OVERRIDE
+                    ),
                 )
                 self.assertFalse(decision.permitted)
                 self.assertIn(reason, decision.reason_codes)
@@ -289,7 +299,7 @@ class SubmissionTests(unittest.TestCase):
             ("SOURCE_REQUIRES_CANDIDATE_AUTHORED_PROSE",), decision.reason_codes
         )
 
-    def test_unclear_greenhouse_and_ashby_route_to_human_final_click(self) -> None:
+    def test_unclear_greenhouse_and_ashby_route_to_agent_submit_with_standing_authorization(self) -> None:
         for ats in ("Greenhouse", "Ashby"):
             with self.subTest(ats=ats):
                 decision = evaluate_hybrid_execution(
@@ -304,9 +314,72 @@ class SubmissionTests(unittest.TestCase):
                     calibration_stage=False,
                     submission_authorization=GLOBAL_AUTHORIZATION,
                 )
-                self.assertEqual(HybridExecutionPath.HUMAN_FINAL_CLICK, decision.path)
-                self.assertEqual("HUMAN_SUBMIT_READY", decision.queue_status)
-                self.assertIn("POLICY_UNCLEAR", decision.reason_codes)
+                self.assertEqual(HybridExecutionPath.AUTO_SUBMIT, decision.path)
+                self.assertIsNone(decision.queue_status)
+                self.assertNotIn("POLICY_UNCLEAR", decision.reason_codes)
+
+    def test_unclear_source_without_standing_override_still_routes_to_human_final_click(self) -> None:
+        decision = evaluate_hybrid_execution(
+            assessment=assessment(Verdict.STRONG_APPLY, 98),
+            source_policy=SourcePolicy(
+                RunMode.DISCOVERY_ONLY,
+                False,
+                "2026-08-12",
+                ApplicantAutomationPolicy.UNCLEAR,
+            ),
+            unresolved_questions=[],
+            calibration_stage=False,
+            submission_authorization=GLOBAL_AUTHORIZATION_WITHOUT_UNCLEAR_OVERRIDE,
+        )
+        self.assertEqual(HybridExecutionPath.HUMAN_FINAL_CLICK, decision.path)
+        self.assertEqual("HUMAN_SUBMIT_READY", decision.queue_status)
+        self.assertIn("POLICY_UNCLEAR", decision.reason_codes)
+
+    def test_restricted_source_cannot_be_overridden_by_standing_authorization(self) -> None:
+        decision = evaluate_hybrid_execution(
+            assessment=assessment(Verdict.STRONG_APPLY, 98),
+            source_policy=SourcePolicy(
+                RunMode.DISCOVERY_ONLY,
+                False,
+                "2026-08-12",
+                ApplicantAutomationPolicy.RESTRICTED,
+            ),
+            unresolved_questions=[],
+            calibration_stage=False,
+            submission_authorization=GLOBAL_AUTHORIZATION,
+        )
+        self.assertEqual(HybridExecutionPath.HUMAN_FINAL_CLICK, decision.path)
+        self.assertIn("SOURCE_RESTRICTED", decision.reason_codes)
+
+    def test_controller_allows_dated_unclear_source_with_standing_authorization(self) -> None:
+        result = SubmissionController().submit(
+            run_mode=RunMode.ASSISTED,
+            source_policy=SourcePolicy(
+                RunMode.DISCOVERY_ONLY,
+                False,
+                "2026-08-14",
+                ApplicantAutomationPolicy.UNCLEAR,
+            ),
+            unresolved_questions=[],
+            submission_authorization=GLOBAL_AUTHORIZATION,
+            handler=lambda: SubmissionEvidence(True, "confirmation-page"),
+        )
+        self.assertTrue(result.verified)
+
+    def test_policy_unclear_override_requires_a_dated_policy_review(self) -> None:
+        with self.assertRaisesRegex(SubmissionBlocked, "unclear"):
+            SubmissionController().submit(
+                run_mode=RunMode.ASSISTED,
+                source_policy=SourcePolicy(
+                    RunMode.DISCOVERY_ONLY,
+                    False,
+                    None,
+                    ApplicantAutomationPolicy.UNCLEAR,
+                ),
+                unresolved_questions=[],
+                submission_authorization=GLOBAL_AUTHORIZATION,
+                handler=lambda: SubmissionEvidence(True, "confirmation-page"),
+            )
 
     def test_required_video_remains_video_required(self) -> None:
         decision = evaluate_hybrid_execution(

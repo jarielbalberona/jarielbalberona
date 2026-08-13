@@ -133,16 +133,18 @@ SQLite owns lifecycle state. Canonical events distinguish preparation, human-rea
 
 - `DRY_RUN`: discovery, normalization, eligibility, assessment, drafting, local persistence, safe tracker schema work, and read-only Gmail checks only. Submission handlers must not execute.
 - `DISCOVERY_ONLY`: discover and inspect; never submit.
-- `ASSISTED`: prepare and navigate only to the documented human boundary; do not claim submission without evidence.
-- `AUTONOMOUS`: allowed only after current platform policy is verified and `source-registry.yaml` explicitly permits live submission.
+- `ASSISTED`: process one candidate-directed application. Submission is allowed only when the source is `PERMITTED`, or when a dated `UNCLEAR` review is covered by standing candidate authorization. Never claim submission without evidence.
+- `AUTONOMOUS`: allowed when current platform policy is `PERMITTED`, or through the narrower dated-`UNCLEAR` standing-authorization override, and every other source, readiness, and campaign gate passes.
 - `AUTONOMOUS_CAMPAIGN`: apply the hybrid execution gate inside a persisted campaign with freshness priority, hold-and-continue behavior, separate autonomous and human-ready metrics, and a hard outcome cap.
 - `DISABLED`: do not access the source.
 
 Initial calibration is complete for the control plane, but source permission remains ATS-specific. A proven assisted submission does not promote that ATS to autonomous use. Indeed, LinkedIn, and Greenhouse remain non-autonomous under their verified current policies. Workable is the first autonomous source because its candidate terms permit applying and its current documentation explicitly recognizes AI-assisted and automated applications. Employer-specific declarations on each form still override source-level permission.
 
-Jariel has granted standing candidate-side authorization for truthful job applications across all sources. Individual application approval is no longer required. This answers only whether the candidate permits submission; it never grants platform permission and never overrides source terms, employer declarations, CAPTCHA, identity verification, security controls, truthfulness, or application-readiness gates.
+Jariel has granted standing candidate-side authorization for truthful job applications across all sources. Individual application approval is no longer required. When a dated review finds that applicant-side terms are silent or genuinely unclear, this standing authorization permits the agent to complete and submit the application without asking Jariel again. The source remains classified `UNCLEAR`; the candidate authorization does not turn it into verified platform permission.
 
-Model applicant-side platform policy separately as `PERMITTED`, `RESTRICTED`, or `UNCLEAR`. Silence is `UNCLEAR`, not permission. An explicit restriction is `RESTRICTED`, not a generic manual handoff. Only `PERMITTED` can enable autonomous submission.
+This override never applies to an explicit source restriction, a disabled source, employer declarations, CAPTCHA, identity verification, security controls, paid application actions, truthfulness, duplicate, campaign-cap, or application-readiness gates. A source with no dated policy review remains blocked until reviewed.
+
+Model applicant-side platform policy separately as `PERMITTED`, `RESTRICTED`, or `UNCLEAR`. Silence is `UNCLEAR`, not permission. An explicit restriction is `RESTRICTED` and cannot be overridden by candidate authorization. `PERMITTED` enables ordinary autonomous submission; a dated `UNCLEAR` classification may proceed only through the narrower standing-candidate-authorization override.
 
 ## Hybrid execution model
 
@@ -152,7 +154,7 @@ Standing candidate authorization applies globally, but source permission and tec
 eligible + complete + ready
 -> source permits autonomous submission and no human-only control
    -> AUTO_SUBMIT -> verify -> APPLIED
--> source is restricted/unclear, CAPTCHA or human verification is required,
+-> source is explicitly restricted, policy is unclear without a dated review and standing override, CAPTCHA or human verification is required,
    or the final control cannot legitimately be automated
    -> fully populate and verify -> HUMAN_SUBMIT_READY
 -> required video, inaccessible form, or genuine candidate fact/requirement gap
@@ -191,9 +193,10 @@ The higher `APPLY` threshold prevents a merely acceptable fit from becoming auto
 submission_authorization:
   user_authorized_globally: true
   individual_application_approval_required: false
+  policy_unclear_agent_submission_authorized: true
 ```
 
-Do not enable autonomy by changing run mode alone. The source must be explicitly verified for live submission, `live_submit` must be enabled, the calibration flag must be cleared, and the current assessment plus actual screening questions must pass the policy.
+Do not enable autonomy by changing run mode alone. An ordinarily permitted source must be explicitly verified for live submission and have `live_submit` enabled. The only exception is a dated `UNCLEAR` review covered by `policy_unclear_agent_submission_authorized`; it keeps the source classified `UNCLEAR` and still requires the current assessment, actual screening questions, readiness, truthfulness, duplicate, technical-control, and campaign gates to pass.
 
 ## Bounded hybrid campaigns
 
@@ -214,7 +217,7 @@ An outcome is either an autonomous submission backed by confirmation evidence or
 
 One blocked job never blocks the campaign. Persist its exact application and queue outcomes, then continue. Required video, inaccessible forms, human-only actions, unsupported consequential declarations, source restrictions, unclear policies, failed verification, inactive listings, and source-policy failures are per-job outcomes.
 
-Review Queue statuses are `HUMAN_SUBMIT_READY`, `READY_FOR_BROWSER_PREP`, `VIDEO_REQUIRED`, `HOLD`, `READY_TO_RETRY`, `SOURCE_RESTRICTED`, `POLICY_UNCLEAR`, `FORM_INACCESSIBLE`, `SUBMISSION_UNVERIFIED`, and `CLOSED`. `SOURCE_RESTRICTED` and `POLICY_UNCLEAR` describe applications that have not yet been fully prepared; once complete, their actionable status is `HUMAN_SUBMIT_READY` and source-policy detail remains in its dedicated column.
+Review Queue statuses are `HUMAN_SUBMIT_READY`, `READY_FOR_BROWSER_PREP`, `VIDEO_REQUIRED`, `HOLD`, `READY_TO_RETRY`, `SOURCE_RESTRICTED`, `POLICY_UNCLEAR`, `FORM_INACCESSIBLE`, `SUBMISSION_UNVERIFIED`, and `CLOSED`. `SOURCE_RESTRICTED` describes an explicit prohibition. `POLICY_UNCLEAR` applies when no dated review or standing override is available. Once a legitimate manual-only application is complete, its actionable status is `HUMAN_SUBMIT_READY` and source-policy detail remains in its dedicated column.
 
 Every active queue record requires a concrete next action, computed re-review date, and expiry date. Expiry triggers live re-verification; it does not silently claim the listing is closed. Required media, assessment cost, declarations, CAPTCHA, and human verification must be discovered in preflight before application prose is generated.
 

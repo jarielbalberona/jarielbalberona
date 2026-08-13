@@ -36,6 +36,7 @@ class HumanSubmissionReconciliation(StrEnum):
 class SubmissionAuthorization:
     user_authorized_globally: bool = False
     individual_application_approval_required: bool = True
+    policy_unclear_agent_submission_authorized: bool = False
 
 
 @dataclass(frozen=True, slots=True)
@@ -73,6 +74,26 @@ class HybridExecutionDecision:
     reason_codes: tuple[str, ...]
 
 
+def _policy_unclear_override_allowed(
+    source_policy: SourcePolicy,
+    submission_authorization: SubmissionAuthorization,
+) -> bool:
+    """Allow the candidate's agent to act when current applicant terms are silent.
+
+    This is deliberately narrower than treating the source as automation-permitted:
+    the source must have a dated policy review, cannot be disabled, and an explicit
+    restriction is never overridden.
+    """
+    return (
+        source_policy.applicant_automation_policy == ApplicantAutomationPolicy.UNCLEAR
+        and bool(source_policy.policy_verified_at)
+        and source_policy.execution_mode != RunMode.DISABLED
+        and submission_authorization.user_authorized_globally
+        and not submission_authorization.individual_application_approval_required
+        and submission_authorization.policy_unclear_agent_submission_authorized
+    )
+
+
 def reconcile_human_submission(
     *,
     human_click_reported: bool,
@@ -103,6 +124,10 @@ def evaluate_live_autonomy(
 ) -> AutonomyDecision:
     reasons: list[str] = []
     requires_review = False
+    policy_unclear_override = _policy_unclear_override_allowed(
+        source_policy,
+        submission_authorization,
+    )
 
     if assessment.reason_codes:
         reasons.extend(assessment.reason_codes)
@@ -125,11 +150,19 @@ def evaluate_live_autonomy(
         requires_review = True
     if source_policy.applicant_automation_policy == ApplicantAutomationPolicy.RESTRICTED:
         reasons.append("SOURCE_RESTRICTED")
-    elif source_policy.applicant_automation_policy == ApplicantAutomationPolicy.UNCLEAR:
+    elif (
+        source_policy.applicant_automation_policy == ApplicantAutomationPolicy.UNCLEAR
+        and not policy_unclear_override
+    ):
         reasons.append("POLICY_UNCLEAR")
-    if source_policy.execution_mode != RunMode.AUTONOMOUS:
+    if source_policy.execution_mode == RunMode.DISABLED:
+        reasons.append("SOURCE_EXECUTION_FORBIDDEN")
+    elif source_policy.execution_mode != RunMode.AUTONOMOUS and not policy_unclear_override:
         reasons.append("SOURCE_NOT_AUTONOMOUS")
-    if not source_policy.live_submit or not source_policy.policy_verified_at:
+    if (
+        (not source_policy.live_submit or not source_policy.policy_verified_at)
+        and not policy_unclear_override
+    ):
         reasons.append("SOURCE_EXECUTION_FORBIDDEN")
 
     threshold = (
@@ -258,13 +291,25 @@ class SubmissionController:
             raise SubmissionBlocked("global candidate submission authorization is not enabled")
         if submission_authorization.individual_application_approval_required:
             raise SubmissionBlocked("individual application approval is required")
+        policy_unclear_override = _policy_unclear_override_allowed(
+            source_policy,
+            submission_authorization,
+        )
         if source_policy.applicant_automation_policy == ApplicantAutomationPolicy.RESTRICTED:
             raise SubmissionBlocked("applicant-side source policy explicitly restricts automation")
-        if source_policy.applicant_automation_policy == ApplicantAutomationPolicy.UNCLEAR:
+        if (
+            source_policy.applicant_automation_policy == ApplicantAutomationPolicy.UNCLEAR
+            and not policy_unclear_override
+        ):
             raise SubmissionBlocked("applicant-side source policy is unclear")
-        if source_policy.execution_mode in {RunMode.DISCOVERY_ONLY, RunMode.DISABLED}:
+        if source_policy.execution_mode == RunMode.DISABLED:
             raise SubmissionBlocked("source execution policy forbids submission")
-        if not source_policy.live_submit or not source_policy.policy_verified_at:
+        if source_policy.execution_mode == RunMode.DISCOVERY_ONLY and not policy_unclear_override:
+            raise SubmissionBlocked("source execution policy forbids submission")
+        if (
+            (not source_policy.live_submit or not source_policy.policy_verified_at)
+            and not policy_unclear_override
+        ):
             raise SubmissionBlocked("live submission is not verified and enabled for this source")
         if unresolved_questions:
             raise SubmissionBlocked("consequential application questions remain unresolved")
