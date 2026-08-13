@@ -68,6 +68,21 @@ class SourceRegistryExpansionTests(unittest.TestCase):
         for source in registry["opportunistic_discovery"]["not_in_default_rotation"]:
             self.assertNotIn(source, rotation_ids)
 
+    def test_job_trawlers_is_registered_for_manual_intake_without_automated_crawling(self) -> None:
+        registry = load_source_registry()
+        source = registry["sources"]["job_trawlers"]
+        self.assertTrue(source["enabled"])
+        self.assertFalse(source["discovery"])
+        self.assertTrue(source["manual_intake_supported"])
+        self.assertTrue(source["requires_account"])
+        self.assertFalse(source["paid_access_required"])
+        self.assertEqual("RESTRICTED", source["applicant_automation_policy"])
+        self.assertEqual("https://jobtrawlers.com/terms", source["policy_evidence"])
+        self.assertNotIn(
+            "job_trawlers",
+            {entry["id"] for entry in list_discovery_sources()},
+        )
+
     def test_registry_has_no_invalid_types_priorities_or_duplicate_aliases(self) -> None:
         self.assertEqual([], validate_source_registry())
 

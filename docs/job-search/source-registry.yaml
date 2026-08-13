@@ -1,4 +1,4 @@
-version: 13
+version: 14
 default_run_mode: AUTONOMOUS_CAMPAIGN
 default_execution_model: HYBRID_AUTONOMOUS_WITH_HUMAN_FINAL_CLICK
 autonomy_calibration_stage: false
@@ -671,6 +671,32 @@ sources:
     policy_verified_at: "2026-08-13"
     policy_evidence: "https://www.remoterocketship.com/us/terms/"
     note: "The current terms prohibit scraping and automated browser sessions. Do not automate this source or submit through it. A lead encountered through ordinary web-search results may be verified only at the employer's direct career page, whose ATS policy governs preparation and submission."
+
+  job_trawlers:
+    name: "Job Trawlers"
+    aliases: ["JobTrawlers", "jobtrawlers.com"]
+    type: JOB_BOARD
+    url: "https://jobtrawlers.com/"
+    enabled: true
+    priority: P1
+    discovery: false
+    manual_intake_supported: true
+    profile_supported: true
+    requires_account: true
+    requires_vetting: false
+    paid_access_required: false
+    candidate_fee_required: false
+    default_search_categories: ["Senior Software Engineer", "Senior Product Engineer", "Senior Full Stack Engineer", "Staff Software Engineer", "AI Product Engineer", "Agentic AI Engineer", "AI Platform Engineer"]
+    location_strategy: "Use Job Trawlers for manual authenticated discovery and preserve its original employer or ATS destination; independently verify Philippines eligibility and the live employer listing"
+    submission_destination_behavior: "Discovery and pipeline only; always apply through the original employer or ATS destination under that destination's policy"
+    last_verified: "2026-08-14"
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    applicant_automation_policy: RESTRICTED
+    policy_verified_at: "2026-08-14"
+    policy_evidence: "https://jobtrawlers.com/terms"
+    supporting_evidence: "https://jobtrawlers.com/pricing"
+    note: "Legitimate Vancouver-based job-search product that searches 40+ ATS platforms and offers a free account with one saved search and 14 runs. Its terms expressly prohibit automated access and scraping, so it is registered for manual authenticated discovery, exports, digests, and user-provided Job Trawlers links only. Never crawl it directly. Verify and deduplicate every lead at the original employer or ATS destination."
 
   employer_direct:
     enabled: true
