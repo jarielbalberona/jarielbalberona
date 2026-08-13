@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import json
+import tempfile
 import unittest
+from contextlib import chdir
 from datetime import datetime
 from pathlib import Path
 from types import SimpleNamespace
@@ -212,11 +214,15 @@ class AnswerPolicyTests(unittest.TestCase):
         self.assertEqual(AnswerStatus.MATERIAL_UNKNOWN, canada.status)
 
     def test_canonical_candidate_photo_is_reused_for_required_upload(self) -> None:
-        result = resolve_question(
-            "candidate_photo",
-            "Photo",
-            field_type="required_photo",
-        )
+        with tempfile.TemporaryDirectory() as directory, chdir(directory):
+            photo = Path(".job-search/assets/candidate-photo.jpeg")
+            photo.parent.mkdir(parents=True)
+            photo.write_bytes(b"test-photo")
+            result = resolve_question(
+                "candidate_photo",
+                "Photo",
+                field_type="required_photo",
+            )
         self.assertEqual(".job-search/assets/candidate-photo.jpeg", result.answer)
         self.assertEqual(AnswerStatus.EXACT, result.status)
         self.assertFalse(result.blocks_readiness)
@@ -237,12 +243,20 @@ class AnswerPolicyTests(unittest.TestCase):
         self.assertTrue(result.blocks_readiness)
 
     def test_optional_photo_requires_application_specific_approval(self) -> None:
-        omitted = resolve_candidate_media("photo", MediaRequirement.OPTIONAL)
-        approved = resolve_candidate_media(
-            "photo",
-            MediaRequirement.OPTIONAL,
-            optional_use_approved=True,
-        )
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            photo = root / ".job-search/assets/candidate-photo.jpeg"
+            photo.parent.mkdir(parents=True)
+            photo.write_bytes(b"test-photo")
+            omitted = resolve_candidate_media(
+                "photo", MediaRequirement.OPTIONAL, repository_root=root
+            )
+            approved = resolve_candidate_media(
+                "photo",
+                MediaRequirement.OPTIONAL,
+                repository_root=root,
+                optional_use_approved=True,
+            )
         self.assertEqual("NONE", omitted.action)
         self.assertEqual("ATTACH", approved.action)
 
