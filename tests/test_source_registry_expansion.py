@@ -17,6 +17,7 @@ class SourceRegistryExpansionTests(unittest.TestCase):
             "arc_dev": ("DEVELOPER_JOB_BOARD", "P0"),
             "dynamite_jobs": ("REMOTE_JOB_BOARD", "P0"),
             "we_work_remotely": ("REMOTE_JOB_BOARD", "P0"),
+            "remote_yeah": ("REMOTE_JOB_BOARD", "P0"),
             "remoteok": ("REMOTE_JOB_BOARD", "P1"),
             "remotive": ("REMOTE_JOB_BOARD", "P1"),
             "working_nomads": ("REMOTE_JOB_BOARD", "P1"),

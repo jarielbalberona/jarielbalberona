@@ -1,4 +1,4 @@
-version: 11
+version: 12
 default_run_mode: AUTONOMOUS_CAMPAIGN
 default_execution_model: HYBRID_AUTONOMOUS_WITH_HUMAN_FINAL_CLICK
 autonomy_calibration_stage: false
@@ -303,6 +303,31 @@ sources:
     policy_evidence: "https://weworkremotely.com/terms-and-conditions"
     supporting_evidence: "https://weworkremotely.com/categories/remote-full-stack-programming-jobs.rss"
     note: "The public board and RSS feeds are useful for discovery, but current terms do not affirmatively permit third-party applicant submission. Treat WWR geography labels as hints only and verify the destination employer's actual country eligibility before preparation."
+
+  remote_yeah:
+    name: "RemoteYeah"
+    aliases: ["Remote Yeah"]
+    type: REMOTE_JOB_BOARD
+    url: "https://remoteyeah.com/"
+    enabled: true
+    priority: P0
+    discovery: true
+    profile_supported: true
+    requires_account: false
+    requires_vetting: false
+    paid_access_required: false
+    candidate_fee_required: false
+    default_search_categories: ["Senior Software Engineer", "Senior Full-Stack Engineer", "Staff Software Engineer", "Product Engineer", "AI Engineer", "AI Product Engineer"]
+    location_strategy: "Start with Worldwide, APAC, and Philippines filters; verify employer location and timezone at the destination"
+    submission_destination_behavior: "Preserve RemoteYeah discovery provenance and resolve the actual employer or ATS destination before preparation or submission"
+    last_verified: "2026-08-14"
+    execution_mode: DISCOVERY_ONLY
+    live_submit: false
+    applicant_automation_policy: NOT_APPLICABLE
+    policy_verified_at: "2026-08-14"
+    policy_evidence: "https://remoteyeah.com/terms-and-conditions"
+    supporting_evidence: "https://remoteyeah.com/rss-feeds"
+    note: "Legitimate, active remote-engineering discovery source with current listings, structured role and location filters, public company pages, and outbound application routing. Treat its labels as discovery evidence only; verify the live employer listing and apply the destination source policy."
 
   remoteok:
     name: "Remote OK"
