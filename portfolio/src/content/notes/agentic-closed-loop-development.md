@@ -1,8 +1,9 @@
 ---
 title: "Agentic Closed-Loop Development: From Product Intent to Verified Software"
-description: "A practical engineering model for using software agents across specification, implementation, verification and delivery without surrendering architectural control or production accountability."
-summary: "A production-oriented model for controlling intent, context, scope, verification, correction, and human accountability across agent-assisted software delivery."
+description: "A practical method for turning product intent into bounded agent work, accepted contributions, risk-selected proof, and accountable software delivery."
+summary: "One accountable lead, bounded agents, durable context, proportionate verification, and explicit release authority."
 publishedDate: 2026-07-20
+updatedDate: 2026-09-21
 draft: false
 featured: true
 tags:
@@ -22,6 +23,8 @@ The bottleneck is increasingly not code generation. It is controlling intent, co
 
 This article presents a generalized engineering model developed through production software work and independently owned systems. Client-specific implementations and identifying details are intentionally omitted.
 
+> **Revision, September 21, 2026.** This revision refines delegation, model routing, verification selection, and evidence reporting. The core method remains product intent, repository-grounded context, bounded execution, correction, and accountable outcomes.
+
 ## 1. Why code generation is not enough
 
 Software engineering begins before code and ends after it. Product intent has to be interpreted, existing behavior investigated, constraints found, tradeoffs made, changes integrated, and outcomes verified. A generated patch occupies only one part of that chain.
@@ -38,7 +41,7 @@ Scope also drifts. An agent asked to repair one failure may refactor neighboring
 
 Finally, local success is weak evidence for environment-dependent behavior. Authentication, browser APIs, database constraints, network transitions, deployment configuration, caches, physical devices, and production data shapes can invalidate a patch that passed static checks and mocked tests.
 
-Compiling is not proof. Passing tests is not always product proof. A deployment that completed is not proof that the intended behavior works. The engineering system has to climb to the highest practical verification layer and report where its evidence stops.
+Compiling is not proof. Passing tests is not always product proof. A completed deployment is not proof that the intended behavior works. The engineering system must select the verification boundary that the change needs and report where its evidence stops.
 
 ## 2. Definition of agentic closed-loop development
 
@@ -48,7 +51,7 @@ The loop starts with a **goal**: a concrete outcome expressed in product or oper
 
 That observation is compared with explicit **acceptance criteria**. If the evidence contradicts the criteria, the system may perform **bounded correction** when the failure is understood and the repair stays within authority. If the next action requires new product judgment, broader access, destructive work, or a change to the agreed model, the loop stops and **escalates**.
 
-The loop ends with a final accountable decision. A person or an explicitly authorized release process decides whether the evidence is sufficient to merge or release. The agent can prepare that decision and make uncertainty visible. It cannot make accountability disappear.
+The loop ends with an accountable decision under the owning repository's delivery policy. Planning approval, implementation authority, integration, and production release are distinct. An upfront mandate can authorize routine continuation within accepted scope; it cannot authorize a new business rule, broader security scope, destructive action, or unrestricted production release.
 
 This model changes the unit of delegation. The unit is no longer “write this code.” It becomes “move this bounded work item from stated intent to defensible evidence, stopping when authority or facts run out.”
 
@@ -65,7 +68,7 @@ The useful property is not the TypeScript. It is the forced distinction between 
 
 ## 3. Reference lifecycle
 
-![Lifecycle diagram showing product intent moving through investigation, specification, scoped implementation, quality gates, deployment, runtime verification, bounded correction, human release decision, and documented outcome.](/images/notes/agentic-closed-loop-lifecycle.svg)
+![Lifecycle diagram showing intent, investigation, specification, scoped implementation, selected quality gates, local or preview validation, bounded correction, release authorization, production release, observation, and documented outcome.](/images/notes/agentic-closed-loop-lifecycle.svg)
 
 The lifecycle is intentionally explicit. Each stage produces information needed by the next, and later evidence may send work back for correction.
 
@@ -91,23 +94,23 @@ Quality gates provide deterministic feedback: type checks, linting, unit tests, 
 
 ### Preview or release deployment
 
-Some behavior cannot be proved from source or a local process. A production-equivalent deployment exposes routing, asset, environment, security-header, and integration behavior that a build cannot. The deployment is an evidence surface, not an administrative afterthought.
+Some behavior cannot be proved from source or a local process. An authorized preview can expose routing, assets, configuration, and integration behavior that a build cannot. Production release occurs only after the applicable release authorization and gates. The repository decides whether integration uses a guarded direct lane or a protected review lane.
 
 ### Runtime verification
 
-Runtime verification exercises the real interface: browser navigation, API behavior, database effects, network transitions, background processing, or physical-device operation. Evidence should distinguish local, preview, release, and production environments. A screenshot proves visible state at one moment; it does not prove an invisible backend invariant.
+Runtime verification exercises the real interface: browser navigation, API behavior, database effects, network transitions, background processing, or physical-device operation. It can precede release in a local or preview environment, then follow authorized release as production observation. Evidence must name the environment and candidate. A screenshot proves visible state at one moment; it does not prove an invisible backend invariant.
 
 ### Bounded correction
 
-When verification fails, the agent can diagnose and repair within the approved scope. The correction loop has a retry limit and a clear stop condition. Repeated failure is information that the model, environment, or requirement may be wrong. It is not an invitation to keep changing the system until a check turns green.
+When verification fails, classify the cause: implementation defect, invalid assumption, environment fault, or unreliable check. Repair within approved scope and rerun affected proof against a stable candidate. Do not repeat an unchanged deterministic failure hoping for a favorable result, or weaken an assertion to obtain PASS. Stop when the next correction needs new authority or facts.
 
 ### Human release decision
 
-Release authority remains explicit. The accountable person evaluates evidence, unresolved risk, reversibility, and operational readiness. High-risk changes may require additional approval even when every automated check passes.
+Release authority remains explicit. The accountable person or authorized release process evaluates evidence, unresolved risk, reversibility, and operational readiness before production mutation. High-risk changes may require additional approval even when every automated check passes.
 
 ### Documented outcome
 
-The final record states what changed, what was verified, which environment supplied the proof, what remains uncertain, and what was deliberately excluded. This record improves future context and prevents a polished summary from overstating the evidence.
+The final record distinguishes implemented, verified, integrated, deployed, and observed-working outcomes. It states the candidate, environment, actual checks, remaining gaps, and exclusions. A positive workflow conclusion cannot turn skipped deployment jobs into deployment proof.
 
 ## 4. Four system layers
 
@@ -121,7 +124,7 @@ The control layer should not be a chat transcript. Important decisions need dura
 
 ### Agent execution layer
 
-The execution layer performs codebase investigation, planning, implementation, refactoring, tests, documentation, and controlled tool use. It needs the minimum authority required for the task. Read access may be broad while write access remains scoped. Production credentials should not be available merely because the agent can edit application code.
+The execution layer performs codebase investigation, planning, implementation, refactoring, tests, documentation, and controlled tool use. One lead owns architecture, decomposition, risk decisions, acceptance, integration, verification selection, and authorized delivery. It needs the minimum authority required for the task. Read access may be broad while write access remains scoped. Production credentials should not be available merely because the agent can edit application code.
 
 Execution should produce small, inspectable changes. Large autonomous batches make failure attribution difficult. The agent should preserve the distinction between work it observed, work it changed, and work it only inferred.
 
@@ -135,7 +138,27 @@ Deterministic checks are valuable because they fail consistently. Runtime checks
 
 The governance layer defines tool permissions, autonomy boundaries, retry limits, approval gates, schema and security controls, merge and release authority, and restrictions on destructive operations. Governance is part of the engineering design, not a policy document added after the agent has broad credentials.
 
-A useful governance rule is specific enough to execute. “Be careful with production” is weak. “The agent may prepare a deployment and verify its preview, but production release requires named human approval” creates an enforceable boundary.
+A useful governance rule is specific enough to execute. “Be careful with production” is weak. “The agent may prepare a deployment and verify its preview, but production release requires named human approval” defines a boundary. It is enforced only when tool permissions, integration gates, and release controls actually prevent an unauthorized release. Instructions express policy; validated declarations check record shape; observed execution evidence shows what ran; enforced controls restrict what can happen. A well-formed acceptance record alone cannot prove that review occurred.
+
+## Accountable delegation and cost
+
+### One lead, bounded contributions
+
+The lead may use a repository scout for discovery, a worker for bounded implementation, a verification assistant for focused checks, an independent reviewer for material high-risk changes, or an exceptional investigator for an unresolved architecture or security question. These are responsibilities, not a mandatory team. A trivial edit is often cheaper and clearer for the lead to do directly.
+
+Each assignment names the outcome, authoritative context, literal file ownership, exclusions, acceptance criteria, and expected evidence. Parallelism helps only when tasks are genuinely independent. Overlapping writers can corrupt one candidate; separate writers sharing a database, port, device, or build output can corrupt each other's proof. More agents also add coordination, context, and review cost. Compact task context and bounded concurrency matter more than filling available slots. The lead should not duplicate the worker's implementation while waiting.
+
+A contribution passes through **assignment → execution → report → lead verification → ACCEPT / REWORK / REJECT → candidate integration**. The lead checks material claims, the actual diff, required outcomes, relevant assertions, and reported results. It need not mechanically repeat every delegated search or test. ACCEPT binds to that particular result and revision. REWORK needs renewed acceptance; REJECT excludes the result. A useful partial contribution may be accepted for its stated scope while other task requirements stay open. A child's PASS is neither whole-task completion nor delivery permission.
+
+For material high-risk work, a separate reviewer examines the combined candidate, including final lead edits, after lead acceptance. Findings are evaluated and material repairs return for review. Independence adds scrutiny, but a reviewer can share the same mistaken assumption; behavioral assertions and runtime evidence still matter.
+
+One compact acceptance record links **requirement → owner → implementation → specific proof → actual result or gap**. For example: “An expired offline authorization cannot replay a queued write → API worker → server guard → negative integration assertion against candidate A → PASS in local test; device restart behavior → verification owner → no device run → NOT RUN.” The first result can be accepted without claiming that the second outcome is complete.
+
+### Capability and cost routing
+
+Use inexpensive reasoning for file discovery and straightforward evidence gathering, a capable routine model for bounded implementation, stronger judgment for architecture and security, and exceptional escalation only when ordinary analysis leaves a consequential question unresolved. Route by ambiguity, consequence, reasoning difficulty, and demonstrated failure. File count and available agent slots are poor proxies. Escalating reasoning or model capability never expands permissions or delivery authority.
+
+Configuration can request role-specific models and reasoning levels; it cannot establish which model actually ran or prove cost savings. Report each role's requested and observed model/reasoning, invocation counts, and escalation reason. Record tokens and cost only when runtime telemetry exposes them; otherwise say **unavailable**. Keep delegated context small and relevant rather than cloning full conversation history into every child.
 
 ## 5. Context engineering
 
@@ -147,27 +170,19 @@ Context needs structure. A single enormous instruction file becomes another stal
 
 Context also needs an owner. Instructions that no longer match the system are worse than missing instructions because they create confident mistakes. When architecture, deployment, or policy changes, the related context should change in the same review. Verification can include checks that referenced paths and commands still exist.
 
-Good context does not eliminate investigation. It directs investigation toward the right evidence and makes established boundaries explicit. The repository remains the source of truth; instructions are a maintained map, not a substitute for looking at the terrain.
+Durable context has distinct owners. **Implementation and observed evidence** say what exists and what was demonstrated. **Project Canon** records accepted decisions, constraints, and operating contracts. A **System & Feature Map** helps navigate from a feature to implementation, constraints, and verification. An **architecture guide or site** explains supported facts to readers. The map never replaces source inspection, and polished documentation does not prove implementation. The names may differ by repository; the responsibilities should remain clear.
+
+Good context does not eliminate investigation. It directs investigation toward the right evidence and makes established boundaries explicit. Load it progressively: start with the task and repository rules, follow relevant feature links, then inspect actual code and proof. A giant instruction file or a new orchestration service is unnecessary. The repository remains the source of implementation truth; documentation helps find and interpret it.
 
 ## 6. Verification at the highest practical layer
 
-Source inspection is not runtime proof. A successful build is not product proof. A mocked test is not integration proof.
+The target is the **necessary** verification boundary for the change. During implementation, use fast feedback: relevant type, lint, schema, unit, or contract checks. Once writers are quiescent and the candidate is stable, prove the affected slice with the integration, build, browser, API, database, or device checks that exercise its real failure modes. Then satisfy the repository's admission and integration gates. Separately authorized release verification and post-release observation establish different facts. Foundational or unknown-impact changes can justify explicit full certification.
 
-The verification ladder starts with **static analysis**. Types, lint rules, schema validation, and dependency checks catch classes of error quickly. They are cheap and should run early, but they say little about real user behavior.
+**Impact determines breadth; risk increases depth in the affected dimensions.** A copy correction may need content validation, build, and rendered inspection. An authorization change needs denied cases at the server boundary, not just a UI check. A synchronization change may need restart, reconnect, server effects, and device evidence. Begin with cheap checks and stop obsolete runs when a newer candidate invalidates them; expensive proof against a moving tree is wasted work.
 
-**Unit tests** verify isolated logic and invariants. They are excellent for state transitions, calculations, parsers, and policy rules. Their weakness is the boundary they intentionally remove.
+Execution caches save time by reusing computation. Reusing **evidence** requires stronger conditions: applicable candidate and inputs, provenance, freshness, and explicit invalidation rules. An earlier green result does not automatically certify changed code, configuration, dependencies, environment, or target baseline. State which proof was reused and why it still applies.
 
-**Integration tests** reconnect components: application and database, client and API, queue and worker, identity and authorization. They expose contract disagreement and state behavior that unit tests cannot.
-
-**Build verification** proves the application can be assembled for its target mode. It catches missing imports, bundling failures, static-generation problems, and incompatible assets. It still does not prove the built artifact is correctly hosted or usable.
-
-A **preview or release deployment** exercises deployment configuration, routes, environment variables, assets, and platform behavior. This is the first layer that resembles the delivery target.
-
-**Browser, API, and runtime verification** exercise the deployed interface. For a web product that may include navigation, canonical metadata, forms, accessibility, network requests, and console behavior. For an offline mobile product it may include loss of connectivity, restart, reauthentication, queue recovery, and physical-device behavior.
-
-The final **production-readiness gate** evaluates the full evidence set, operational risk, observability, rollback, and unresolved issues. The highest practical layer depends on the change. A copy correction does not need a physical-device test. A synchronization change does.
-
-The critical reporting rule is to name the boundary. “Tests pass” is incomplete. Which tests, against which artifact, in which environment, and what remains unproved?
+Some repositories name tiered profiles for development feedback, affected proof, admission, and full certification. Those labels are local policy, not a universal standard. The reporting rule is universal: name the check, candidate, environment, actual result, and remaining gap. A build does not prove hosting; deployment health does not prove intended user behavior.
 
 ## 7. Bounded autonomy
 
@@ -177,11 +192,11 @@ Authority should be grouped by risk and reversibility.
 
 ### Autonomous work
 
-An agent can usually investigate code, implement approved scope, write and run tests, prepare isolated changes, create a preview, and perform bounded corrective action. These activities are inspectable and reversible when source control and environment boundaries are sound.
+An agent can usually investigate code, implement explicitly approved scope, write and run tests, prepare isolated changes, create an authorized preview, and perform bounded corrective action. These activities are inspectable and reversible when source control and environment boundaries are sound. An upfront mandate can cover routine continuation without asking for each step again.
 
 ### Approval-gated work
 
-Authentication and authorization changes, schema migrations, shared infrastructure, protected-branch merges, production releases, destructive operations, and major requirement changes require explicit approval. The agent may investigate, propose, prepare, and verify. It may not convert preparation into authority.
+Authentication, authorization, and schema work may be implemented and verified when the accepted scope explicitly includes them, with stronger review and proof. New business rules, broader security scope, destructive operations, production mutations, and release require their own authority. Integration follows the owning repository's policy; neither direct-main nor PR-only delivery is a universal rule.
 
 ### Prohibited work
 
@@ -194,9 +209,9 @@ Some actions are prohibited to both agents and hurried humans: disabling verific
 | Implement approved scope | Autonomous | Review when needed |
 | Run checks and previews | Autonomous | Oversight |
 | Retry bounded failures | Autonomous within limit | Intervene after limit |
-| Change authentication or schema | Propose only | Approve |
-| Merge protected branches | Prepare only | Approve |
-| Release production | Prepare and verify | Approve |
+| Change authentication or schema | Implement and verify within explicitly approved scope | Approve scope and consequential decisions |
+| Integrate candidate | Follow repository lane and granted authority | Own required decisions and gates |
+| Release production | Prepare evidence; execute only with separate release authority | Own release decision |
 | Bypass verification | Prohibited | Prohibited |
 | Expose secrets | Prohibited | Prohibited |
 

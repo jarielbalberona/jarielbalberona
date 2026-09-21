@@ -25,6 +25,7 @@ const featured = notes.find((entry) => entry.data.featured) ?? notes[0];
       <p class="mt-4 max-w-2xl text-base leading-relaxed text-ink-soft">{featured.data.summary}</p>
       <div class="mt-5 flex flex-wrap gap-3 text-sm text-ink-soft">
         <time datetime={featured.data.publishedDate.toISOString()}>{formatNoteDate(featured.data.publishedDate)}</time>
+        {featured.data.updatedDate && <span>Updated <time datetime={featured.data.updatedDate.toISOString()}>{formatNoteDate(featured.data.updatedDate)}</time></span>}
         <span>{readingTime(featured.body ?? '').label}</span>
       </div>
       <a href={noteUrl(featured)} class="mt-6 inline-flex bg-ink px-5 py-2.5 text-sm font-medium text-paper no-underline hover:bg-ink-soft">Read the note</a>
@@ -42,6 +43,7 @@ const featured = notes.find((entry) => entry.data.featured) ?? notes[0];
             <p class="mt-3 max-w-2xl text-sm leading-relaxed text-ink-soft">{entry.data.summary}</p>
             <div class="mt-4 flex flex-wrap gap-3 text-xs text-ink-soft">
               <time datetime={entry.data.publishedDate.toISOString()}>{formatNoteDate(entry.data.publishedDate)}</time>
+              {entry.data.updatedDate && <span>Updated <time datetime={entry.data.updatedDate.toISOString()}>{formatNoteDate(entry.data.updatedDate)}</time></span>}
               <span>{readingTime(entry.body ?? '').label}</span>
             </div>
             <ul class="mt-4 flex flex-wrap gap-2" aria-label={`Tags for ${entry.data.title}`}>

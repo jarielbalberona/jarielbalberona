@@ -5,9 +5,9 @@ const rows = [
   ['Implement approved scope', 'Autonomous', 'Review when needed'],
   ['Run checks and previews', 'Autonomous', 'Oversight'],
   ['Retry bounded failures', 'Autonomous within limit', 'Intervene after limit'],
-  ['Change authentication or schema', 'Propose only', 'Approve'],
-  ['Merge protected branches', 'Prepare only', 'Approve'],
-  ['Release production', 'Prepare and verify', 'Approve'],
+  ['Change authentication or schema', 'Implement and verify within approved scope', 'Approve scope and consequential decisions'],
+  ['Integrate candidate', 'Follow repository lane and granted authority', 'Own required decisions and gates'],
+  ['Release production', 'Prepare evidence; execute with separate authority', 'Own release decision'],
   ['Bypass verification', 'Prohibited', 'Prohibited'],
   ['Expose secrets', 'Prohibited', 'Prohibited'],
 ];

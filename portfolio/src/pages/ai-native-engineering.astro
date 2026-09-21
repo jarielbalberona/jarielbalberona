@@ -25,33 +25,38 @@ const executionLoop = [
   },
   {
     step: '05',
-    title: 'Automated quality gates',
-    body: 'Run the relevant type checks, tests, static analysis, builds, contract checks, and repository-specific validation as part of implementation.',
+    title: 'Risk-selected verification',
+    body: 'Use fast feedback while editing, then prove the stable affected candidate at the boundaries its impact and risk require.',
   },
   {
     step: '06',
-    title: 'Release-environment verification',
-    body: 'Exercise the real route, interface, API, device, or production-equivalent environment instead of treating a successful build as runtime proof.',
+    title: 'Local or preview validation',
+    body: 'Exercise the real route, interface, API, or device in the applicable environment; name the candidate and proof boundary.',
   },
   {
     step: '07',
-    title: 'Bounded corrective retries',
-    body: 'Use failures as evidence, correct within the approved scope, and repeat only while the next action remains safe and well defined.',
+    title: 'Bounded correction',
+    body: 'Classify failures, repair within approved scope, and rerun affected proof without repeating an unchanged deterministic failure.',
   },
   {
     step: '08',
-    title: 'Escalation conditions',
-    body: 'Stop when facts are missing, authority must expand, destructive action is required, or evidence contradicts the requested outcome.',
+    title: 'Release authorization',
+    body: 'Review candidate evidence and unresolved risk before a separately authorized production release.',
   },
   {
     step: '09',
-    title: 'Human approval boundaries',
-    body: 'Keep product judgment, security decisions, irreversible operations, ambiguous tradeoffs, and release authority with accountable people.',
+    title: 'Production release',
+    body: 'Use the owning repository’s controlled delivery lane and preserve the identity of the released artifact.',
   },
   {
     step: '10',
-    title: 'Production accountability',
-    body: 'Report exactly what was changed and proved, what remains uncertain, and where local, preview, deployment, or production evidence stops.',
+    title: 'Post-release observation',
+    body: 'When authorized, check the released identity and intended behavior in its real environment.',
+  },
+  {
+    step: '11',
+    title: 'Documented outcome',
+    body: 'Report implemented, verified, integrated, deployed, and observed outcomes separately, with actual gaps.',
   },
 ];
 
@@ -125,7 +130,7 @@ const capabilityLevels = [
       ))}
     </ol>
     <figure class="mt-12 max-w-2xl">
-      <img src="/images/notes/agentic-closed-loop-lifecycle.svg" width="720" height="1280" alt="Ten-stage agentic closed-loop development lifecycle from product intent to documented outcome." class="h-auto w-full border border-line bg-paper-strong" />
+      <img src="/images/notes/agentic-closed-loop-lifecycle.svg" width="720" height="1404" alt="Lifecycle from product intent and local validation through release authorization, production release, observation, and documented outcome." class="h-auto w-full border border-line bg-paper-strong" />
       <figcaption class="mt-3 text-sm leading-relaxed text-ink-soft">The diagram condenses the operating model above. Each stage is also described in text, so the sequence does not depend on the image.</figcaption>
     </figure>
   </section>
@@ -141,7 +146,7 @@ const capabilityLevels = [
     <div>
       <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">Methodology</p>
       <h2 id="evidence-heading" class="text-2xl font-semibold tracking-tight text-ink">How the engineering system works.</h2>
-      <p class="mt-4 text-sm leading-relaxed text-ink-soft">The cornerstone note covers lifecycle, context, verification, bounded autonomy, correction, failure modes, and adoption stages.</p>
+      <p class="mt-4 text-sm leading-relaxed text-ink-soft">The cornerstone note covers accountable delegation, durable context, verification selected by impact and risk, bounded correction, and release authority.</p>
       <a href="/notes/agentic-closed-loop-development" data-analytics-event="article_open" data-analytics-location="ai_native_engineering_evidence" class="mt-5 inline-flex text-sm font-semibold text-ink underline decoration-line underline-offset-4 hover:decoration-ink">Read Agentic Closed-Loop Development</a>
     </div>
     <div>

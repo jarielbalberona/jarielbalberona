@@ -94,6 +94,7 @@ const foundations = [
       <p class="mt-4 max-w-2xl text-sm leading-relaxed text-ink-soft">{latestNote.data.summary}</p>
       <div class="mt-4 flex flex-wrap gap-3 text-xs text-ink-soft">
         <time datetime={latestNote.data.publishedDate.toISOString()}>{formatNoteDate(latestNote.data.publishedDate)}</time>
+        {latestNote.data.updatedDate && <span>Updated <time datetime={latestNote.data.updatedDate.toISOString()}>{formatNoteDate(latestNote.data.updatedDate)}</time></span>}
         <span>{readingTime(latestNote.body ?? '').label}</span>
       </div>
       <a href={noteUrl(latestNote)} data-analytics-event="article_open" data-analytics-location="home_latest_note" class="mt-6 inline-flex text-sm font-semibold text-ink underline decoration-line underline-offset-4 hover:decoration-ink">Read the note</a>

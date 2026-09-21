@@ -1,7 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="720" height="1280" viewBox="0 0 720 1280" role="img" aria-labelledby="title description">
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="1404" viewBox="0 0 720 1404" role="img" aria-labelledby="title description">
   <title id="title">Agentic closed-loop development lifecycle</title>
-  <desc id="description">Ten stages from product intent through investigation, specification, implementation, verification, bounded correction, human release decision, and documented outcome.</desc>
-  <rect width="720" height="1280" fill="#fafafa"/>
+  <desc id="description">Eleven stages from product intent through local or preview validation and bounded correction, then release authorization, production release, observation, and documented outcome.</desc>
+  <rect width="720" height="1404" fill="#fafafa"/>
   <style>
     .label { font: 600 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; fill: #111; }
     .number { font: 500 17px "SFMono-Regular", Consolas, monospace; fill: #555; letter-spacing: 1px; }
@@ -25,14 +25,16 @@
     <path class="arrow" d="M290 458 V488" marker-end="url(#arrow)"/>
     <g transform="translate(0 496)"><rect class="box" width="580" height="86"/><text class="number" x="24" y="33">05</text><text class="label" x="82" y="53">Quality gates</text></g>
     <path class="arrow" d="M290 582 V612" marker-end="url(#arrow)"/>
-    <g transform="translate(0 620)"><rect class="box" width="580" height="86"/><text class="number" x="24" y="33">06</text><text class="label" x="82" y="45">Preview or release</text><text class="label" x="82" y="72">deployment</text></g>
+    <g transform="translate(0 620)"><rect class="box" width="580" height="86"/><text class="number" x="24" y="33">06</text><text class="label" x="82" y="53">Local or preview validation</text></g>
     <path class="arrow" d="M290 706 V736" marker-end="url(#arrow)"/>
-    <g transform="translate(0 744)"><rect class="box" width="580" height="86"/><text class="number" x="24" y="33">07</text><text class="label" x="82" y="53">Runtime verification</text></g>
+    <g transform="translate(0 744)"><rect class="box" width="580" height="86"/><text class="number" x="24" y="33">07</text><text class="label" x="82" y="53">Bounded correction</text></g>
     <path class="arrow" d="M290 830 V860" marker-end="url(#arrow)"/>
-    <g transform="translate(0 868)"><rect class="box" width="580" height="86"/><text class="number" x="24" y="33">08</text><text class="label" x="82" y="53">Bounded correction</text></g>
+    <g transform="translate(0 868)"><rect class="box" width="580" height="86"/><text class="number" x="24" y="33">08</text><text class="label" x="82" y="53">Release authorization</text></g>
     <path class="arrow" d="M290 954 V984" marker-end="url(#arrow)"/>
-    <g transform="translate(0 992)"><rect class="box" width="580" height="86"/><text class="number" x="24" y="33">09</text><text class="label" x="82" y="53">Human release decision</text></g>
+    <g transform="translate(0 992)"><rect class="box" width="580" height="86"/><text class="number" x="24" y="33">09</text><text class="label" x="82" y="53">Production release</text></g>
     <path class="arrow" d="M290 1078 V1108" marker-end="url(#arrow)"/>
-    <g transform="translate(0 1116)"><rect class="box" width="580" height="86"/><text class="number" x="24" y="33">10</text><text class="label" x="82" y="53">Documented outcome</text></g>
+    <g transform="translate(0 1116)"><rect class="box" width="580" height="86"/><text class="number" x="24" y="33">10</text><text class="label" x="82" y="53">Post-release observation</text></g>
+    <path class="arrow" d="M290 1202 V1232" marker-end="url(#arrow)"/>
+    <g transform="translate(0 1240)"><rect class="box" width="580" height="86"/><text class="number" x="24" y="33">11</text><text class="label" x="82" y="53">Documented outcome</text></g>
   </g>
 </svg>

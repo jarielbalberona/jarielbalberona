@@ -67,8 +67,8 @@ const breadcrumbStructuredData = {
       <h1 class="max-w-3xl text-3xl font-semibold leading-tight tracking-tight text-ink sm:text-4xl lg:text-5xl">{entry.data.title}</h1>
       <p class="mt-6 max-w-2xl text-lg leading-relaxed text-ink-soft">{entry.data.description}</p>
       <div class="mt-6 flex flex-wrap gap-x-4 gap-y-2 text-sm text-ink-soft">
-        <time datetime={entry.data.publishedDate.toISOString()}>{formatNoteDate(entry.data.publishedDate)}</time>
-        {entry.data.updatedDate && <span>Updated {formatNoteDate(entry.data.updatedDate)}</span>}
+        <span>Published <time datetime={entry.data.publishedDate.toISOString()}>{formatNoteDate(entry.data.publishedDate)}</time></span>
+        {entry.data.updatedDate && <span>Updated <time datetime={entry.data.updatedDate.toISOString()}>{formatNoteDate(entry.data.updatedDate)}</time></span>}
         <span>{read.label}</span>
         <span>{read.words.toLocaleString('en')} words</span>
       </div>
