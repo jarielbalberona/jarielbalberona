@@ -68,7 +68,7 @@ The useful property is not the TypeScript. It is the forced distinction between 
 
 ## 3. Reference lifecycle
 
-![Lifecycle diagram showing intent, investigation, specification, scoped implementation, selected quality gates, local or preview validation, bounded correction, release authorization, production release, observation, and documented outcome.](/images/notes/agentic-closed-loop-lifecycle.svg)
+![Lifecycle diagram showing intent, investigation, specification, scoped implementation, local verification, preview validation, bounded correction, release authorization, production deployment, post-release observation, and documented outcome.](/images/notes/agentic-closed-loop-lifecycle.svg)
 
 The lifecycle is intentionally explicit. Each stage produces information needed by the next, and later evidence may send work back for correction.
 
@@ -88,25 +88,31 @@ The specification turns intent into scope, constraints, acceptance criteria, evi
 
 Implementation is constrained by the specification. The agent changes the smallest coherent set of files and preserves unrelated work. It does not treat access to a repository as permission to redesign it. If the implementation exposes a contradiction in the specification, that is evidence to escalate, not permission to improvise.
 
-### Quality gates
+### Local verification <span id="quality-gates" aria-hidden="true"></span>
 
-Quality gates provide deterministic feedback: type checks, linting, unit tests, integration tests, contract checks, builds, and repository-specific verification. They should be selected for the risk of the change. Running every available command can waste time; running only the easiest command creates false confidence.
+Local verification provides deterministic feedback: type checks, linting, unit and integration tests, contract checks, builds, and repository-specific proof. Select checks for the change's impact and risk. Running every available command wastes time; running only the easiest creates false confidence.
 
-### Preview or release deployment
+### Preview validation <span id="preview-or-release-deployment" aria-hidden="true"></span>
 
-Some behavior cannot be proved from source or a local process. An authorized preview can expose routing, assets, configuration, and integration behavior that a build cannot. Production release occurs only after the applicable release authorization and gates. The repository decides whether integration uses a guarded direct lane or a protected review lane.
+Some behavior cannot be proved from source or a local process. Where applicable and authorized, a preview deployment exposes routing, assets, configuration, and integration behavior that a build cannot. Verify the intended route and behavior there before seeking release authority.
 
-### Runtime verification
-
-Runtime verification exercises the real interface: browser navigation, API behavior, database effects, network transitions, background processing, or physical-device operation. It can precede release in a local or preview environment, then follow authorized release as production observation. Evidence must name the environment and candidate. A screenshot proves visible state at one moment; it does not prove an invisible backend invariant.
+Local and preview checks may exercise a browser, API, database, network transition, background process, or device. Name the candidate and environment. A screenshot proves visible state at one moment; it does not prove an invisible backend invariant.
 
 ### Bounded correction
 
 When verification fails, classify the cause: implementation defect, invalid assumption, environment fault, or unreliable check. Repair within approved scope and rerun affected proof against a stable candidate. Do not repeat an unchanged deterministic failure hoping for a favorable result, or weaken an assertion to obtain PASS. Stop when the next correction needs new authority or facts.
 
-### Human release decision
+### Release authorization <span id="human-release-decision" aria-hidden="true"></span>
 
-Release authority remains explicit. The accountable person or authorized release process evaluates evidence, unresolved risk, reversibility, and operational readiness before production mutation. High-risk changes may require additional approval even when every automated check passes.
+The accountable person or authorized release process evaluates evidence, unresolved risk, reversibility, and operational readiness before production mutation. Verification success never grants release authority by itself. High-risk changes may require additional approval even when every automated check passes.
+
+### Production deployment
+
+Once authorized, deployment follows the owning repository's guarded direct lane or protected review lane and its release controls. Record the released revision and environment; a successful deployment does not establish that intended behavior works.
+
+### Post-release observation <span id="runtime-verification" aria-hidden="true"></span>
+
+Observe the released interface and relevant API, data, background, or device effects when authorized. Compare the deployed revision with the candidate that passed its gates. Production observation is separate from local or preview proof.
 
 ### Documented outcome
 
@@ -140,7 +146,7 @@ The governance layer defines tool permissions, autonomy boundaries, retry limits
 
 A useful governance rule is specific enough to execute. “Be careful with production” is weak. “The agent may prepare a deployment and verify its preview, but production release requires named human approval” defines a boundary. It is enforced only when tool permissions, integration gates, and release controls actually prevent an unauthorized release. Instructions express policy; validated declarations check record shape; observed execution evidence shows what ran; enforced controls restrict what can happen. A well-formed acceptance record alone cannot prove that review occurred.
 
-## Accountable delegation and cost
+## 5. Accountable delegation and cost
 
 ### One lead, bounded contributions
 
@@ -160,7 +166,7 @@ Use inexpensive reasoning for file discovery and straightforward evidence gather
 
 Configuration can request role-specific models and reasoning levels; it cannot establish which model actually ran or prove cost savings. Report each role's requested and observed model/reasoning, invocation counts, and escalation reason. Record tokens and cost only when runtime telemetry exposes them; otherwise say **unavailable**. Keep delegated context small and relevant rather than cloning full conversation history into every child.
 
-## 5. Context engineering
+## 6. Context engineering <span id="5-context-engineering" aria-hidden="true"></span>
 
 Prompts are transient. Engineering context must be versioned, reviewable, and maintained alongside the system it governs.
 
@@ -174,7 +180,7 @@ Durable context has distinct owners. **Implementation and observed evidence** sa
 
 Good context does not eliminate investigation. It directs investigation toward the right evidence and makes established boundaries explicit. Load it progressively: start with the task and repository rules, follow relevant feature links, then inspect actual code and proof. A giant instruction file or a new orchestration service is unnecessary. The repository remains the source of implementation truth; documentation helps find and interpret it.
 
-## 6. Verification at the highest practical layer
+## 7. Verification at the highest practical layer <span id="6-verification-at-the-highest-practical-layer" aria-hidden="true"></span>
 
 The target is the **necessary** verification boundary for the change. During implementation, use fast feedback: relevant type, lint, schema, unit, or contract checks. Once writers are quiescent and the candidate is stable, prove the affected slice with the integration, build, browser, API, database, or device checks that exercise its real failure modes. Then satisfy the repository's admission and integration gates. Separately authorized release verification and post-release observation establish different facts. Foundational or unknown-impact changes can justify explicit full certification.
 
@@ -184,7 +190,7 @@ Execution caches save time by reusing computation. Reusing **evidence** requires
 
 Some repositories name tiered profiles for development feedback, affected proof, admission, and full certification. Those labels are local policy, not a universal standard. The reporting rule is universal: name the check, candidate, environment, actual result, and remaining gap. A build does not prove hosting; deployment health does not prove intended user behavior.
 
-## 7. Bounded autonomy
+## 8. Bounded autonomy <span id="7-bounded-autonomy" aria-hidden="true"></span>
 
 The objective is maximum reliable delegation, not maximum agent freedom.
 
@@ -217,19 +223,19 @@ Some actions are prohibited to both agents and hurried humans: disabling verific
 
 Authority is not static. A low-risk documentation change can move through the loop with little intervention. A change affecting money, identity, tenant boundaries, or irreversible data needs narrower permissions and stronger proof.
 
-## 8. Self-healing boundaries
+## 9. Self-healing boundaries <span id="8-self-healing-boundaries" aria-hidden="true"></span>
 
-“Self-healing” is useful only when the repair target is understood and bounded. An agent may rerun a failed deterministic command, restore an expected local service, regenerate a generated artifact, correct a fixture or invocation error, or repair an implementation defect inside approved scope.
+“Self-healing” is useful only when the failure is diagnosed, classified, and bounded. An agent may restore an expected local service, regenerate a generated artifact, correct a fixture or invocation error, or repair an implementation defect inside approved scope. Rerun a deterministic check after correcting the attributable cause or changing its relevant input. An unchanged retry requires evidence of a transient failure and must stay within the retry budget.
 
-Those actions respond to evidence without changing the problem. They are reversible, and their success can be measured by the same acceptance criteria.
+Preserve the original failure, the correction or retry, and its actual result. Measure success against the same acceptance criteria; never repeat an unchanged failure hoping for a pass.
 
 Self-healing must not invent requirements, change a security model, redesign architecture, silently migrate data, refactor unrelated systems, or suppress a failure. An agent that changes the gate until it passes is not healing the system. It is removing the evidence.
 
-Retries need limits. One transient network retry may be reasonable. Repeating the same failing deployment ten times is not a strategy. After a small number of well-understood attempts, the system should escalate with the failure evidence, attempted corrections, and the next decision required.
+Retries need limits. A transient network retry may be reasonable; repeating the same failing deployment without new evidence is not. After a small number of well-understood attempts, escalate with the failure evidence, attempted corrections, and the next decision required. Never suppress adverse results or weaken assertions to obtain green checks.
 
 The same rule applies to local environments. Restoring a documented database service is different from deleting state because a test is inconvenient. The first returns the environment to an expected condition. The second changes evidence and may destroy work.
 
-## 9. Failure modes
+## 10. Failure modes <span id="9-failure-modes" aria-hidden="true"></span>
 
 Agentic systems do not remove engineering risk. They move more of that risk into specification quality, context quality, tool governance, and verification design.
 
@@ -253,7 +259,7 @@ Agentic systems do not remove engineering risk. They move more of that risk into
 
 **Human rubber-stamping** defeats the approval model. If the final reviewer cannot understand the scope, evidence, and unresolved risk, the approval gate is ceremonial. The system should summarize decisions, not overwhelm the reviewer with raw logs.
 
-## 10. Adoption stages
+## 11. Adoption stages <span id="10-adoption-stages" aria-hidden="true"></span>
 
 Teams do not need to jump from editor completion to autonomous delivery. A staged model exposes weaknesses before authority expands.
 
