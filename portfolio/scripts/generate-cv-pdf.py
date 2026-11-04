@@ -1,220 +1,83 @@
-#!/usr/bin/env python3
-
-import json
 from pathlib import Path
-
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib import colors
-from reportlab.lib.enums import TA_RIGHT
-from reportlab.lib.pagesizes import LETTER
-from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
-from reportlab.lib.units import inch
-from reportlab.platypus import KeepTogether, Paragraph, SimpleDocTemplate, Spacer
-
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import ParagraphStyle
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak, KeepTogether, HRFlowable
+from xml.sax.saxutils import escape
+import json
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / "src" / "data" / "cv.json"
-OUTPUT = ROOT / "public" / "jariel-balberona-cv.pdf"
+OUT = ROOT / 'public' / 'jariel-balberona-cv.pdf'
+data = json.loads((ROOT / 'src' / 'data' / 'cv.json').read_text())
+font_dir = Path('/System/Library/Fonts/Supplemental')
+if (font_dir / 'Arial.ttf').exists():
+    pdfmetrics.registerFont(TTFont('CV', str(font_dir / 'Arial.ttf')))
+    pdfmetrics.registerFont(TTFont('CV-Bold', str(font_dir / 'Arial Bold.ttf')))
+else:
+    from reportlab.pdfbase.pdfmetrics import Font
+    pdfmetrics.registerFont(Font('CV', 'Helvetica', 'WinAnsiEncoding'))
+    pdfmetrics.registerFont(Font('CV-Bold', 'Helvetica-Bold', 'WinAnsiEncoding'))
+pdfmetrics.registerFontFamily('CV', normal='CV', bold='CV-Bold', italic='CV', boldItalic='CV-Bold')
+navy=colors.HexColor('#17364D'); ink=colors.HexColor('#26333D'); muted=colors.HexColor('#596774'); blue=colors.HexColor('#245B80')
+styles={
+'name':ParagraphStyle('name',fontName='CV-Bold',fontSize=25,leading=29,textColor=navy,spaceAfter=6),
+'headline':ParagraphStyle('headline',fontName='CV-Bold',fontSize=11.4,leading=15,textColor=ink,spaceAfter=7),
+'meta':ParagraphStyle('meta',fontName='CV',fontSize=9.1,leading=13,textColor=muted,spaceAfter=3),
+'body':ParagraphStyle('body',fontName='CV',fontSize=10,leading=14,textColor=ink,spaceAfter=5),
+'bullet':ParagraphStyle('bullet',fontName='CV',fontSize=10,leading=13.6,textColor=ink,leftIndent=10,firstLineIndent=0,bulletIndent=0,spaceAfter=5),
+'section':ParagraphStyle('section',fontName='CV-Bold',fontSize=10.2,leading=13,textColor=navy,spaceBefore=13,spaceAfter=6,keepWithNext=True),
+'job':ParagraphStyle('job',fontName='CV-Bold',fontSize=10.6,leading=14,textColor=navy,spaceAfter=3,keepWithNext=True),
+'skill':ParagraphStyle('skill',fontName='CV',fontSize=9.5,leading=13.2,textColor=ink,spaceAfter=3),
+'earlier':ParagraphStyle('earlier',fontName='CV',fontSize=9.4,leading=13.2,textColor=ink,spaceAfter=5),
+}
+story=[]
+def p(t,k='body'):return Paragraph(t,styles[k])
+def section(t):story.append(p(t.upper(),'section'));story.append(HRFlowable(width='100%',thickness=.45,color=colors.HexColor('#CBD6DF'),spaceAfter=6))
+def bullet(t):return Paragraph(escape(t),styles['bullet'],bulletText='\u2022')
+def job(company,title,meta,bullets,summary=None,url=None):
+ c=f'<link href="{url}" color="#17364D">{escape(company)}</link>' if url else escape(company)
+ items=[p(c+' | '+escape(title),'job'),p(escape(meta),'meta')]
+ if summary:items.append(p(escape(summary)))
+ items += [bullet(b) for b in bullets]
+ items.append(Spacer(1,7))
+ story.append(KeepTogether(items))
 
+story += [p(escape(data['name']), 'name'), p(escape(data['headline']), 'headline'),
+          p(escape(data['location']), 'meta'),
+          p(f'<link href="mailto:{data["email"]}" color="#245B80">{escape(data["email"])}</link>  |  {escape(data["phone"])}', 'meta'),
+          p(f'<link href="https://{data["website"]}" color="#245B80">{escape(data["website"])}</link>  |  <link href="https://{data["github"]}" color="#245B80">{escape(data["github"])}</link>  |  <link href="https://{data["linkedin"]}" color="#245B80">LinkedIn</link>', 'meta')]
+section('Profile')
+story.append(p(escape(data['summary'])))
+section('Core capabilities')
+for capability in data['skillGroups']:
+    story.append(p(capability, 'skill'))
+for current, heading in [(True, 'Current experience'), (False, 'Previous experience')]:
+    if not current:
+        story.append(PageBreak())
+    section(heading)
+    for entry in data['experience']:
+        if entry['current'] == current:
+            job(entry['company'], entry['role'], entry['meta'], entry['highlights'], url=entry.get('url'))
+section('Earlier experience')
+for entry in data['earlierExperience']:
+    story.append(p(entry, 'earlier'))
+section('Education')
+for degree in data['education']:
+    story.append(p(f'<b>{escape(degree)}</b>'))
+section('Selected technical writing')
+for writing in data['writing']:
+    story.append(p(f'<link href="{writing["url"]}" color="#245B80"><b>{escape(writing["title"])}</b></link> - {escape(writing["description"])}', 'earlier'))
 
-def build_styles():
-    styles = getSampleStyleSheet()
-    styles.add(
-        ParagraphStyle(
-            name="Name",
-            parent=styles["Heading1"],
-            fontName="Helvetica-Bold",
-            fontSize=22,
-            leading=24,
-            spaceAfter=6,
-            textColor=colors.HexColor("#111111"),
-        )
-    )
-    styles.add(
-        ParagraphStyle(
-            name="Headline",
-            parent=styles["Normal"],
-            fontName="Helvetica-Bold",
-            fontSize=10,
-            leading=12,
-            spaceAfter=8,
-            textColor=colors.HexColor("#444444"),
-        )
-    )
-    styles.add(
-        ParagraphStyle(
-            name="Meta",
-            parent=styles["Normal"],
-            fontName="Helvetica",
-            fontSize=8.5,
-            leading=11,
-            textColor=colors.HexColor("#555555"),
-        )
-    )
-    styles.add(
-        ParagraphStyle(
-            name="MetaRight",
-            parent=styles["Meta"],
-            alignment=TA_RIGHT,
-        )
-    )
-    styles.add(
-        ParagraphStyle(
-            name="Section",
-            parent=styles["Heading2"],
-            fontName="Helvetica-Bold",
-            fontSize=10,
-            leading=12,
-            spaceBefore=10,
-            spaceAfter=6,
-            textColor=colors.HexColor("#111111"),
-        )
-    )
-    styles.add(
-        ParagraphStyle(
-            name="Body",
-            parent=styles["Normal"],
-            fontName="Helvetica",
-            fontSize=8.5,
-            leading=11,
-            textColor=colors.HexColor("#222222"),
-        )
-    )
-    styles.add(
-        ParagraphStyle(
-            name="Small",
-            parent=styles["Body"],
-            fontSize=8,
-            leading=10,
-        )
-    )
-    styles.add(
-        ParagraphStyle(
-            name="BulletItem",
-            parent=styles["Body"],
-            leftIndent=10,
-            firstLineIndent=0,
-            bulletIndent=0,
-            spaceAfter=2,
-        )
-    )
-    return styles
+def footer(canvas,doc):
+ canvas.saveState(); w,h=A4
+ if doc.page>1:
+  canvas.setFillColor(muted);canvas.setFont('CV',8.4);canvas.drawString(46,h-30,'JARIEL BALBERONA | SOFTWARE ENGINEERING')
+ canvas.setStrokeColor(colors.HexColor('#D8E0E6'));canvas.setLineWidth(.45);canvas.line(46,37,w-46,37)
+ canvas.setFont('CV',8);canvas.setFillColor(muted);canvas.drawString(46,24,'Jariel Balberona');canvas.drawRightString(w-46,24,f'{doc.page}')
+ canvas.restoreState()
 
-
-def line(text):
-    return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-
-
-def bullet(text, styles):
-    return Paragraph(f"&bull; {line(text)}", styles["BulletItem"])
-
-
-def section_header(text, styles):
-    return Paragraph(line(text.upper()), styles["Section"])
-
-
-def add_page_number(canvas, doc):
-    canvas.saveState()
-    canvas.setFont("Helvetica", 8)
-    canvas.setFillColor(colors.HexColor("#666666"))
-    canvas.drawRightString(doc.pagesize[0] - doc.rightMargin, 0.5 * inch, str(doc.page))
-    canvas.restoreState()
-
-
-def entry_block(entry, styles):
-    header = Paragraph(
-        f"<b>{line(entry['company'])}</b> | {line(entry['role'])} | {line(entry.get('employmentType', ''))}",
-        styles["Body"],
-    )
-    meta = Paragraph(
-        f"{line(entry['dateRange'])} | {line(entry['location'])}",
-        styles["Meta"],
-    )
-    summary = Paragraph(line(entry["summary"]), styles["Body"])
-    tech = Paragraph(f"<b>Tech:</b> {line(', '.join(entry['tech']))}", styles["Small"])
-    items = [header, meta, Spacer(1, 4), summary, Spacer(1, 4), tech, Spacer(1, 4)]
-    items.extend(bullet(item, styles) for item in entry["highlights"])
-    return KeepTogether(items + [Spacer(1, 8)])
-
-
-def work_block(entry, styles):
-    header = Paragraph(f"<b>{line(entry['name'])}</b> | {line(entry['label'])}", styles["Body"])
-    summary = Paragraph(line(entry["summary"]), styles["Body"])
-    tech = Paragraph(f"<b>Tech:</b> {line(', '.join(entry['tech']))}", styles["Small"])
-    items = [header, Spacer(1, 2), summary, Spacer(1, 4), tech, Spacer(1, 4)]
-    items.extend(bullet(item, styles) for item in entry["highlights"])
-    return KeepTogether(items + [Spacer(1, 8)])
-
-
-def earlier_block(entry, styles):
-    return Paragraph(
-        f"<b>{line(entry['company'])}</b> | {line(entry['role'])} | {line(entry['employmentType'])}<br/>"
-        f"{line(entry['dateRange'])} | {line(entry['location'])}<br/>{line(entry['details'])}",
-        styles["Body"],
-    )
-
-
-def main():
-    data = json.loads(SOURCE.read_text())
-    styles = build_styles()
-
-    doc = SimpleDocTemplate(
-        str(OUTPUT),
-        pagesize=LETTER,
-        leftMargin=0.65 * inch,
-        rightMargin=0.65 * inch,
-        topMargin=0.65 * inch,
-        bottomMargin=0.7 * inch,
-        title=f"{data['name']} CV",
-        author=data["name"],
-    )
-
-    story = [
-        Paragraph(line(data["name"]), styles["Name"]),
-        Paragraph(line(data["headline"]), styles["Headline"]),
-        Paragraph(
-            " | ".join(
-                [
-                    line(data["location"]),
-                    line(data["email"]),
-                    line(data["phone"]),
-                    line(data["website"]),
-                    line(data["github"]),
-                    line(data["linkedin"]),
-                ]
-            ),
-            styles["Meta"],
-        ),
-        Spacer(1, 10),
-        section_header("Summary", styles),
-        Paragraph(line(data["summary"]), styles["Body"]),
-        section_header("Core Skills", styles),
-    ]
-
-    for group in data["skillGroups"]:
-        story.append(
-            Paragraph(
-                f"<b>{line(group['title'])}:</b> {line(', '.join(group['items']))}",
-                styles["Body"],
-            )
-        )
-        story.append(Spacer(1, 2))
-
-    story.append(section_header("Experience", styles))
-    for entry in data["experience"]:
-        story.append(entry_block(entry, styles))
-
-    if data["selectedWork"]:
-        story.append(section_header("Selected Work", styles))
-        for entry in data["selectedWork"]:
-            story.append(work_block(entry, styles))
-
-    story.append(section_header("Earlier Experience", styles))
-    for entry in data["earlierExperience"]:
-        story.append(earlier_block(entry, styles))
-        story.append(Spacer(1, 6))
-
-    doc.build(story, onFirstPage=add_page_number, onLaterPages=add_page_number)
-
-
-if __name__ == "__main__":
-    main()
+doc=SimpleDocTemplate(str(OUT),pagesize=A4,leftMargin=46,rightMargin=46,topMargin=41,bottomMargin=49,title='Jariel Balberona - Software Engineering CV',author='Jariel Balberona',subject='Senior Software Engineer | AI Product & Platform Engineering')
+doc.build(story,onFirstPage=footer,onLaterPages=footer)
+print(f'Generated {OUT}')
