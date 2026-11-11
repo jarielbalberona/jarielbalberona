@@ -16,13 +16,14 @@
   ],
   "experience": [
     {
-      "company": "Confidential client",
-      "role": "Chief Technology Officer (project engagement)",
-      "meta": "Jan 2026 - Present | Contract | Remote",
+      "company": "Independent Practice",
+      "role": "Staff-Level AI-Native Software Engineer",
+      "meta": "Jan 2026 - Present | Independent | Remote",
       "highlights": [
-        "Architect and establish agentic software-delivery systems, defining repository context, reusable skills, task orchestration, tool permissions, verification gates and release controls.",
-        "Design multi-tenant product architecture across Next.js, TypeScript, PostgreSQL and cloud delivery, including tenant permissions, administration and change-request workflows.",
-        "Design the delivery lifecycle from scoped product requests through agent implementation, automated checks, preview deployment, runtime verification and bounded correction, with explicit human release authority.",
+        "Serve as technical lead and CTO-level owner on product engagements: set technical direction, architecture, delivery priorities and release decisions for multi-tenant SaaS products.",
+        "Architect and operate agentic software-delivery systems, defining repository context, reusable skills, task orchestration, tool permissions, verification gates and release controls.",
+        "Run lead agents and isolated per-task environments on a remote Linux server, with scoped permissions and human approval for credentials, production changes and releases.",
+        "Design multi-tenant product architecture across Next.js, TypeScript, PostgreSQL and cloud delivery, including tenant permissions, authentication, administration and change-request workflows.",
         "Define acceptance criteria and evidence requirements that distinguish implemented, verified, deployed and observed-working outcomes."
       ],
       "current": true
