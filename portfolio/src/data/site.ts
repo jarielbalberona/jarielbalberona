@@ -14,10 +14,14 @@ export const siteMeta = {
 };
 
 export const navItems = [
-  { href: '/', label: 'Home', key: 'home' },
   { href: '/work', label: 'Work', key: 'work' },
-  { href: '/ai-native-engineering', label: 'AI-Native Engineering', key: 'ai-native-engineering' },
+  { href: '/ai-native-engineering', label: 'Approach', key: 'ai-native-engineering' },
   { href: '/notes', label: 'Notes', key: 'notes' },
-  { href: '/now', label: 'Now', key: 'now' },
   { href: '/contact', label: 'Contact', key: 'contact' },
+] as const;
+
+export const footerLinks = [
+  { href: '/now', label: 'Now' },
+  { href: '/jariel-balberona-cv.pdf', label: 'CV' },
+  { href: '/rss.xml', label: 'RSS' },
 ] as const;

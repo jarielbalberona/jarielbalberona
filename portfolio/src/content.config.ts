@@ -45,6 +45,7 @@ const notes = defineCollection({
     ogImage: z.string(),
     summary: z.string(),
     featured: z.boolean().default(false),
+    kind: z.enum(['method', 'practice']).default('method'),
   }),
 });
 

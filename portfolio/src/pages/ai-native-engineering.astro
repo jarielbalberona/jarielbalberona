@@ -2,162 +2,53 @@
 import SiteLayout from '../layouts/SiteLayout.astro';
 import AuthorityMatrix from '../components/AuthorityMatrix.astro';
 
-const executionLoop = [
+const reading = [
   {
-    step: '01',
-    title: 'Product intent and specification',
-    body: 'Turn a goal into explicit scope, constraints, acceptance criteria, proof requirements, and boundaries that must not move.',
+    label: 'The method',
+    title: 'Agentic Closed-Loop Development',
+    body: 'The full operating model: lifecycle, accountable delegation, verification selected by risk, bounded correction, and release authority.',
+    href: '/notes/agentic-closed-loop-development',
+    location: 'ai_native_engineering_evidence',
   },
   {
-    step: '02',
-    title: 'Repository-owned context',
-    body: 'Keep architecture rules, domain knowledge, operational procedures, and verification expectations close to the code and under version control.',
+    label: 'In practice',
+    title: 'Inside the Ordr.now Agentic Engineering Loop',
+    body: 'The same method applied to an offline-first point of sale, with physical-device verification and production boundaries.',
+    href: '/notes/ordr-now-agentic-engineering-loop',
+    location: 'ai_native_engineering_practice',
   },
   {
-    step: '03',
-    title: 'Agent-assisted investigation and planning',
-    body: 'Inspect the actual system, trace ownership seams, identify risks, and produce an evidence-backed implementation plan before editing.',
-  },
-  {
-    step: '04',
-    title: 'Scoped implementation',
-    body: 'Execute inside a bounded change set with clear authority, preserved exclusions, and no speculative cleanup outside the task.',
-  },
-  {
-    step: '05',
-    title: 'Risk-selected verification',
-    body: 'Use fast feedback while editing, then prove the stable affected candidate at the boundaries its impact and risk require.',
-  },
-  {
-    step: '06',
-    title: 'Local or preview validation',
-    body: 'Exercise the real route, interface, API, or device in the applicable environment; name the candidate and proof boundary.',
-  },
-  {
-    step: '07',
-    title: 'Bounded correction',
-    body: 'Classify failures, repair within approved scope, and rerun affected proof without repeating an unchanged deterministic failure.',
-  },
-  {
-    step: '08',
-    title: 'Release authorization',
-    body: 'Review candidate evidence and unresolved risk before a separately authorized production release.',
-  },
-  {
-    step: '09',
-    title: 'Production release',
-    body: 'Use the owning repository’s controlled delivery lane and preserve the identity of the released artifact.',
-  },
-  {
-    step: '10',
-    title: 'Post-release observation',
-    body: 'When authorized, check the released identity and intended behavior in its real environment.',
-  },
-  {
-    step: '11',
-    title: 'Documented outcome',
-    body: 'Report implemented, verified, integrated, deployed, and observed outcomes separately, with actual gaps.',
-  },
-];
-
-const capabilityLevels = [
-  {
-    title: 'AI-assisted coding',
-    body: 'A model helps a developer inspect, draft, explain, or review code. The human still drives the sequence and verification.',
-  },
-  {
-    title: 'Structured agent execution',
-    body: 'An agent follows repository context, scope rules, tools, and acceptance criteria to complete a bounded engineering task.',
-  },
-  {
-    title: 'Closed-loop verification',
-    body: 'The system evaluates its own output through deterministic checks and runtime evidence, then corrects failures within explicit limits.',
-  },
-  {
-    title: 'Governed autonomy',
-    body: 'Agents may progress independently inside known authority, but must stop or escalate at policy, risk, ambiguity, or accountability boundaries.',
+    label: 'The setup',
+    title: 'When the Agents Outgrew the Laptop',
+    body: 'Where the agents run, how the server is organized, and what running around the clock really means.',
+    href: '/notes/when-the-agents-outgrew-the-laptop',
+    location: 'ai_native_engineering_setup',
   },
 ];
 ---
 
 <SiteLayout
-  title="AI-Native Engineering | Jariel Balberona"
+  title="Approach | Jariel Balberona"
   description="How Jariel Balberona designs governed agentic engineering systems that move from product intent through implementation, verification, bounded correction, and human approval."
   activeNav="ai-native-engineering"
 >
-  <section class="mb-20">
-    <p class="mb-5 text-xs font-mono uppercase tracking-widest text-ink-soft">AI-Native Engineering</p>
+  <section class="mb-16">
+    <p class="mb-5 text-xs font-mono uppercase tracking-widest text-ink-soft">Approach</p>
     <h1 class="max-w-3xl text-3xl font-semibold leading-tight tracking-tight text-ink sm:text-4xl">
       Engineering systems that can investigate, implement, verify, and correct work without surrendering control.
     </h1>
     <p class="mt-6 max-w-2xl text-lg leading-relaxed text-ink-soft">
       AI-native engineering is not prompt-driven improvisation. It is a software-delivery system built around repository context, bounded authority, deterministic quality gates, runtime evidence, escalation, and human accountability.
     </p>
-    <a href="/notes/agentic-closed-loop-development" data-analytics-event="article_open" data-analytics-location="ai_native_engineering_intro" class="mt-7 inline-flex bg-ink px-5 py-2.5 text-sm font-medium text-paper no-underline hover:bg-ink-soft">Read the complete operating model</a>
   </section>
 
-  <section class="mb-20 border-y border-line py-8">
+  <section class="mb-16 border-y border-line py-8">
     <p class="max-w-3xl text-xl font-semibold leading-relaxed tracking-tight text-ink">
       Deterministic systems where correctness is required, AI where interpretation adds value, and humans where judgment and accountability remain necessary.
     </p>
   </section>
 
-  <section class="mb-20" aria-labelledby="levels-heading">
-    <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">Capability levels</p>
-    <h2 id="levels-heading" class="max-w-2xl text-2xl font-semibold leading-tight tracking-tight text-ink">Four different levels that should not be confused.</h2>
-    <div class="mt-8 grid gap-8 md:grid-cols-2">
-      {capabilityLevels.map((item) => (
-        <article class="border-t border-line pt-4">
-          <h3 class="text-lg font-semibold tracking-tight text-ink">{item.title}</h3>
-          <p class="mt-3 text-sm leading-relaxed text-ink-soft">{item.body}</p>
-        </article>
-      ))}
-    </div>
-  </section>
-
-  <section class="mb-20 border-t border-line pt-10" aria-labelledby="loop-heading">
-    <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">Operating model</p>
-    <h2 id="loop-heading" class="max-w-2xl text-3xl font-semibold leading-tight tracking-tight text-ink">From product intent to accountable delivery.</h2>
-    <ol class="mt-10 grid gap-x-10 gap-y-8 md:grid-cols-2">
-      {executionLoop.map((item) => (
-        <li class="grid grid-cols-[2.5rem_1fr] gap-4 border-t border-line pt-4">
-          <span class="font-mono text-xs text-ink-soft" aria-hidden="true">{item.step}</span>
-          <div>
-            <h3 class="text-lg font-semibold tracking-tight text-ink">{item.title}</h3>
-            <p class="mt-3 text-sm leading-relaxed text-ink-soft">{item.body}</p>
-          </div>
-        </li>
-      ))}
-    </ol>
-    <figure class="mt-12 max-w-2xl">
-      <img src="/images/notes/agentic-closed-loop-lifecycle.svg" width="720" height="1404" alt="Lifecycle from product intent and local validation through release authorization, production release, observation, and documented outcome." class="h-auto w-full border border-line bg-paper-strong" />
-      <figcaption class="mt-3 text-sm leading-relaxed text-ink-soft">The diagram condenses the operating model above. Each stage is also described in text, so the sequence does not depend on the image.</figcaption>
-    </figure>
-  </section>
-
-  <section class="mb-20 border-t border-line pt-10" aria-labelledby="authority-heading">
-    <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">Authority model</p>
-    <h2 id="authority-heading" class="max-w-2xl text-3xl font-semibold leading-tight tracking-tight text-ink">Delegate execution without delegating accountability.</h2>
-    <p class="mt-5 max-w-2xl text-sm leading-relaxed text-ink-soft">The methodology defines what an agent may complete, what it must escalate, and which actions remain prohibited. The article explains the model; the matrix makes the operating boundary explicit.</p>
-    <div class="mt-8"><AuthorityMatrix /></div>
-  </section>
-
-  <section class="mb-20 grid gap-8 border-t border-line pt-10 md:grid-cols-2" aria-labelledby="evidence-heading">
-    <div>
-      <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">Methodology</p>
-      <h2 id="evidence-heading" class="text-2xl font-semibold tracking-tight text-ink">How the engineering system works.</h2>
-      <p class="mt-4 text-sm leading-relaxed text-ink-soft">The cornerstone note covers accountable delegation, durable context, verification selected by impact and risk, bounded correction, and release authority.</p>
-      <a href="/notes/agentic-closed-loop-development" data-analytics-event="article_open" data-analytics-location="ai_native_engineering_evidence" class="mt-5 inline-flex text-sm font-semibold text-ink underline decoration-line underline-offset-4 hover:decoration-ink">Read Agentic Closed-Loop Development</a>
-    </div>
-    <div>
-      <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">Implementation evidence</p>
-      <h2 class="text-2xl font-semibold tracking-tight text-ink">One independently owned system under real constraints.</h2>
-      <p class="mt-4 text-sm leading-relaxed text-ink-soft">Ordr.now provides a concrete example of offline recovery, authorization boundaries, idempotent synchronization, and physical-device verification.</p>
-      <a href="/work/ordr-now#offline-recovery-and-idempotent-synchronization" class="mt-5 inline-flex text-sm font-semibold text-ink underline decoration-line underline-offset-4 hover:decoration-ink">Read the Ordr.now proof</a>
-    </div>
-  </section>
-
-  <section class="grid gap-10 border-t border-line pt-10 md:grid-cols-2">
+  <section class="mb-16 grid gap-10 md:grid-cols-2">
     <article>
       <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">What remains deterministic</p>
       <h2 class="text-2xl font-semibold tracking-tight text-ink">Correctness, state, policy, and proof.</h2>
@@ -180,5 +71,28 @@ const capabilityLevels = [
         <li>The final decision to merge, deploy, or release</li>
       </ul>
     </article>
+  </section>
+
+  <section class="mb-16 border-t border-line pt-10" aria-labelledby="authority-heading">
+    <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">Authority model</p>
+    <h2 id="authority-heading" class="max-w-2xl text-3xl font-semibold leading-tight tracking-tight text-ink">Delegate execution without delegating accountability.</h2>
+    <p class="mt-5 max-w-2xl text-sm leading-relaxed text-ink-soft">What an agent may complete, what it must escalate, and which actions remain prohibited.</p>
+    <div class="mt-8"><AuthorityMatrix /></div>
+  </section>
+
+  <section class="border-t border-line pt-10" aria-labelledby="reading-heading">
+    <p class="mb-3 text-xs font-mono uppercase tracking-widest text-ink-soft">Read further</p>
+    <h2 id="reading-heading" class="max-w-2xl text-2xl font-semibold leading-tight tracking-tight text-ink">The method, the practice, and the setup.</h2>
+    <div class="mt-8 grid gap-8 md:grid-cols-3">
+      {reading.map((item) => (
+        <article class="border-t border-line pt-4">
+          <p class="text-xs font-mono uppercase tracking-widest text-ink-soft">{item.label}</p>
+          <h3 class="mt-2 text-base font-semibold text-ink">
+            <a href={item.href} data-analytics-event="article_open" data-analytics-location={item.location} class="underline decoration-line underline-offset-4 hover:decoration-ink">{item.title}</a>
+          </h3>
+          <p class="mt-3 text-sm leading-relaxed text-ink-soft">{item.body}</p>
+        </article>
+      ))}
+    </div>
   </section>
 </SiteLayout>
