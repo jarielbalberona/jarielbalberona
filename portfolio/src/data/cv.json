@@ -16,6 +16,18 @@
   ],
   "experience": [
     {
+      "company": "Confidential client",
+      "role": "Chief Technology Officer (project engagement)",
+      "meta": "Jan 2026 - Present | Contract | Remote",
+      "highlights": [
+        "Architect and establish agentic software-delivery systems, defining repository context, reusable skills, task orchestration, tool permissions, verification gates and release controls.",
+        "Design multi-tenant product architecture across Next.js, TypeScript, PostgreSQL and cloud delivery, including tenant permissions, administration and change-request workflows.",
+        "Design the delivery lifecycle from scoped product requests through agent implementation, automated checks, preview deployment, runtime verification and bounded correction, with explicit human release authority.",
+        "Define acceptance criteria and evidence requirements that distinguish implemented, verified, deployed and observed-working outcomes."
+      ],
+      "current": true
+    },
+    {
       "company": "Ordr.now",
       "role": "Founder & CTO",
       "meta": "Oct 2025 - Present | Self-employed | Philippines / Remote",
