@@ -16,26 +16,14 @@
   ],
   "experience": [
     {
-      "company": "Better Never Stops",
-      "role": "Chief Technology Officer (project engagement)",
-      "meta": "Jan 2026 - Present | United Kingdom | Remote",
-      "highlights": [
-        "Architect and establish agentic software-delivery systems, defining repository context, reusable skills, task orchestration, tool permissions, verification gates and release controls.",
-        "Design multi-tenant product architecture across Next.js, TypeScript, PostgreSQL and cloud delivery, including tenant permissions, administration and change-request workflows.",
-        "Design the delivery lifecycle from scoped product requests through agent implementation, automated checks, preview deployment, runtime verification and bounded correction, with explicit human release authority.",
-        "Define acceptance criteria and evidence requirements that distinguish implemented, verified, deployed and observed-working outcomes."
-      ],
-      "current": true,
-      "url": "https://www.betterneverstops.global/"
-    },
-    {
       "company": "Ordr.now",
       "role": "Founder & CTO",
       "meta": "Oct 2025 - Present | Self-employed | Philippines / Remote",
       "highlights": [
         "Architect and build a hospitality platform connecting point of sale, customer ordering, kitchen operations, inventory and staff workflows across web and mobile.",
         "Design offline synchronization, durable queues, restart recovery and idempotent operations to handle intermittent connectivity and shared-device workflows.",
-        "Own the TypeScript, React, Node.js and PostgreSQL stack, React Native / Expo clients, Render and Cloudflare delivery, automated tests and production release decisions."
+        "Own the TypeScript, React, Node.js and PostgreSQL stack, React Native / Expo clients, Render and Cloudflare delivery, automated tests and production release decisions.",
+        "Design the repository-owned agentic delivery workflow used to build it: scoped agent implementation, automated checks, physical-device verification, bounded correction and explicit human release authority."
       ],
       "current": true
     },
