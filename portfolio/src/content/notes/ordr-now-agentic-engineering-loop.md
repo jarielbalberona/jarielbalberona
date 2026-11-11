@@ -6,6 +6,7 @@ publishedDate: 2026-07-27
 updatedDate: 2026-11-11
 draft: false
 featured: false
+kind: practice
 tags:
   - agentic-engineering
   - ai-native-engineering

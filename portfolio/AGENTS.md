@@ -45,12 +45,14 @@ This app should stay:
 
 Published pages:
 
-- `Home`
-- `Work`
-- `AI-Native Engineering`
-- `Notes` (index, articles, and RSS; drafts stay unpublished)
-- `Now`
+- `Home`: hero, Ordr.now, what I do, latest notes, availability
+- `Work`: Ordr.now as the owned product, then earlier roles as a compact list
+- `Approach` (URL stays `/ai-native-engineering`): principle, authority matrix, links to notes; the full method lives in the notes, not here
+- `Notes`: grouped by `kind` (`practice` or `method`); drafts stay unpublished
 - `Contact`
+- `Now`: linked from the footer, not the main nav
+
+Main nav is Work, Approach, Notes, Contact. Do not explain the same method on more than one page.
 
 Do not add `About`, `Uses`, or `Speaking` unless the content is real and ready.
 

@@ -5,6 +5,7 @@ summary: "A 2021 laptop could not hold containers, databases, and several agents
 publishedDate: 2026-11-11
 draft: false
 featured: false
+kind: practice
 tags:
   - agentic-engineering
   - ai-native-engineering
