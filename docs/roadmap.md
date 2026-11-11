@@ -9,12 +9,12 @@
 
 ## Phase 2
 
-- notes pipeline shipped in July 2026 (typed collection, drafts, RSS, sitemap); two notes published
+- notes pipeline shipped in July 2026 (typed collection, drafts, RSS, sitemap); four notes published as of November 2026
 - keep Ordr.now as the anchor case study and historical work bounded
 - align GitHub profile and repository metadata with the site narrative
 - improve deployment and preview workflow if needed
 
 ## Later
 
-- keep notes as a maintained public surface: publish or retire the two July 2026 drafts
+- keep notes as a maintained public surface
 - add richer project artifacts if there is material worth publishing
