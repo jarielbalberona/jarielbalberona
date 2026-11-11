@@ -12,8 +12,10 @@ stack:
   - React
   - Node.js
   - PostgreSQL
+  - React Native / Expo
   - Offline-first synchronization
-  - AWS
+  - Render
+  - Cloudflare R2
 highlights:
   - Own product direction, architecture, implementation, verification, and cloud delivery across the platform.
   - Build connected point-of-sale, ordering, kitchen, inventory, and operational workflows for hospitality teams.
@@ -62,6 +64,15 @@ The platform is built around:
 - multi-tenant application and data boundaries
 - frontend, API, persistence, and cloud-delivery systems
 - automated checks plus runtime and device-oriented verification where the risk requires it
+
+## Current status
+
+As of November 2026:
+
+- The web applications and API run on Render, with Cloudflare R2 for object storage.
+- The Android tablet point-of-sale app is submitted to Google Play and in review. It is not yet publicly listed.
+- Table-first dine-in ordering has been added to the mobile POS, alongside the existing menu-first flow.
+- Device verification now covers more than one physical Android tablet.
 
 ## AI-native engineering in practice
 

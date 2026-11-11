@@ -35,7 +35,7 @@
       "highlights": [
         "Architect and build a hospitality platform connecting point of sale, customer ordering, kitchen operations, inventory and staff workflows across web and mobile.",
         "Design offline synchronization, durable queues, restart recovery and idempotent operations to handle intermittent connectivity and shared-device workflows.",
-        "Own the TypeScript, React, Node.js and PostgreSQL stack, React Native / Expo clients, AWS delivery, automated tests and production release decisions."
+        "Own the TypeScript, React, Node.js and PostgreSQL stack, React Native / Expo clients, Render and Cloudflare delivery, automated tests and production release decisions."
       ],
       "current": true
     },
@@ -94,6 +94,11 @@
       "title": "Agentic Closed-Loop Development",
       "url": "https://jarielbalberona.dev/notes/agentic-closed-loop-development",
       "description": "engineering context, verification, agent permissions and accountable releases."
+    },
+    {
+      "title": "Inside the Ordr.now Agentic Engineering Loop",
+      "url": "https://jarielbalberona.dev/notes/ordr-now-agentic-engineering-loop",
+      "description": "the method applied to an offline-first POS, with device and production proof."
     }
   ]
 }
