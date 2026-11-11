@@ -78,6 +78,6 @@ def footer(canvas,doc):
  canvas.setFont('CV',8);canvas.setFillColor(muted);canvas.drawString(46,24,'Jariel Balberona');canvas.drawRightString(w-46,24,f'{doc.page}')
  canvas.restoreState()
 
-doc=SimpleDocTemplate(str(OUT),pagesize=A4,leftMargin=46,rightMargin=46,topMargin=41,bottomMargin=49,title='Jariel Balberona - Software Engineering CV',author='Jariel Balberona',subject='Senior Software Engineer | AI Product & Platform Engineering')
+doc=SimpleDocTemplate(str(OUT),pagesize=A4,leftMargin=46,rightMargin=46,topMargin=41,bottomMargin=49,title='Jariel Balberona - Software Engineering CV',author='Jariel Balberona',subject='Staff-Level AI-Native Software Engineer | Product & Platform Engineering')
 doc.build(story,onFirstPage=footer,onLaterPages=footer)
 print(f'Generated {OUT}')

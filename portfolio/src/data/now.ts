@@ -8,8 +8,8 @@ export const currentFocus = [
     body: 'The tablet point-of-sale app is submitted to Google Play and in review. Current work is physical-tablet testing of full venue days, offline and reconnect behavior, and table-first dine-in ordering.',
   },
   {
-    title: 'Leading a CTO engagement on agentic delivery',
-    body: 'Defining architecture, repository context, agent permissions, verification gates, and release controls for a UK software business building multi-tenant products.',
+    title: 'Designing AI-native product-development systems',
+    body: 'Improving the repository-grounded agent workflow behind Ordr.now: scoped implementation, quality gates, device and runtime verification, and bounded correction.',
   },
   {
     title: 'Running agent work on a remote server',
