@@ -3,6 +3,7 @@ title: "Inside the Ordr.now Agentic Engineering Loop"
 description: "How repository-owned agents, offline-first mobile architecture, physical-device verification, and production canaries form a closed engineering system."
 summary: "A concrete account of how Ordr.now turns product signals into isolated, verified changes across its API, PostgreSQL, offline-first mobile runtime, venue devices, and production boundaries."
 publishedDate: 2026-07-27
+updatedDate: 2026-11-11
 draft: false
 featured: false
 tags:
@@ -34,7 +35,7 @@ The relevant system includes:
 - a durable command outbox and centralized synchronization controller;
 - recovery and conflict handling after interruption;
 - physical Android devices;
-- a separate `apps/venue-device` operating context;
+- a prototyped `apps/venue-device` operating context, not yet merged;
 - deployment, production observation, and controlled canary proof.
 
 The vertical path matters more than any one framework:
@@ -239,7 +240,7 @@ That statement is intentionally scoped. It does not claim a universal exactly-on
 
 ## 7. The main mobile app and `apps/venue-device`
 
-Ordr.now has more than one mobile operating context. They should not be collapsed into one generic “app” claim.
+Ordr.now has one shipped mobile operating context and one prototyped one. They should not be collapsed into one generic “app” claim.
 
 ### Main mobile POS
 
@@ -251,13 +252,13 @@ The verification target changes with the feature. A menu layout can be exercised
 
 ### `apps/venue-device`
 
-A separate Expo application is under active development for venue-bound device workflows. Its current direction includes device provisioning and association, secure device credentials, locally persisted assignment and runtime configuration, cached kiosk bootstrap data, connectivity state, optional cached menu browsing, and online-authorized administration such as diagnostics, reconfiguration, reprovisioning, or deactivation.
+A separate Expo application for venue-bound device workflows was prototyped on a feature branch in July 2026. As of November 2026 it has not been merged and is paused while the main POS goes through Google Play review. Its direction includes device provisioning and association, secure device credentials, locally persisted assignment and runtime configuration, cached kiosk bootstrap data, connectivity state, optional cached menu browsing, and online-authorized administration such as diagnostics, reconfiguration, reprovisioning, or deactivation.
 
 That does not make it a secure kiosk by default.
 
 An Expo application can hide navigation, keep the screen awake, reset idle state, and protect in-app manager actions. Those are application behaviors. Android lock-task mode, managed-device enrollment, automatic launch after boot, protected operating-system escape, remote fleet policy, and MDM enforcement are separate device-management capabilities.
 
-The current application must not be described as proving those controls unless the native configuration, deployment model, and physical-device evidence establish them. Cached browsing also does not imply that every transactional workflow is safe offline. Administrative actions that require current authorization remain online boundaries.
+The prototype must not be described as proving those controls unless the native configuration, deployment model, and physical-device evidence establish them. Cached browsing also does not imply that every transactional workflow is safe offline. Administrative actions that require current authorization remain online boundaries.
 
 ## 8. Verification as a ladder
 
@@ -312,7 +313,7 @@ Physical Android proof is required when the claim depends on:
 - venue-device kiosk constraints;
 - Bluetooth or other hardware behavior.
 
-Ordr.now uses a guarded, side-by-side verification application for device work so iterative proof does not overwrite the normal production package. A repository lease prevents two tasks from treating the same Android tablet as their exclusive evidence source. The current mobile verification history includes a physical Xiaomi Redmi Pad 2, but the useful fact is not the model name. It is that the proof records the candidate, package, device context, local database state, server observation, logs, and cleanup boundary.
+Ordr.now uses a guarded, side-by-side verification application for device work so iterative proof does not overwrite the normal production package. A repository lease prevents two tasks from treating the same Android tablet as their exclusive evidence source. The current mobile verification history includes a physical Xiaomi Redmi Pad 2 and a second Android tablet from another manufacturer, but the useful fact is not the model name. It is that the proof records the candidate, package, device context, local database state, server observation, logs, and cleanup boundary.
 
 Expo Web evidence is labeled web-only. It cannot prove SQLite, Android lifecycle, native authentication behavior, APK installation, printing, or hardware. An emulator is also not silently upgraded to physical proof.
 

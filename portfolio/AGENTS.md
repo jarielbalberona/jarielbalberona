@@ -43,12 +43,15 @@ This app should stay:
 
 ## Page Rules
 
-MVP pages:
+Published pages:
 
 - `Home`
 - `Work`
 - `AI-Native Engineering`
+- `Notes` (index, articles, and RSS; drafts stay unpublished)
 - `Now`
 - `Contact`
 
-Do not add `About`, `Uses`, `Speaking`, or a public notes index unless the content is real and ready.
+Do not add `About`, `Uses`, or `Speaking` unless the content is real and ready.
+
+Update `src/data/now.ts` and its `updatedLabel` whenever current work changes materially.
